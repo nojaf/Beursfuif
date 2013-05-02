@@ -282,7 +282,16 @@ namespace Beursfuif.BL
         {
             return string.Format("[Drink]:[{0},{1}]", Id, Name);
         }
-        
+
+        public override bool Equals(object obj)
+        {
+            if (obj is Drink)
+            {
+                Drink other = obj as Drink;
+                if (other.Id == this.Id) return true;
+            }
+            return false;
+        }
     }
     
 }
