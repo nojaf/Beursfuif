@@ -51,7 +51,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Client.cs" />
+    <Compile Include="ClientDrink.cs" />
+    <Compile Include="ClientDrinkOrder.cs" />
+    <Compile Include="ClientInterval.cs" />
+    <Compile Include="ClientOrder.cs" />
     <Compile Include="Drink.cs" />
+    <Compile Include="Interval.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -271,6 +271,68 @@ namespace Beursfuif.BL
                 RaisePropertyChanged(CurrentPricePropertyName);
             }
         }
+
+        /// <summary>
+        /// The <see cref="NextPrice" /> property's name.
+        /// </summary>
+        public const string NextPricePropertyName = "NextPrice";
+
+        private byte _nextPrice = 0;
+
+        /// <summary>
+        /// Sets and gets the NextPrice property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public byte NextPrice
+        {
+            get
+            {
+                return _nextPrice;
+            }
+
+            set
+            {
+                if (_nextPrice == value)
+                {
+                    return;
+                }
+
+                RaisePropertyChanging(NextPricePropertyName);
+                _nextPrice = value;
+                RaisePropertyChanged(NextPricePropertyName);
+            }
+        }
+
+        /// <summary>
+        /// The <see cref="NextPriceAddition" /> property's name.
+        /// </summary>
+        public const string NextPriceAdditionPropertyName = "NextPriceAddition";
+
+        private byte _nextPriceAddiction = 0;
+
+        /// <summary>
+        /// Sets and gets the NextPriceAddition property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public byte NextPriceAddition
+        {
+            get
+            {
+                return _nextPriceAddiction;
+            }
+
+            set
+            {
+                if (_nextPriceAddiction == value)
+                {
+                    return;
+                }
+
+                RaisePropertyChanging(NextPriceAdditionPropertyName);
+                _nextPriceAddiction = value;
+                RaisePropertyChanged(NextPriceAdditionPropertyName);
+            }
+        }
         #endregion
 
         public Drink()
