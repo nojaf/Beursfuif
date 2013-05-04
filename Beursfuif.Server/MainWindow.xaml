@@ -2,8 +2,22 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:uc="clr-namespace:Beursfuif.Server.UserControls"
-        Title="MainWindow" Height="350" Width="525">
-    <Grid Background="#09cf41">
-        <uc:UCMenuItem MenuText="Dranken 2" />
+        Title="MainWindow" MinHeight="768" MinWidth="1024">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="244" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <StackPanel Background="#09cf41">
+            <TextBlock Text="Beursfuif" Style="{StaticResource MainTitleLeft}" />
+            <uc:UCMenuItem MenuText="Dranken" IsActive="True" />
+            <uc:UCMenuItem MenuText="Intervallen" />
+            <uc:UCMenuItem MenuText="Clients" />
+            <uc:UCMenuItem MenuText="Settings" />
+            <uc:UCMenuItem MenuText="Bestellingen" />
+            <uc:UCMenuItem MenuText="Log" />
+            <uc:UCMenuItem MenuText="Voorspelling" />
+        </StackPanel>
+
     </Grid>
 </Window>

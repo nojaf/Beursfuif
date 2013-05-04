@@ -21,7 +21,20 @@ namespace Beursfuif.Server.UserControls
     {
         public string MenuText { get; set; }
 
-        public bool IsActive { get; set; }
+        private bool _isActive = false;
+        public bool IsActive
+        {
+            get
+            {
+                return _isActive;
+            }
+            set
+            {
+                _isActive = value;
+                if (value) VisualStateManager.GoToState(this, "Active", false);
+            }
+        }
+
 
         public UCMenuItem()
         {

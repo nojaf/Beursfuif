@@ -65,6 +65,6 @@
                 </VisualState>
             </VisualStateGroup>
     	</VisualStateManager.VisualStateGroups>
-        <TextBlock x:Name="textBlock" Text="{Binding MenuText, FallbackValue=MenuItem}" FontSize="48" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="30,7,0,0" Foreground="#FFCCECD5" />
+        <TextBlock Style="{StaticResource BaseTextBlock}" x:Name="textBlock" Text="{Binding MenuText, FallbackValue=MenuItem}" FontSize="36" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="30,7,0,0" Foreground="#FFCCECD5" />
     </StackPanel>
 </UserControl>
