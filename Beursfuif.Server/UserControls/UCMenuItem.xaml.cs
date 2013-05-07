@@ -19,6 +19,7 @@ namespace Beursfuif.Server.UserControls
     /// </summary>
     public partial class UCMenuItem : UserControl
     {
+<<<<<<< HEAD
         private string _menuText;
 
         public string MenuText
@@ -30,6 +31,9 @@ namespace Beursfuif.Server.UserControls
         }
 
         //public string MenuText { get; set; }
+=======
+        public string MenuText { get; set; }
+>>>>>>> b467f20ffbb3200f18d4975e746f9fdbd327459f
 
         private bool _isActive = false;
         public bool IsActive
@@ -49,15 +53,30 @@ namespace Beursfuif.Server.UserControls
         public UCMenuItem()
         {
             InitializeComponent();
+<<<<<<< HEAD
+=======
+            this.DataContext = this;
+>>>>>>> b467f20ffbb3200f18d4975e746f9fdbd327459f
         }
 
         private void UC_MouseDown(object sender, MouseButtonEventArgs e)
         {
             IsActive = !IsActive;
+<<<<<<< HEAD
             if (!IsActive)
             {
                 VisualStateManager.GoToState(this, "Active", true);
             }
+=======
+            if (IsActive)
+            {
+                VisualStateManager.GoToState(this, "Active", true);
+            }
+            else
+            {
+                VisualStateManager.GoToState(this, "NonActive", true);
+            }
+>>>>>>> b467f20ffbb3200f18d4975e746f9fdbd327459f
         }
 
         private void UC_MouseEnter(object sender, MouseEventArgs e)
@@ -75,11 +94,14 @@ namespace Beursfuif.Server.UserControls
                 VisualStateManager.GoToState(this, "MouseOut", true);
             }
         }
+<<<<<<< HEAD
 
         public void GoToNonActive()
         {
             VisualStateManager.GoToState(this, "NonActive", true);
             IsActive = false;
         }
+=======
+>>>>>>> b467f20ffbb3200f18d4975e746f9fdbd327459f
     }
 }
