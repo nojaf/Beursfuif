@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Beursfuif.Server.UserControls;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,18 @@ namespace Beursfuif.Server
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void MenuItem_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            UCMenuItem newItem = sender as UCMenuItem;
+            if (newItem != null)
+            {
+                foreach (UCMenuItem item in menuContainer.Children.OfType<UCMenuItem>().Where(x => x.IsActive))
+                {
+                    if (item != newItem) item.GoToNonActive();
+                }
+            }
         }
     }
 }

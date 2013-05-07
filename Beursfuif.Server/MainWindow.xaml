@@ -1,8 +1,82 @@
 ﻿<Window x:Class="Beursfuif.Server.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="350" Width="525">
+        xmlns:uc="clr-namespace:Beursfuif.Server.UserControls"
+        xmlns:interact="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:mvvm= "clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WPF4"
+        Title="MainWindow" MinHeight="768" MinWidth="1024"
+        DataContext="{Binding Main,Source={StaticResource Locator}}">
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="244" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <StackPanel Background="#09cf41" Width="244" x:Name="menuContainer">
+            <TextBlock Text="Beursfuif" Style="{StaticResource MainTitleLeft}" />
+            <uc:UCMenuItem MenuText="Dranken" IsActive="True" x:Name="MenuDrink" MouseDown="MenuItem_MouseDown">
+                <interact:Interaction.Triggers>
+                    <interact:EventTrigger EventName="MouseDown">
+                        <mvvm:EventToCommand 
+                                    CommandParameter="{Binding ElementName=MenuDrink,Path=Name}"
+                                     Command="{Binding MenuClicked}"></mvvm:EventToCommand>
+                    </interact:EventTrigger>
+                </interact:Interaction.Triggers>
+            </uc:UCMenuItem>
+            <uc:UCMenuItem MenuText="Intervallen" x:Name="MenuInterval" MouseDown="MenuItem_MouseDown">
+                <interact:Interaction.Triggers>
+                    <interact:EventTrigger EventName="MouseDown">
+                        <mvvm:EventToCommand 
+                                     CommandParameter="{Binding ElementName=MenuInterval,Path=Name}"
+                                     Command="{Binding MenuClicked}"></mvvm:EventToCommand>
+                    </interact:EventTrigger>
+                </interact:Interaction.Triggers>
+            </uc:UCMenuItem>
+            <uc:UCMenuItem MenuText="Clients" x:Name="MenuClient" MouseDown="MenuItem_MouseDown">
+                <interact:Interaction.Triggers>
+                    <interact:EventTrigger EventName="MouseDown">
+                        <mvvm:EventToCommand 
+                                     CommandParameter="{Binding ElementName=MenuClient,Path=Name}"
+                                     Command="{Binding MenuClicked}"></mvvm:EventToCommand>
+                    </interact:EventTrigger>
+                </interact:Interaction.Triggers>
+            </uc:UCMenuItem>
+            <uc:UCMenuItem MenuText="Settings" x:Name="MenuSetting" MouseDown="MenuItem_MouseDown">
+                <interact:Interaction.Triggers>
+                    <interact:EventTrigger EventName="MouseDown">
+                        <mvvm:EventToCommand 
+                                     CommandParameter="{Binding ElementName=MenuSetting,Path=Name}"
+                                     Command="{Binding MenuClicked}"></mvvm:EventToCommand>
+                    </interact:EventTrigger>
+                </interact:Interaction.Triggers>
+            </uc:UCMenuItem>
+            <uc:UCMenuItem MenuText="Bestellingen" x:Name="MenuOrder" MouseDown="MenuItem_MouseDown">
+                <interact:Interaction.Triggers>
+                    <interact:EventTrigger EventName="MouseDown">
+                        <mvvm:EventToCommand 
+                                     CommandParameter="{Binding ElementName=MenuOrder,Path=Name}"
+                                     Command="{Binding MenuClicked}"></mvvm:EventToCommand>
+                    </interact:EventTrigger>
+                </interact:Interaction.Triggers>
+            </uc:UCMenuItem>
+            <uc:UCMenuItem MenuText="Log" x:Name="MenuLog" MouseDown="MenuItem_MouseDown">
+                <interact:Interaction.Triggers>
+                    <interact:EventTrigger EventName="MouseDown">
+                        <mvvm:EventToCommand 
+                                     CommandParameter="{Binding ElementName=MenuLog,Path=Name}"
+                                     Command="{Binding MenuClicked}"></mvvm:EventToCommand>
+                    </interact:EventTrigger>
+                </interact:Interaction.Triggers>
+            </uc:UCMenuItem>
+            <uc:UCMenuItem MenuText="Voorspelling" x:Name="MenuPredict" MouseDown="MenuItem_MouseDown">
+                <interact:Interaction.Triggers>
+                    <interact:EventTrigger EventName="MouseDown">
+                        <mvvm:EventToCommand 
+                                     CommandParameter="{Binding ElementName=MenuPredict,Path=Name}"
+                                     Command="{Binding MenuClicked}"></mvvm:EventToCommand>
+                    </interact:EventTrigger>
+                </interact:Interaction.Triggers>
+            </uc:UCMenuItem>
+        </StackPanel>
+
     </Grid>
 </Window>
