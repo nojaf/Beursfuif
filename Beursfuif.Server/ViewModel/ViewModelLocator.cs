@@ -43,6 +43,7 @@ namespace Beursfuif.Server.ViewModel
             ////}
 
             SimpleIoc.Default.Register<MainViewModel>();
+            SimpleIoc.Default.Register<DrinkViewModel>();
         }
 
         public MainViewModel Main
@@ -53,7 +54,14 @@ namespace Beursfuif.Server.ViewModel
             }
         }
 
-        
+        public DrinkViewModel Drink
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<DrinkViewModel>();
+            }
+        }
+
         public static void Cleanup()
         {
             // TODO Clear the ViewModels

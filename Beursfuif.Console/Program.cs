@@ -2,8 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
+using System.Xml;
 
 namespace Beursfuif.ConsoleApp
 {
@@ -17,13 +20,15 @@ namespace Beursfuif.ConsoleApp
             };
 
             System.Xml.Serialization.XmlSerializer writer = new System.Xml.Serialization.XmlSerializer(typeof(ObservableCollection<Drink>));
-            System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Skydrive\Desktop\drinks.xml");
+            System.IO.StreamWriter file = new System.IO.StreamWriter(Environment.CurrentDirectory + "\\drinks.xml");
             writer.Serialize(file, drinks);
             file.Close();
 
             System.Xml.Serialization.XmlSerializer reader = new System.Xml.Serialization.XmlSerializer(typeof(ObservableCollection<Drink>));
-            System.IO.StreamReader fileRead = new System.IO.StreamReader(@"C:\Skydrive\Desktop\drinks.xml");
+            System.IO.StreamReader fileRead = new System.IO.StreamReader(Environment.CurrentDirectory + "\\drinks.xml");
             ObservableCollection<Drink> readedDrinks = reader.Deserialize(fileRead) as ObservableCollection<Drink>;
+
+
             if(readedDrinks != null)
             {
                 foreach (Drink dr in readedDrinks)

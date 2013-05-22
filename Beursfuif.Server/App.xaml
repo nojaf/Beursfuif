@@ -5,10 +5,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Styles/Style.xaml" />
             </ResourceDictionary.MergedDictionaries>
-<<<<<<< HEAD
         <vm:ViewModelLocator x:Key="Locator" d:IsDataSource="True" /></ResourceDictionary>
-=======
-        </ResourceDictionary>
->>>>>>> b467f20ffbb3200f18d4975e746f9fdbd327459f
     </Application.Resources>
 </Application>

@@ -2,20 +2,16 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:uc="clr-namespace:Beursfuif.Server.UserControls"
-<<<<<<< HEAD
+        xmlns:view="clr-namespace:Beursfuif.Server.Views"
         xmlns:interact="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:mvvm= "clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WPF4"
         Title="MainWindow" MinHeight="768" MinWidth="1024"
         DataContext="{Binding Main,Source={StaticResource Locator}}">
-=======
-        Title="MainWindow" MinHeight="768" MinWidth="1024">
->>>>>>> b467f20ffbb3200f18d4975e746f9fdbd327459f
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="244" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-<<<<<<< HEAD
         <StackPanel Background="#09cf41" Width="244" x:Name="menuContainer">
             <TextBlock Text="Beursfuif" Style="{StaticResource MainTitleLeft}" />
             <uc:UCMenuItem MenuText="Dranken" IsActive="True" x:Name="MenuDrink" MouseDown="MenuItem_MouseDown">
@@ -81,18 +77,7 @@
                     </interact:EventTrigger>
                 </interact:Interaction.Triggers>
             </uc:UCMenuItem>
-=======
-        <StackPanel Background="#09cf41">
-            <TextBlock Text="Beursfuif" Style="{StaticResource MainTitleLeft}" />
-            <uc:UCMenuItem MenuText="Dranken" IsActive="True" />
-            <uc:UCMenuItem MenuText="Intervallen" />
-            <uc:UCMenuItem MenuText="Clients" />
-            <uc:UCMenuItem MenuText="Settings" />
-            <uc:UCMenuItem MenuText="Bestellingen" />
-            <uc:UCMenuItem MenuText="Log" />
-            <uc:UCMenuItem MenuText="Voorspelling" />
->>>>>>> b467f20ffbb3200f18d4975e746f9fdbd327459f
         </StackPanel>
-
+        <view:DrinkView Grid.Column="1" />
     </Grid>
 </Window>

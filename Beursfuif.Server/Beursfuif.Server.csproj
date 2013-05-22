@@ -71,11 +71,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DataAccess\DummyDrinkService.cs" />
+    <Compile Include="DataAccess\IDrinkService.cs" />
     <Compile Include="UserControls\UCMenuItem.xaml.cs">
       <DependentUpon>UCMenuItem.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModel\DrinkViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
+    <Compile Include="Views\DrinkView.xaml.cs">
+      <DependentUpon>DrinkView.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -93,6 +99,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\UCMenuItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DrinkView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -130,6 +140,18 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="MVVMLight.Nuget.Readme.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Beursfuif.BL\Beursfuif.BL.csproj">
+      <Project>{0bb30286-2a73-4955-95d2-cfa16b012fdc}</Project>
+      <Name>Beursfuif.BL</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Images\DummyDrinkImage.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Expression\Blend\.NETFramework\v4.5\Microsoft.Expression.Blend.WPF.targets" />
