@@ -5,6 +5,6 @@ Beursfuif program.
 
 made by Nojaf
 
-Expected Alpha release: end of July
-Extected Beta release: end of August
-First production release: end of October
+Expected Alpha release: end of July <br/>
+Extected Beta release: end of August <br />
+First production release: end of October <br />
