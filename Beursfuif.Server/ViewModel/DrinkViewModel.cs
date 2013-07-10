@@ -1,5 +1,6 @@
 ﻿using Beursfuif.BL;
 using Beursfuif.Server.DataAccess;
+using Beursfuif.Server.Messages;
 using GalaSoft.MvvmLight;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,11 @@ namespace Beursfuif.Server.ViewModel
     public class DrinkViewModel:ViewModelBase
     {
         private IOManager _ioManager;
+        private IStateChange _stateChanger;
+        
+        private const string FADE_IN = "FadeIn";
+        private const string FADE_OUT = "FadeOut";
+        private bool _visible = true;
 
         /// <summary>
         /// The <see cref="Drinks" /> property's name.
@@ -88,7 +94,28 @@ namespace Beursfuif.Server.ViewModel
                 Drinks = iomanager.LoadObservableCollectionFromXml<Drink>(PathManager.DRINK_XML_PATH);
             }
 
+            MessengerInstance.Register<ChangeVisibilityMessage>(this, ChangeState);
+
         }
 
+        private void ChangeState(ChangeVisibilityMessage message)
+        {
+            if(!_visible && message.ClassName == typeof(DrinkViewModel).Name)
+            {
+                _stateChanger.GoToState(FADE_IN);
+                _visible = true;
+            }
+            else if (_visible && message.ClassName != typeof(DrinkViewModel).Name)
+            {
+                _stateChanger.GoToState(FADE_OUT);
+                _visible = false;
+            }
+            
+        }
+
+        public void SetStateChanger(IStateChange drinkView)
+        {
+            _stateChanger = drinkView;
+        }
     }
 }

@@ -83,10 +83,13 @@
     <Compile Include="DataAccess\IDrinkService.cs" />
     <Compile Include="DataAccess\IOManager.cs" />
     <Compile Include="DataAccess\PathManager.cs" />
+    <Compile Include="Messages\ChangeVisibilityMessage.cs" />
     <Compile Include="UserControls\UCMenuItem.xaml.cs">
       <DependentUpon>UCMenuItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModel\DrinkViewModel.cs" />
+    <Compile Include="ViewModel\IntervalViewModel.cs" />
+    <Compile Include="ViewModel\IStateChange.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="Views\DrinkView.xaml.cs">

@@ -83,6 +83,6 @@
                 </interact:Interaction.Triggers>
             </uc:UCMenuItem>
         </StackPanel>
-        <view:DrinkView Grid.Column="2" Grid.Row="1" Visibility="{Binding Path=Parent.DataContext.DrinkVisible, RelativeSource={RelativeSource Self}}"  />
+        <view:DrinkView Grid.Column="2" Grid.Row="1" />
     </Grid>
 </Window>
