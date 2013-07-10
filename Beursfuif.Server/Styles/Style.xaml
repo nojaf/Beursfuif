@@ -1,6 +1,11 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:uc="clr-namespace:Beursfuif.Server.UserControls" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d">
+                    xmlns:uc="clr-namespace:Beursfuif.Server.UserControls" 
+					xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+					xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero" 
+                    xmlns:t="http://schemas.xceed.com/wpf/xaml/toolkit"
+					xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" mc:Ignorable="d">
 	<Style TargetType="{x:Type TextBlock}" x:Key="BaseTextBlock">
 		<Setter Property="FontFamily" Value="/Beursfuif.Server;component/Styles/#Coolvetica Rg" />
 
@@ -14,25 +19,24 @@
 	<Style TargetType="{x:Type GridViewColumnHeader}" x:Key="HeaderColumnText">
 		<Setter Property="Foreground" Value="#7e9d87"/>
 		<Setter Property="FontSize" Value="12"/>
-        <Setter Property="Margin">
-            <Setter.Value>
-                <Thickness Left="2" Right="2" />
-            </Setter.Value>
-        </Setter>
+		<Setter Property="Margin">
+			<Setter.Value>
+				<Thickness Left="2" Right="2" />
+			</Setter.Value>
+		</Setter>
 		<Setter Property="FontFamily" Value="/Beursfuif.Server;component/Styles/#Coolvetica Rg" />
 		<Setter Property="FontWeight" Value="ExtraLight"/>
 		<Setter Property="IsEnabled" Value="False"/>
 		<Setter Property="ToolBarTray.Background" Value="Transparent"/>
 		<Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type GridViewColumnHeader}">
-                    <TextBlock Text="{TemplateBinding Content}" Padding="5" Width="{TemplateBinding Width}" TextAlignment="Center" Background="Transparent">
-                    </TextBlock>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type GridViewColumnHeader}">
+					<TextBlock Text="{TemplateBinding Content}" Padding="5" Width="{TemplateBinding Width}" TextAlignment="Center" Background="Transparent"/>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
 
 	<Style x:Key="ButtonFocusVisual">
 		<Setter Property="Control.Template">
@@ -119,26 +123,217 @@
 		</Setter>
 	</Style>
 
-    <Style TargetType="ListViewItem">
-        <Setter Property="FontFamily" Value="/Beursfuif.Server;component/Styles/#Coolvetica Rg" />
-        <Setter Property="Foreground" Value="Black"></Setter>
-        <Setter Property="HorizontalContentAlignment" Value="Center"/>
-        <Style.Triggers>
-            <Trigger Property="ItemsControl.AlternationIndex" Value="1">
-                <Setter Property="Background" Value="#e5faeb"></Setter>
-            </Trigger>
-            <Trigger Property="ItemsControl.AlternationIndex" Value="0">
-                <Setter Property="Background" Value="White"></Setter>
-            </Trigger>
-            <MultiTrigger>
-                <MultiTrigger.Conditions>
-                    <Condition Property="IsSelected" Value="true" />
-                    <Condition Property="Selector.IsSelectionActive" Value="true" />
-                </MultiTrigger.Conditions>
-                <Setter Property="Background" Value="#b6f4c8" />
-            </MultiTrigger>
-        </Style.Triggers>
+	<Style TargetType="{x:Type ListViewItem}">
+		<Setter Property="FontFamily" Value="/Beursfuif.Server;component/Styles/#Coolvetica Rg" />
+		<Setter Property="Foreground" Value="Black"/>
+		<Setter Property="HorizontalContentAlignment" Value="Center"/>
+		<Style.Triggers>
+			<Trigger Property="ItemsControl.AlternationIndex" Value="1">
+				<Setter Property="Background" Value="#e5faeb"/>
+			</Trigger>
+			<Trigger Property="ItemsControl.AlternationIndex" Value="0">
+				<Setter Property="Background" Value="White"/>
+			</Trigger>
+			<MultiTrigger>
+				<MultiTrigger.Conditions>
+					<Condition Property="IsSelected" Value="true" />
+					<Condition Property="Selector.IsSelectionActive" Value="true" />
+				</MultiTrigger.Conditions>
+				<Setter Property="Background" Value="#b6f4c8" />
+			</MultiTrigger>
+		</Style.Triggers>
+	</Style>
+	<Style x:Key="AddButtonIcon" TargetType="{x:Type Button}">
+		<Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}"/>
+		<Setter Property="Background" Value="{StaticResource ButtonNormalBackground}"/>
+		<Setter Property="BorderBrush" Value="{StaticResource ButtonNormalBorder}"/>
+		<Setter Property="BorderThickness" Value="1"/>
+		<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+		<Setter Property="HorizontalContentAlignment" Value="Center"/>
+		<Setter Property="VerticalContentAlignment" Value="Center"/>
+		<Setter Property="Padding" Value="1"/>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type Button}">
+					<Viewbox>
+						<VisualStateManager.VisualStateGroups>
+							<VisualStateGroup x:Name="CommonStates">
+								<VisualState x:Name="Normal"/>
+								<VisualState x:Name="MouseOver">
+									<Storyboard>
+										<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="path">
+											<EasingColorKeyFrame KeyTime="0" Value="#FF74DB92"/>
+										</ColorAnimationUsingKeyFrames>
+									</Storyboard>
+								</VisualState>
+								<VisualState x:Name="Pressed">
+									<Storyboard>
+										<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="path">
+											<EasingColorKeyFrame KeyTime="0" Value="#FF09441B"/>
+										</ColorAnimationUsingKeyFrames>
+									</Storyboard>
+								</VisualState>
+								<VisualState x:Name="Disabled">
+									<Storyboard>
+										<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="path">
+											<EasingColorKeyFrame KeyTime="0" Value="#FF939393"/>
+										</ColorAnimationUsingKeyFrames>
+									</Storyboard>
+								</VisualState>
+							</VisualStateGroup>
+						</VisualStateManager.VisualStateGroups>
+						<Path x:Name="path" Data="M42.482014,13.433987 L42.482014,36.637245 L19.307402,36.637245 L19.307402,46.462822 L42.482014,46.462822 L42.482014,69.637436 L52.30759,69.637436 L52.30759,46.462822 L75.510849,46.462822 L75.510849,36.637245 L52.30759,36.637245 L52.30759,13.433987 z M47.63829,-4.1833 C51.820602,-4.1833 55.854916,-3.6390266 59.741226,-2.5504806 C63.627529,-1.4619255 67.260796,0.075408936 70.641029,2.061527 C74.021248,4.0476532 77.100693,6.4300423 79.879356,9.2087021 C82.65802,11.98737 85.040413,15.066814 87.026535,18.447037 C89.012657,21.827267 90.549988,25.460537 91.638542,29.34684 C92.727081,33.233147 93.271362,37.26746 93.271362,41.449772 C93.271362,45.651184 92.727081,49.695045 91.638542,53.581352 C90.549988,57.467659 89.012657,61.100925 87.026535,64.481155 C85.040413,67.861382 82.65802,70.940826 79.879356,73.71949 C77.100693,76.498146 74.021248,78.880539 70.641029,80.866661 C67.260796,82.852783 63.627529,84.390121 59.741226,85.478668 C55.854916,86.567215 51.820602,87.111488 47.63829,87.111488 C43.436878,87.111488 39.393021,86.567215 35.506714,85.478668 C31.620405,84.390121 27.987137,82.852783 24.606911,80.866661 C21.226683,78.880539 18.147238,76.498146 15.368577,73.71949 C12.589914,70.940826 10.212297,67.861382 8.2357235,64.481155 C6.2591496,61.100925 4.7265892,57.467659 3.6380413,53.581352 C2.5494938,49.695045 2.0052197,45.651184 2.005219,41.449772 C2.0052197,37.26746 2.5494938,33.233147 3.6380413,29.34684 C4.7265892,25.460537 6.2591496,21.827267 8.2357235,18.447037 C10.212297,15.066814 12.589914,11.98737 15.368577,9.2087021 C18.147238,6.4300423 21.226683,4.0476532 24.606911,2.061527 C27.987137,0.075408936 31.620405,-1.4619255 35.506714,-2.5504806 C39.393021,-3.6390266 43.436878,-4.1833 47.63829,-4.1833 z" Fill="#FF258541" HorizontalAlignment="Left" Height="77.263" Margin="0" RenderTransformOrigin="0.5,0.5" Stretch="Fill" VerticalAlignment="Top" Width="77.295">
+							<Path.RenderTransform>
+								<TransformGroup>
+									<ScaleTransform/>
+									<SkewTransform/>
+									<RotateTransform/>
+									<TranslateTransform/>
+								</TransformGroup>
+							</Path.RenderTransform>
+							<VisualStateManager.VisualStateGroups>
+								<VisualStateGroup x:Name="CommonStates1">
+									<VisualState x:Name="Normal1"/>
+									<VisualState x:Name="MouseOver1">
+										<Storyboard>
+											<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="path">
+												<EasingColorKeyFrame KeyTime="0" Value="#FF74DB92"/>
+											</ColorAnimationUsingKeyFrames>
+										</Storyboard>
+									</VisualState>
+									<VisualState x:Name="Pressed1">
+										<Storyboard>
+											<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="path">
+												<EasingColorKeyFrame KeyTime="0" Value="#FF09441B"/>
+											</ColorAnimationUsingKeyFrames>
+										</Storyboard>
+									</VisualState>
+									<VisualState x:Name="Disabled1">
+										<Storyboard>
+											<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="path">
+												<EasingColorKeyFrame KeyTime="0" Value="#FF939393"/>
+											</ColorAnimationUsingKeyFrames>
+										</Storyboard>
+									</VisualState>
+								</VisualStateGroup>
+							</VisualStateManager.VisualStateGroups>
+						</Path>
+					</Viewbox>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsKeyboardFocused" Value="true"/>
+						<Trigger Property="ToggleButton.IsChecked" Value="true"/>
+						<Trigger Property="IsEnabled" Value="false">
+							<Setter Property="Foreground" Value="#ADADAD"/>
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+	<Style x:Key="Label" TargetType="{x:Type TextBlock}">
+		<Setter Property="TextWrapping" Value="NoWrap"/>
+		<Setter Property="TextTrimming" Value="None"/>
+		<Setter Property="Margin" Value="0,5"/>
+	</Style>
+
+
+
+	<LinearGradientBrush x:Key="TextBoxBorder" StartPoint="0,0" MappingMode="Absolute" EndPoint="0,20">
+		<GradientStop Color="#ABADB3" Offset="0.05"/>
+		<GradientStop Color="#E2E3EA" Offset="0.07"/>
+		<GradientStop Color="#E3E9EF" Offset="1"/>
+	</LinearGradientBrush>
+	<Style BasedOn="{x:Null}" TargetType="{x:Type TextBox}">
+		<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+		<Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"/>
+		<Setter Property="BorderBrush" Value="{StaticResource TextBoxBorder}"/>
+		<Setter Property="BorderThickness" Value="1"/>
+		<Setter Property="Padding" Value="1"/>
+		<Setter Property="AllowDrop" Value="true"/>
+		<Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type TextBox}">
+					<Themes:ListBoxChrome x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" RenderMouseOver="{TemplateBinding IsMouseOver}" RenderFocused="{TemplateBinding IsKeyboardFocusWithin}" SnapsToDevicePixels="true" Margin="0,5">
+						<ScrollViewer x:Name="PART_ContentHost" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="Center"/>
+					</Themes:ListBoxChrome>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsEnabled" Value="false">
+							<Setter Property="Background" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+							<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+    
+    <Style TargetType="t:IntegerUpDown">
+        <!-- BorderBrush="#FF7E9D87" BorderThickness="3" FontFamily="Century Gothic" Margin="0,5"  -->
+        <Setter Property="BorderBrush" Value="#FF7E9D87"></Setter>
+        <Setter Property="BorderThickness" Value="3"></Setter>
+        <Setter Property="FontFamily" Value="Century Gothic"></Setter>
+        <Setter Property="Margin" Value="0,5"></Setter>
     </Style>
 
-
+    <Style TargetType="{x:Type Button}">
+    	<Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}"/>
+    	<Setter Property="Background" Value="{StaticResource ButtonNormalBackground}"/>
+    	<Setter Property="BorderBrush" Value="{StaticResource ButtonNormalBorder}"/>
+    	<Setter Property="BorderThickness" Value="0"/>
+    	<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+    	<Setter Property="HorizontalContentAlignment" Value="Center"/>
+    	<Setter Property="VerticalContentAlignment" Value="Center"/>
+    	<Setter Property="Padding" Value="1"/>
+    	<Setter Property="Template">
+    		<Setter.Value>
+    			<ControlTemplate TargetType="{x:Type Button}">
+    				<StackPanel x:Name="stackPanel" Height="Auto" Width="Auto" Background="#FFAFC1B4" Margin="0,0,0,-0.4">
+    					<VisualStateManager.VisualStateGroups>
+    						<VisualStateGroup x:Name="CommonStates">
+    							<VisualState x:Name="Normal"/>
+    							<VisualState x:Name="MouseOver">
+    								<Storyboard>
+    									<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" Storyboard.TargetName="stackPanel">
+    										<EasingColorKeyFrame KeyTime="0" Value="#FFA3E7B6"/>
+    									</ColorAnimationUsingKeyFrames>
+    								</Storyboard>
+    							</VisualState>
+    							<VisualState x:Name="Pressed">
+    								<Storyboard>
+    									<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" Storyboard.TargetName="stackPanel">
+    										<EasingColorKeyFrame KeyTime="0" Value="#FF4B925F"/>
+    									</ColorAnimationUsingKeyFrames>
+    									<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" Storyboard.TargetName="textBlock">
+    										<EasingColorKeyFrame KeyTime="0" Value="White"/>
+    									</ColorAnimationUsingKeyFrames>
+    								</Storyboard>
+    							</VisualState>
+    							<VisualState x:Name="Disabled">
+    								<Storyboard>
+    									<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" Storyboard.TargetName="textBlock">
+    										<EasingColorKeyFrame KeyTime="0" Value="#A5316E42"/>
+    									</ColorAnimationUsingKeyFrames>
+    									<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" Storyboard.TargetName="stackPanel">
+    										<EasingColorKeyFrame KeyTime="0" Value="#FFDADADA"/>
+    									</ColorAnimationUsingKeyFrames>
+    								</Storyboard>
+    							</VisualState>
+    						</VisualStateGroup>
+    					</VisualStateManager.VisualStateGroups>
+    					<Viewbox Height="26">
+    						<TextBlock x:Name="textBlock" TextWrapping="Wrap" Text="{Binding Content, RelativeSource={RelativeSource TemplatedParent}}" HorizontalAlignment="Center" Style="{DynamicResource Label}" Margin="5" FontFamily="/Beursfuif.Server;component/Styles/#Coolvetica Rg" Foreground="#FF316E42" FontSize="13.333"/>
+    					</Viewbox>
+    				</StackPanel>
+    				<ControlTemplate.Triggers>
+    					<Trigger Property="IsKeyboardFocused" Value="true"/>
+    					<Trigger Property="ToggleButton.IsChecked" Value="true"/>
+    					<Trigger Property="IsEnabled" Value="false">
+    						<Setter Property="Foreground" Value="#ADADAD"/>
+    					</Trigger>
+    				</ControlTemplate.Triggers>
+    			</ControlTemplate>
+    		</Setter.Value>
+    	</Setter>
+    </Style>
 </ResourceDictionary>
