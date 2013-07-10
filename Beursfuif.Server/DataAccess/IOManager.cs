@@ -48,5 +48,13 @@ namespace Beursfuif.Server.DataAccess
             return new ObservableCollection<T>();
         }
 
+
+        public void SaveObservableCollectionToXml<T>(string path,ObservableCollection<T> objects) where T : class
+        {        
+            System.Xml.Serialization.XmlSerializer writer = new System.Xml.Serialization.XmlSerializer(typeof(ObservableCollection<T>));
+            System.IO.StreamWriter file = new System.IO.StreamWriter(path,false);
+            writer.Serialize(file, objects);
+            file.Close();
+        }
     }
 }

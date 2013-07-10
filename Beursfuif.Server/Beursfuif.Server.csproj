@@ -35,9 +35,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FirstFloor.ModernUI">
-      <HintPath>..\packages\ModernUI.WPF.1.0.5\lib\net40\FirstFloor.ModernUI.dll</HintPath>
-    </Reference>
     <Reference Include="GalaSoft.MvvmLight.Extras.WPF4">
       <HintPath>..\packages\MvvmLightLibs.4.1.27.0\lib\net40\GalaSoft.MvvmLight.Extras.WPF4.dll</HintPath>
     </Reference>

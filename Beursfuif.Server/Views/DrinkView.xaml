@@ -1,4 +1,4 @@
-﻿<UserControl x:Name="userControl" x:Class="Beursfuif.Server.Views.DrinkView"
+﻿<UserControl  x:Class="Beursfuif.Server.Views.DrinkView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -8,7 +8,8 @@
         xmlns:mvvm= "clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WPF4"
              mc:Ignorable="d" 
              DataContext="{Binding Drink,Source={StaticResource Locator}}"
-             d:DesignHeight="715" MinHeight="715" d:DesignWidth="751" MinWidth="751">
+             d:DesignHeight="715" MinHeight="715" d:DesignWidth="751" MinWidth="751"
+             x:Name="drinkView">
     <Grid Background="White">
     	<VisualStateManager.VisualStateGroups>
     		<VisualStateGroup x:Name="HideShow">
@@ -61,7 +62,9 @@
                     <GridViewColumn Header="Verwijderen">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <Button Style="{StaticResource RemoveButtonIcon}" Height="25" HorizontalAlignment="Center"></Button>
+                                <Button Style="{StaticResource RemoveButtonIcon}" 
+                                        CommandParameter="{Binding Id}"
+                                        Command="{Binding Path=DataContext.RemoveDrink,ElementName=drinkView}" Height="25" HorizontalAlignment="Center"></Button>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
