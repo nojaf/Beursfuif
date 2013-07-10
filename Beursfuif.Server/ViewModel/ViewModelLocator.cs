@@ -12,6 +12,7 @@
   See http://www.galasoft.ch/mvvm
 */
 
+using Beursfuif.Server.DataAccess;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
@@ -42,6 +43,7 @@ namespace Beursfuif.Server.ViewModel
             ////    SimpleIoc.Default.Register<IDataService, DataService>();
             ////}
 
+            SimpleIoc.Default.Register<IOManager>();
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<DrinkViewModel>();
         }

@@ -111,7 +111,7 @@ namespace Beursfuif.BL
             {
                 if (!string.IsNullOrEmpty(ImageString))
                 {
-                    return new Uri(ImageString, UriKind.Absolute);
+                    return new Uri(ImageString, UriKind.RelativeOrAbsolute);
                 }
                 return null;
             }

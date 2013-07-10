@@ -7,9 +7,9 @@ using System.Text;
 
 namespace Beursfuif.Server.DataAccess
 {
-    interface IDrinkService
+    public interface IDrinkService
     {
-        ObservableCollection<Drink> GetDrinksFromXml(string filepath);
+        ObservableCollection<Drink> GetDrinksFromXml();
 
         bool SaveDrinksToXml(string filepath);
     }

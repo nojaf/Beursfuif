@@ -1,14 +1,144 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:uc="clr-namespace:Beursfuif.Server.UserControls">
-    <Style TargetType="{x:Type TextBlock}" x:Key="BaseTextBlock">
+                    xmlns:uc="clr-namespace:Beursfuif.Server.UserControls" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d">
+	<Style TargetType="{x:Type TextBlock}" x:Key="BaseTextBlock">
+		<Setter Property="FontFamily" Value="/Beursfuif.Server;component/Styles/#Coolvetica Rg" />
+
+	</Style>
+
+	<Style TargetType="{x:Type TextBlock}" x:Key="MainTitleLeft" BasedOn="{StaticResource BaseTextBlock}">
+		<Setter Property="Foreground" Value="White" />
+		<Setter Property="FontSize" Value="48" />
+		<Setter Property="Margin" Value="30,30,30,50" />
+	</Style>
+	<Style TargetType="{x:Type GridViewColumnHeader}" x:Key="HeaderColumnText">
+		<Setter Property="Foreground" Value="#7e9d87"/>
+		<Setter Property="FontSize" Value="12"/>
+        <Setter Property="Margin">
+            <Setter.Value>
+                <Thickness Left="2" Right="2" />
+            </Setter.Value>
+        </Setter>
+		<Setter Property="FontFamily" Value="/Beursfuif.Server;component/Styles/#Coolvetica Rg" />
+		<Setter Property="FontWeight" Value="ExtraLight"/>
+		<Setter Property="IsEnabled" Value="False"/>
+		<Setter Property="ToolBarTray.Background" Value="Transparent"/>
+		<Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type GridViewColumnHeader}">
+                    <TextBlock Text="{TemplateBinding Content}" Padding="5" Width="{TemplateBinding Width}" TextAlignment="Center" Background="Transparent">
+                    </TextBlock>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+	<Style x:Key="ButtonFocusVisual">
+		<Setter Property="Control.Template">
+			<Setter.Value>
+				<ControlTemplate>
+					<Rectangle Margin="2" SnapsToDevicePixels="true" Stroke="Black" StrokeThickness="1" StrokeDashArray="1 2"/>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+	<LinearGradientBrush x:Key="ButtonNormalBackground" EndPoint="0,1" StartPoint="0,0">
+		<GradientStop Color="#F3F3F3" Offset="0"/>
+		<GradientStop Color="#EBEBEB" Offset="0.5"/>
+		<GradientStop Color="#DDDDDD" Offset="0.5"/>
+		<GradientStop Color="#CDCDCD" Offset="1"/>
+	</LinearGradientBrush>
+	<SolidColorBrush x:Key="ButtonNormalBorder" Color="#FF707070"/>
+	<Style x:Key="RemoveButtonIcon" TargetType="{x:Type Button}">
+		<Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}"/>
+		<Setter Property="Background" Value="{StaticResource ButtonNormalBackground}"/>
+		<Setter Property="BorderBrush" Value="{StaticResource ButtonNormalBorder}"/>
+		<Setter Property="BorderThickness" Value="1"/>
+		<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+		<Setter Property="HorizontalContentAlignment" Value="Center"/>
+		<Setter Property="VerticalContentAlignment" Value="Center"/>
+		<Setter Property="Padding" Value="1"/>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type Button}">
+					<Viewbox x:Name="viewbox" HorizontalAlignment="Left"  VerticalAlignment="Top">
+						<VisualStateManager.VisualStateGroups>
+							<VisualStateGroup x:Name="CommonStates">
+								<VisualState x:Name="Normal"/>
+								<VisualState x:Name="MouseOver">
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.OpacityMask)" Storyboard.TargetName="viewbox">
+											<DiscreteObjectKeyFrame KeyTime="0">
+												<DiscreteObjectKeyFrame.Value>
+													<SolidColorBrush Color="Black"/>
+												</DiscreteObjectKeyFrame.Value>
+											</DiscreteObjectKeyFrame>
+										</ObjectAnimationUsingKeyFrames>
+										<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="path">
+											<EasingColorKeyFrame KeyTime="0" Value="#FF74DB92"/>
+										</ColorAnimationUsingKeyFrames>
+									</Storyboard>
+								</VisualState>
+								<VisualState x:Name="Pressed">
+									<Storyboard>
+										<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="path">
+											<EasingColorKeyFrame KeyTime="0" Value="#FF09441B"/>
+										</ColorAnimationUsingKeyFrames>
+									</Storyboard>
+								</VisualState>
+								<VisualState x:Name="Disabled">
+									<Storyboard>
+										<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="path">
+											<EasingColorKeyFrame KeyTime="0" Value="#FF939393"/>
+										</ColorAnimationUsingKeyFrames>
+									</Storyboard>
+								</VisualState>
+							</VisualStateGroup>
+						</VisualStateManager.VisualStateGroups>
+						<Path x:Name="path" Data="M25.59375,14.835728 L39,28.241978 L52.429688,14.835728 L58.125,20.507603 L44.695313,33.93729 L58.125,47.366978 L52.429688,53.038853 L39,39.632603 L25.59375,53.038853 L19.921875,47.34354 L33.328125,33.93729 L19.921875,20.53104 z M38.976563,0.49197778 C35.898438,0.49198151 32.9375,0.89041901 30.09375,1.68729 C27.249998,2.484169 24.589842,3.609169 22.113281,5.0622907 C19.636719,6.5154152 17.382813,8.2615089 15.351563,10.300571 C13.320312,12.339634 11.578124,14.59354 10.124999,17.06229 C8.671875,19.53104 7.5468745,22.191198 6.75,25.042759 C5.953125,27.894321 5.5546875,30.851353 5.554688,33.913853 C5.5546875,36.991978 5.953125,39.952915 6.75,42.796665 C7.5468745,45.640415 8.671875,48.296665 10.124999,50.765415 C11.578124,53.234165 13.320312,55.488071 15.351563,57.527134 C17.382813,59.566196 19.636719,61.31229 22.113281,62.765415 C24.589842,64.218536 27.249998,65.343536 30.09375,66.140411 C32.9375,66.937286 35.898438,67.335724 38.976563,67.335724 C42.039063,67.335724 44.992188,66.937286 47.835938,66.140411 C50.679684,65.343536 53.33984,64.218536 55.816406,62.765415 C58.292965,61.31229 60.546871,59.566196 62.578125,57.527134 C64.609375,55.488071 66.351563,53.234165 67.804688,50.765415 C69.257813,48.296665 70.382813,45.636509 71.179688,42.784946 C71.976563,39.933384 72.375,36.976353 72.375,33.913853 C72.375,30.851353 71.976563,27.894321 71.179688,25.042759 C70.382813,22.191198 69.257813,19.53104 67.804688,17.06229 C66.351563,14.59354 64.609375,12.339634 62.578125,10.300571 C60.546871,8.2615089 58.292965,6.5154152 55.816406,5.0622907 C53.33984,3.609169 50.679684,2.484169 47.835938,1.68729 C44.992188,0.89041901 42.039063,0.49198151 38.976563,0.49197778 z M38.976563,-3.4220848 C42.398438,-3.422081 45.699219,-2.9767685 48.878906,-2.0861471 C52.05859,-1.1955185 55.031246,0.062294006 57.796875,1.68729 C60.562496,3.3122902 63.082027,5.2615089 65.355469,7.5349464 C67.628906,9.8083839 69.578125,12.327915 71.203125,15.09354 C72.828125,17.859165 74.085938,20.831823 74.976563,24.011509 C75.867188,27.191196 76.3125,30.491978 76.3125,33.913853 C76.3125,37.351353 75.867188,40.659946 74.976563,43.839634 C74.085938,47.019321 72.828125,49.991978 71.203125,52.757603 C69.578125,55.523228 67.628906,58.042759 65.355469,60.316196 C63.082027,62.589634 60.562496,64.538849 57.796875,66.163849 C55.031246,67.788849 52.05859,69.046661 48.878906,69.937286 C45.699219,70.827911 42.398438,71.273224 38.976563,71.273224 C35.539063,71.273224 32.230469,70.827911 29.050781,69.937286 C25.871092,69.046661 22.898436,67.788849 20.132813,66.163849 C17.367188,64.538849 14.847655,62.589634 12.574219,60.316196 C10.300781,58.042759 8.3554688,55.523228 6.7382817,52.757603 C5.1210938,49.991978 3.8671873,47.019321 2.976563,43.839634 C2.0859375,40.659946 1.6406249,37.351353 1.6406252,33.913853 C1.6406249,30.491978 2.0859375,27.191196 2.976563,24.011509 C3.8671873,20.831823 5.1210938,17.859165 6.7382817,15.09354 C8.3554688,12.327915 10.300781,9.8083839 12.574219,7.5349464 C14.847655,5.2615089 17.367188,3.3122902 20.132813,1.68729 C22.898436,0.062294006 25.871092,-1.1955185 29.050781,-2.0861471 C32.230469,-2.9767685 35.539063,-3.422081 38.976563,-3.4220848 z" Fill="#FF258541" Height="15.513" RenderTransformOrigin="0.5,0.5" Stretch="Fill" Width="15.508">
+							<Path.RenderTransform>
+								<TransformGroup>
+									<ScaleTransform/>
+									<SkewTransform/>
+									<RotateTransform/>
+									<TranslateTransform/>
+								</TransformGroup>
+							</Path.RenderTransform>
+						</Path>
+					</Viewbox>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsKeyboardFocused" Value="true"/>
+						<Trigger Property="ToggleButton.IsChecked" Value="true"/>
+						<Trigger Property="IsEnabled" Value="false">
+							<Setter Property="Foreground" Value="#ADADAD"/>
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+    <Style TargetType="ListViewItem">
         <Setter Property="FontFamily" Value="/Beursfuif.Server;component/Styles/#Coolvetica Rg" />
-
+        <Setter Property="Foreground" Value="Black"></Setter>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Style.Triggers>
+            <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                <Setter Property="Background" Value="#e5faeb"></Setter>
+            </Trigger>
+            <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                <Setter Property="Background" Value="White"></Setter>
+            </Trigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsSelected" Value="true" />
+                    <Condition Property="Selector.IsSelectionActive" Value="true" />
+                </MultiTrigger.Conditions>
+                <Setter Property="Background" Value="#b6f4c8" />
+            </MultiTrigger>
+        </Style.Triggers>
     </Style>
 
-    <Style TargetType="TextBlock" x:Key="MainTitleLeft" BasedOn="{StaticResource BaseTextBlock}">
-        <Setter Property="Foreground" Value="White" />
-        <Setter Property="FontSize" Value="48" />
-        <Setter Property="Margin" Value="30,30,30,50" />
-    </Style>
+
 </ResourceDictionary>

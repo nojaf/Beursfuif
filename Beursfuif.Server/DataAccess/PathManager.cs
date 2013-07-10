@@ -1,0 +1,12 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Beursfuif.Server.DataAccess
+{
+    public static class PathManager
+    {
+        public static string DRINK_XML_PATH = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Beursfuif\\Data\\" + "drinks.xml";
+    }
+}

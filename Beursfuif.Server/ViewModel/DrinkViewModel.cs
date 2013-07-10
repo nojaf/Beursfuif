@@ -11,7 +11,7 @@ namespace Beursfuif.Server.ViewModel
 {
     public class DrinkViewModel:ViewModelBase
     {
-        private IDrinkService _service;
+        private IOManager _ioManager;
 
         /// <summary>
         /// The <see cref="Drinks" /> property's name.
@@ -75,24 +75,20 @@ namespace Beursfuif.Server.ViewModel
             }
         }
 
-        public DrinkViewModel()
+        public DrinkViewModel(IOManager iomanager)
         {
             if (IsInDesignMode)
             {
-                _service = new DummyDrinkService();
-
-                InitService();
+                var dummyService = new DummyDrinkService();
+                Drinks = dummyService.GetDrinksFromXml();
             }
             else
             {
-
+                _ioManager = iomanager;
+                Drinks = iomanager.LoadObservableCollectionFromXml<Drink>(PathManager.DRINK_XML_PATH);
             }
 
         }
 
-        private void InitService()
-        {
-            Drinks = _service.GetDrinksFromXml("");
-        }
     }
 }
