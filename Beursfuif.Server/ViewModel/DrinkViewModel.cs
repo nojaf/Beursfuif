@@ -24,6 +24,9 @@ namespace Beursfuif.Server.ViewModel
         private const string FADE_IN = "FadeIn";
         private const string FADE_OUT = "FadeOut";
         private bool _visible = true;
+        private  ErrorMessage _em = new Beursfuif.Server.Messages.ErrorMessage();
+
+         
 
         /// <summary>
         /// The <see cref="Drinks" /> property's name.
@@ -236,35 +239,46 @@ namespace Beursfuif.Server.ViewModel
         private bool ValidateDrink()
         {
             bool valid = true;
-            ErrorMessage em = new ErrorMessage("Drank niet in orde");
+            _em = new ErrorMessage("Drank niet in orde");
+            _em.Nay = Visibility.Collapsed;
 
             if (string.IsNullOrEmpty(NewEditDrink.Name))
             {
                 valid = false;
-                em.Errors.Add("De naam mag niet leeg zijn!");
+                _em.Errors.Add("De naam mag niet leeg zijn!");
             }
 
             if (NewEditDrink.InitialPrice < NewEditDrink.MiniumPrice)
             {
                 valid = false;
-                em.Errors.Add("De beginprijs mag niet onder de minimumprijs liggen.");
+                _em.Errors.Add("De beginprijs mag niet onder de minimumprijs liggen.");
             }
 
             if (NewEditDrink.MaximumPrice < NewEditDrink.InitialPrice)
             {
                 valid = false;
-                em.Errors.Add("De beginprijs mag niet boven de maximumprijs liggen.");
+                _em.Errors.Add("De beginprijs mag niet boven de maximumprijs liggen.");
             }
 
             if (NewEditDrink.MiniumPrice > NewEditDrink.MaximumPrice)
             {
                 valid = false;
-                em.Errors.Add("De minimumprijs mag niet boven de maximumprijs liggen.");
+                _em.Errors.Add("De minimumprijs mag niet boven de maximumprijs liggen.");
             }
 
-            MessengerInstance.Send<ErrorMessage>(em);
+            if (!valid)
+            {
+                _em.AnswerChanged += ErrorMessage_AnswerChanged;
+                MessengerInstance.Send<ErrorMessage>(_em);
+            }
 
             return valid;
+        }
+
+        void ErrorMessage_AnswerChanged(object sender, AnswerChangedArgs e)
+        {
+            Console.WriteLine("You answered " + e);
+            _em.AnswerChanged -= ErrorMessage_AnswerChanged;
         }
 
         private void SaveDrink()

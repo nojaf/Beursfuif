@@ -21,8 +21,38 @@ namespace Beursfuif.Server.ViewModel
     /// </summary>
     public class MainViewModel : ViewModelBase
     {
- 
 
+        private IStateChange _stateChanger;
+        /// <summary>
+        /// The <see cref="ErrorMessage" /> property's name.
+        /// </summary>
+        public const string ErrorMessagePropertyName = "ErrorMessage";
+
+        private ErrorMessage _errorMessage = null;
+
+        /// <summary>
+        /// Sets and gets the ErrorMessage property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public ErrorMessage ErrorMessage
+        {
+            get
+            {
+                return _errorMessage;
+            }
+
+            set
+            {
+                if (_errorMessage == value)
+                {
+                    return;
+                }
+
+                RaisePropertyChanging(ErrorMessagePropertyName);
+                _errorMessage = value;
+                RaisePropertyChanged(ErrorMessagePropertyName);
+            }
+        }
 
         public RelayCommand<string> MenuClicked
         {
@@ -43,6 +73,13 @@ namespace Beursfuif.Server.ViewModel
             ////    // Code runs "for real"
             ////}
             InitializeViewModel();
+            MessengerInstance.Register<ErrorMessage>(this,HandleErrorMessages);
+        }
+
+        private void HandleErrorMessages(ErrorMessage em)
+        {
+            ErrorMessage = em;
+            _stateChanger.GoToState("FadeIn", true,"messageGrid");
         }
 
         private void InitializeViewModel()
@@ -72,6 +109,11 @@ namespace Beursfuif.Server.ViewModel
                     break;
             }
             Console.WriteLine(menuItem);
+        }
+
+        internal void SetStateChanger(IStateChange mainWindow)
+        {
+            _stateChanger = mainWindow;
         }
     }
 }

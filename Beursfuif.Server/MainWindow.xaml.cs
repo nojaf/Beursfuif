@@ -1,4 +1,5 @@
 ﻿using Beursfuif.Server.UserControls;
+using Beursfuif.Server.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,11 +19,12 @@ namespace Beursfuif.Server
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window 
+    public partial class MainWindow : Window , IStateChange
     {
         public MainWindow()
         {
             InitializeComponent();
+            ((MainViewModel)this.DataContext).SetStateChanger(this);
         }
 
         private void MenuItem_MouseDown(object sender, MouseButtonEventArgs e)
@@ -35,6 +37,12 @@ namespace Beursfuif.Server
                     if (item != newItem) item.GoToNonActive();
                 }
             }
+        }
+
+        public void GoToState(string name, bool transition = true, string who = null)
+        {
+            FrameworkElement item = gdMain.FindName(who) as FrameworkElement;
+            VisualStateManager.GoToState(item, name, transition);
         }
     }
 }

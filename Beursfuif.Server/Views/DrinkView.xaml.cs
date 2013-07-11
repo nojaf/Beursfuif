@@ -26,7 +26,7 @@ namespace Beursfuif.Server.Views
             (this.DataContext as DrinkViewModel).SetStateChanger(this);
         }
 
-        public void GoToState(string name, bool transition = true)
+        public void GoToState(string name, bool transition = true, string who = null)
         {
             VisualStateManager.GoToState(this, name, transition);
         }
