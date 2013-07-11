@@ -56,5 +56,7 @@ namespace Beursfuif.Server.DataAccess
             writer.Serialize(file, objects);
             file.Close();
         }
+
+
     }
 }

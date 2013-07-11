@@ -101,6 +101,7 @@ namespace Beursfuif.BL
                 RaisePropertyChanging(ImageStringPropertyName);
                 _imageString = value;
                 RaisePropertyChanged(ImageStringPropertyName);
+                RaisePropertyChanged("ImageUri");
             }
         }
 
