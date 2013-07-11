@@ -66,7 +66,7 @@
                     <GridViewColumn Header="Verwijderen">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <Button Style="{StaticResource RemoveButtonIcon}" 
+                                <Button Style="{DynamicResource IconButton}" Content=""
                                         CommandParameter="{Binding Id}"
                                         Command="{Binding Path=DataContext.RemoveDrink,ElementName=drinkView}" Height="25" HorizontalAlignment="Center"></Button>
                             </DataTemplate>
@@ -77,9 +77,10 @@
         </ListView>
         <StackPanel HorizontalAlignment="Left" Height="715" VerticalAlignment="Top" Width="211.645" Grid.Column="1">
             	<Button Height="30" Command="{Binding AddNewDrinkCommand}"
-            		Margin="15,5,0,5" Style="{DynamicResource AddButtonIcon}" HorizontalAlignment="Left"/>
-            <StackPanel x:Name="stackPanel" Margin="5,0" Background="#FFEFEFEF" 
-                Visibility="{Binding DataContext.AddOrEditMenuVisible, ElementName=drinkView}" DataContext="{Binding NewEditDrink}">
+            		Margin="15,5,0,5" Style="{DynamicResource IconButton}" HorizontalAlignment="Left" Content="&#xE109;"/>
+            <StackPanel x:Name="stackPanel" Margin="5,0" Background="#FFEFEFEF"
+                        Visibility="{Binding DataContext.AddOrEditMenuVisible, ElementName=drinkView}"
+                 DataContext="{Binding NewEditDrink}">
                 <TextBlock Style="{DynamicResource Label}"><Run Language="nl-be" Text="Naam:"/></TextBlock>
                 <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <TextBlock TextWrapping="Wrap" FontFamily="/Beursfuif.Server;component/Styles/#Coolvetica Rg" Foreground="#FF7E9D87" FontSize="16" Style="{DynamicResource Label}"><Run Language="nl-be" Text="Startprijs:"/></TextBlock>
@@ -93,21 +94,21 @@
                        Height="80" Width="80" Margin="0,5" Source="{Binding ImageUri, TargetNullValue={StaticResource EmptyImage}}"/>
                 <Button Content="Kies een bestand ..." Command="{Binding DataContext.ChooseLocalImageCommand, ElementName=drinkView}" />
                 <TextBlock TextWrapping="Wrap" FontFamily="/Beursfuif.Server;component/Styles/#Coolvetica Rg" Foreground="#FF7E9D87" FontSize="16" Style="{DynamicResource Label}"><Run Language="nl-be" Text="of plaats een link:"/></TextBlock>
-                <Grid Height="35.734">
+                <Grid Height="40">
                 	<Grid.ColumnDefinitions>
-                		<ColumnDefinition Width="119*"/>
-                		<ColumnDefinition Width="83*"/>
+                		<ColumnDefinition Width="100*"/>
+                		<ColumnDefinition Width="90*"/>
                 	</Grid.ColumnDefinitions>
                     <TextBox HorizontalContentAlignment="Right" Text="{Binding DataContext.DownloadUrl, ElementName=drinkView, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                    <Button Content="Download" Width="69.866" HorizontalAlignment="Right" Grid.Column="1" Command="{Binding DataContext.DownloadImageCommand, ElementName=drinkView}" Margin="0,5,5,5"/>
+                    <Button Content="Download" Grid.Column="1" Command="{Binding DataContext.DownloadImageCommand, ElementName=drinkView}" Margin="0,5,5,5"/>
 				</Grid>
                 <Grid Height="22.455" Margin="0,5">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="*"/>
 						<ColumnDefinition Width="*"/>
 					</Grid.ColumnDefinitions>
-                    <Button Style="{DynamicResource SaveButtonIcon}" HorizontalAlignment="Center" Command="{Binding DataContext.SaveDrinkCommand, ElementName=drinkView}"  />
-                    <Button Style="{DynamicResource RemoveButtonIcon}" Grid.Column="1" HorizontalAlignment="Center" Command="{Binding DataContext.CancelCommand, ElementName=drinkView}"  />
+                    <Button Style="{DynamicResource IconButton}" Content="" HorizontalAlignment="Center" Command="{Binding DataContext.SaveDrinkCommand, ElementName=drinkView}"  />
+                    <Button Style="{DynamicResource IconButton}" Content=""  Grid.Column="1" HorizontalAlignment="Center" Command="{Binding DataContext.CancelCommand, ElementName=drinkView}"  />
                 </Grid>
             </StackPanel>
         </StackPanel>

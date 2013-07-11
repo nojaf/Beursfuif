@@ -85,8 +85,8 @@
 				</Viewbox>
                 <ListBox HorizontalAlignment="Left" Height="170" Margin="10,10,0,0" ItemsSource="{Binding Errors}" 
                          VerticalAlignment="Top" Width="380" Grid.Row="1" Grid.ColumnSpan="2" FontFamily="Century Gothic" FontSize="10.667"/>
-				<Button Content="Nay" Tag="False" Click="Button_Click" Visibility="{Binding Nay}" HorizontalAlignment="Center" Height="27.2" Margin="0" Grid.Row="2" VerticalAlignment="Center" Width="82.667"/>
-                <Button Content="Aigth" Tag="True" Click="Button_Click" HorizontalAlignment="Center" Height="27.2" Margin="0" Grid.Row="2" VerticalAlignment="Center" Width="82.667" Grid.Column="1"/>
+				<Button Content="Nay" Tag="False" Click="Button_Click" Visibility="{Binding Nay}" HorizontalAlignment="Center" Height="35" Margin="0" Grid.Row="2" VerticalAlignment="Center" Width="82.667"/>
+                <Button Content="Aigth" Tag="True" Click="Button_Click" HorizontalAlignment="Center" Height="35" Margin="0" Grid.Row="2" VerticalAlignment="Center" Width="82.667" Grid.Column="1"/>
 			</Grid>
 		</Grid>
 	</Grid>

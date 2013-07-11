@@ -54,74 +54,6 @@
 		<GradientStop Color="#CDCDCD" Offset="1"/>
 	</LinearGradientBrush>
 	<SolidColorBrush x:Key="ButtonNormalBorder" Color="#FF707070"/>
-	<Style x:Key="RemoveButtonIcon" TargetType="{x:Type Button}">
-		<Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}"/>
-		<Setter Property="Background" Value="{StaticResource ButtonNormalBackground}"/>
-		<Setter Property="BorderBrush" Value="{StaticResource ButtonNormalBorder}"/>
-		<Setter Property="BorderThickness" Value="1"/>
-		<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
-		<Setter Property="HorizontalContentAlignment" Value="Center"/>
-		<Setter Property="VerticalContentAlignment" Value="Center"/>
-		<Setter Property="Padding" Value="1"/>
-		<Setter Property="Template">
-			<Setter.Value>
-				<ControlTemplate TargetType="{x:Type Button}">
-					<Viewbox x:Name="viewbox" HorizontalAlignment="Left"  VerticalAlignment="Top">
-						<VisualStateManager.VisualStateGroups>
-							<VisualStateGroup x:Name="CommonStates">
-								<VisualState x:Name="Normal"/>
-								<VisualState x:Name="MouseOver">
-									<Storyboard>
-										<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.OpacityMask)" Storyboard.TargetName="viewbox">
-											<DiscreteObjectKeyFrame KeyTime="0">
-												<DiscreteObjectKeyFrame.Value>
-													<SolidColorBrush Color="Black"/>
-												</DiscreteObjectKeyFrame.Value>
-											</DiscreteObjectKeyFrame>
-										</ObjectAnimationUsingKeyFrames>
-										<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="path">
-											<EasingColorKeyFrame KeyTime="0" Value="#FF74DB92"/>
-										</ColorAnimationUsingKeyFrames>
-									</Storyboard>
-								</VisualState>
-								<VisualState x:Name="Pressed">
-									<Storyboard>
-										<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="path">
-											<EasingColorKeyFrame KeyTime="0" Value="#FF09441B"/>
-										</ColorAnimationUsingKeyFrames>
-									</Storyboard>
-								</VisualState>
-								<VisualState x:Name="Disabled">
-									<Storyboard>
-										<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="path">
-											<EasingColorKeyFrame KeyTime="0" Value="#FF939393"/>
-										</ColorAnimationUsingKeyFrames>
-									</Storyboard>
-								</VisualState>
-							</VisualStateGroup>
-						</VisualStateManager.VisualStateGroups>
-						<Path x:Name="path" Data="M25.59375,14.835728 L39,28.241978 L52.429688,14.835728 L58.125,20.507603 L44.695313,33.93729 L58.125,47.366978 L52.429688,53.038853 L39,39.632603 L25.59375,53.038853 L19.921875,47.34354 L33.328125,33.93729 L19.921875,20.53104 z M38.976563,0.49197778 C35.898438,0.49198151 32.9375,0.89041901 30.09375,1.68729 C27.249998,2.484169 24.589842,3.609169 22.113281,5.0622907 C19.636719,6.5154152 17.382813,8.2615089 15.351563,10.300571 C13.320312,12.339634 11.578124,14.59354 10.124999,17.06229 C8.671875,19.53104 7.5468745,22.191198 6.75,25.042759 C5.953125,27.894321 5.5546875,30.851353 5.554688,33.913853 C5.5546875,36.991978 5.953125,39.952915 6.75,42.796665 C7.5468745,45.640415 8.671875,48.296665 10.124999,50.765415 C11.578124,53.234165 13.320312,55.488071 15.351563,57.527134 C17.382813,59.566196 19.636719,61.31229 22.113281,62.765415 C24.589842,64.218536 27.249998,65.343536 30.09375,66.140411 C32.9375,66.937286 35.898438,67.335724 38.976563,67.335724 C42.039063,67.335724 44.992188,66.937286 47.835938,66.140411 C50.679684,65.343536 53.33984,64.218536 55.816406,62.765415 C58.292965,61.31229 60.546871,59.566196 62.578125,57.527134 C64.609375,55.488071 66.351563,53.234165 67.804688,50.765415 C69.257813,48.296665 70.382813,45.636509 71.179688,42.784946 C71.976563,39.933384 72.375,36.976353 72.375,33.913853 C72.375,30.851353 71.976563,27.894321 71.179688,25.042759 C70.382813,22.191198 69.257813,19.53104 67.804688,17.06229 C66.351563,14.59354 64.609375,12.339634 62.578125,10.300571 C60.546871,8.2615089 58.292965,6.5154152 55.816406,5.0622907 C53.33984,3.609169 50.679684,2.484169 47.835938,1.68729 C44.992188,0.89041901 42.039063,0.49198151 38.976563,0.49197778 z M38.976563,-3.4220848 C42.398438,-3.422081 45.699219,-2.9767685 48.878906,-2.0861471 C52.05859,-1.1955185 55.031246,0.062294006 57.796875,1.68729 C60.562496,3.3122902 63.082027,5.2615089 65.355469,7.5349464 C67.628906,9.8083839 69.578125,12.327915 71.203125,15.09354 C72.828125,17.859165 74.085938,20.831823 74.976563,24.011509 C75.867188,27.191196 76.3125,30.491978 76.3125,33.913853 C76.3125,37.351353 75.867188,40.659946 74.976563,43.839634 C74.085938,47.019321 72.828125,49.991978 71.203125,52.757603 C69.578125,55.523228 67.628906,58.042759 65.355469,60.316196 C63.082027,62.589634 60.562496,64.538849 57.796875,66.163849 C55.031246,67.788849 52.05859,69.046661 48.878906,69.937286 C45.699219,70.827911 42.398438,71.273224 38.976563,71.273224 C35.539063,71.273224 32.230469,70.827911 29.050781,69.937286 C25.871092,69.046661 22.898436,67.788849 20.132813,66.163849 C17.367188,64.538849 14.847655,62.589634 12.574219,60.316196 C10.300781,58.042759 8.3554688,55.523228 6.7382817,52.757603 C5.1210938,49.991978 3.8671873,47.019321 2.976563,43.839634 C2.0859375,40.659946 1.6406249,37.351353 1.6406252,33.913853 C1.6406249,30.491978 2.0859375,27.191196 2.976563,24.011509 C3.8671873,20.831823 5.1210938,17.859165 6.7382817,15.09354 C8.3554688,12.327915 10.300781,9.8083839 12.574219,7.5349464 C14.847655,5.2615089 17.367188,3.3122902 20.132813,1.68729 C22.898436,0.062294006 25.871092,-1.1955185 29.050781,-2.0861471 C32.230469,-2.9767685 35.539063,-3.422081 38.976563,-3.4220848 z" Fill="#FF316E42" Height="15.513" RenderTransformOrigin="0.5,0.5" Stretch="Fill" Width="15.508">
-							<Path.RenderTransform>
-								<TransformGroup>
-									<ScaleTransform/>
-									<SkewTransform/>
-									<RotateTransform/>
-									<TranslateTransform/>
-								</TransformGroup>
-							</Path.RenderTransform>
-						</Path>
-					</Viewbox>
-					<ControlTemplate.Triggers>
-						<Trigger Property="IsKeyboardFocused" Value="true"/>
-						<Trigger Property="ToggleButton.IsChecked" Value="true"/>
-						<Trigger Property="IsEnabled" Value="false">
-							<Setter Property="Foreground" Value="#ADADAD"/>
-						</Trigger>
-					</ControlTemplate.Triggers>
-				</ControlTemplate>
-			</Setter.Value>
-		</Setter>
-	</Style>
 
 	<Style TargetType="{x:Type ListViewItem}">
 		<Setter Property="FontFamily" Value="/Beursfuif.Server;component/Styles/#Coolvetica Rg" />
@@ -143,97 +75,11 @@
 			</MultiTrigger>
 		</Style.Triggers>
 	</Style>
-	<Style x:Key="AddButtonIcon" TargetType="{x:Type Button}">
-		<Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}"/>
-		<Setter Property="Background" Value="{StaticResource ButtonNormalBackground}"/>
-		<Setter Property="BorderBrush" Value="{StaticResource ButtonNormalBorder}"/>
-		<Setter Property="BorderThickness" Value="1"/>
-		<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
-		<Setter Property="HorizontalContentAlignment" Value="Center"/>
-		<Setter Property="VerticalContentAlignment" Value="Center"/>
-		<Setter Property="Padding" Value="1"/>
-		<Setter Property="Template">
-			<Setter.Value>
-				<ControlTemplate TargetType="{x:Type Button}">
-					<Viewbox>
-						<VisualStateManager.VisualStateGroups>
-							<VisualStateGroup x:Name="CommonStates">
-								<VisualState x:Name="Normal"/>
-								<VisualState x:Name="MouseOver">
-									<Storyboard>
-										<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="path">
-											<EasingColorKeyFrame KeyTime="0" Value="#FF74DB92"/>
-										</ColorAnimationUsingKeyFrames>
-									</Storyboard>
-								</VisualState>
-								<VisualState x:Name="Pressed">
-									<Storyboard>
-										<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="path">
-											<EasingColorKeyFrame KeyTime="0" Value="#FF09441B"/>
-										</ColorAnimationUsingKeyFrames>
-									</Storyboard>
-								</VisualState>
-								<VisualState x:Name="Disabled">
-									<Storyboard>
-										<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="path">
-											<EasingColorKeyFrame KeyTime="0" Value="#FF939393"/>
-										</ColorAnimationUsingKeyFrames>
-									</Storyboard>
-								</VisualState>
-							</VisualStateGroup>
-						</VisualStateManager.VisualStateGroups>
-						<Path x:Name="path" Data="M42.482014,13.433987 L42.482014,36.637245 L19.307402,36.637245 L19.307402,46.462822 L42.482014,46.462822 L42.482014,69.637436 L52.30759,69.637436 L52.30759,46.462822 L75.510849,46.462822 L75.510849,36.637245 L52.30759,36.637245 L52.30759,13.433987 z M47.63829,-4.1833 C51.820602,-4.1833 55.854916,-3.6390266 59.741226,-2.5504806 C63.627529,-1.4619255 67.260796,0.075408936 70.641029,2.061527 C74.021248,4.0476532 77.100693,6.4300423 79.879356,9.2087021 C82.65802,11.98737 85.040413,15.066814 87.026535,18.447037 C89.012657,21.827267 90.549988,25.460537 91.638542,29.34684 C92.727081,33.233147 93.271362,37.26746 93.271362,41.449772 C93.271362,45.651184 92.727081,49.695045 91.638542,53.581352 C90.549988,57.467659 89.012657,61.100925 87.026535,64.481155 C85.040413,67.861382 82.65802,70.940826 79.879356,73.71949 C77.100693,76.498146 74.021248,78.880539 70.641029,80.866661 C67.260796,82.852783 63.627529,84.390121 59.741226,85.478668 C55.854916,86.567215 51.820602,87.111488 47.63829,87.111488 C43.436878,87.111488 39.393021,86.567215 35.506714,85.478668 C31.620405,84.390121 27.987137,82.852783 24.606911,80.866661 C21.226683,78.880539 18.147238,76.498146 15.368577,73.71949 C12.589914,70.940826 10.212297,67.861382 8.2357235,64.481155 C6.2591496,61.100925 4.7265892,57.467659 3.6380413,53.581352 C2.5494938,49.695045 2.0052197,45.651184 2.005219,41.449772 C2.0052197,37.26746 2.5494938,33.233147 3.6380413,29.34684 C4.7265892,25.460537 6.2591496,21.827267 8.2357235,18.447037 C10.212297,15.066814 12.589914,11.98737 15.368577,9.2087021 C18.147238,6.4300423 21.226683,4.0476532 24.606911,2.061527 C27.987137,0.075408936 31.620405,-1.4619255 35.506714,-2.5504806 C39.393021,-3.6390266 43.436878,-4.1833 47.63829,-4.1833 z" Fill="#FF258541" HorizontalAlignment="Left" Height="77.263" Margin="0" RenderTransformOrigin="0.5,0.5" Stretch="Fill" VerticalAlignment="Top" Width="77.295">
-							<Path.RenderTransform>
-								<TransformGroup>
-									<ScaleTransform/>
-									<SkewTransform/>
-									<RotateTransform/>
-									<TranslateTransform/>
-								</TransformGroup>
-							</Path.RenderTransform>
-							<VisualStateManager.VisualStateGroups>
-								<VisualStateGroup x:Name="CommonStates1">
-									<VisualState x:Name="Normal1"/>
-									<VisualState x:Name="MouseOver1">
-										<Storyboard>
-											<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="path">
-												<EasingColorKeyFrame KeyTime="0" Value="#FF74DB92"/>
-											</ColorAnimationUsingKeyFrames>
-										</Storyboard>
-									</VisualState>
-									<VisualState x:Name="Pressed1">
-										<Storyboard>
-											<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="path">
-												<EasingColorKeyFrame KeyTime="0" Value="#FF09441B"/>
-											</ColorAnimationUsingKeyFrames>
-										</Storyboard>
-									</VisualState>
-									<VisualState x:Name="Disabled1">
-										<Storyboard>
-											<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="path">
-												<EasingColorKeyFrame KeyTime="0" Value="#FF939393"/>
-											</ColorAnimationUsingKeyFrames>
-										</Storyboard>
-									</VisualState>
-								</VisualStateGroup>
-							</VisualStateManager.VisualStateGroups>
-						</Path>
-					</Viewbox>
-					<ControlTemplate.Triggers>
-						<Trigger Property="IsKeyboardFocused" Value="true"/>
-						<Trigger Property="ToggleButton.IsChecked" Value="true"/>
-						<Trigger Property="IsEnabled" Value="false">
-							<Setter Property="Foreground" Value="#ADADAD"/>
-						</Trigger>
-					</ControlTemplate.Triggers>
-				</ControlTemplate>
-			</Setter.Value>
-		</Setter>
-	</Style>
+
 	<Style x:Key="Label" TargetType="{x:Type TextBlock}">
 		<Setter Property="TextWrapping" Value="Wrap"/>
 		<Setter Property="TextTrimming" Value="None"/>
-		<Setter Property="Margin" Value="0,5"/>
+		<Setter Property="Margin" Value="5,5"/>
         <Setter Property="FontFamily" Value="/Beursfuif.Server;component/Styles/#Coolvetica Rg"></Setter>
         <Setter Property="Foreground" Value="#FF7E9D87"></Setter>
         <Setter Property="FontSize" Value="16"></Setter>
@@ -246,44 +92,21 @@
 		<GradientStop Color="#E2E3EA" Offset="0.07"/>
 		<GradientStop Color="#E3E9EF" Offset="1"/>
 	</LinearGradientBrush>
-	<!--<Style BasedOn="{x:Null}" TargetType="{x:Type TextBox}">
-		<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
-		<Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"/>
-		<Setter Property="BorderBrush" Value="{StaticResource TextBoxBorder}"/>
-		<Setter Property="BorderThickness" Value="1"/>
-		<Setter Property="Padding" Value="1"/>
-		<Setter Property="AllowDrop" Value="true"/>
-		<Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-		<Setter Property="Template">
-			<Setter.Value>
-				<ControlTemplate TargetType="{x:Type TextBox}">
-					<Themes:ListBoxChrome x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" RenderMouseOver="{TemplateBinding IsMouseOver}" RenderFocused="{TemplateBinding IsKeyboardFocusWithin}" SnapsToDevicePixels="true" Margin="0,5">
-						<ScrollViewer x:Name="PART_ContentHost" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="Center"/>
-					</Themes:ListBoxChrome>
-					<ControlTemplate.Triggers>
-						<Trigger Property="IsEnabled" Value="false">
-							<Setter Property="Background" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-							<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
-						</Trigger>
-					</ControlTemplate.Triggers>
-				</ControlTemplate>
-			</Setter.Value>
-		</Setter>
-	</Style>-->
+
 
     <Style TargetType="t:ByteUpDown">
         <!-- BorderBrush="#FF7E9D87" BorderThickness="3" FontFamily="Century Gothic" Margin="0,5"  -->
         <Setter Property="BorderBrush" Value="#FF7E9D87"></Setter>
         <Setter Property="BorderThickness" Value="3"></Setter>
         <Setter Property="FontFamily" Value="Century Gothic"></Setter>
-        <Setter Property="Margin" Value="0,5"></Setter>
+        <Setter Property="Margin" Value="5"></Setter>
     </Style>
     <Style TargetType="t:IntegerUpDown">
         <!-- BorderBrush="#FF7E9D87" BorderThickness="3" FontFamily="Century Gothic" Margin="0,5"  -->
         <Setter Property="BorderBrush" Value="#FF7E9D87"></Setter>
         <Setter Property="BorderThickness" Value="3"></Setter>
         <Setter Property="FontFamily" Value="Century Gothic"></Setter>
-        <Setter Property="Margin" Value="0,5"></Setter>
+        <Setter Property="Margin" Value="5"></Setter>
     </Style>
     <Style TargetType="{x:Type Button}">
     	<Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}"/>
@@ -297,7 +120,7 @@
     	<Setter Property="Template">
     		<Setter.Value>
     			<ControlTemplate TargetType="{x:Type Button}">
-    				<StackPanel x:Name="stackPanel" Height="Auto" Width="Auto" Background="#FFAFC1B4" Margin="0,0,0,-0.4">
+    				<StackPanel x:Name="stackPanel" Height="Auto" Width="Auto" Background="#FFAFC1B4" Margin="2,5">
     					<VisualStateManager.VisualStateGroups>
     						<VisualStateGroup x:Name="CommonStates">
     							<VisualState x:Name="Normal"/>
@@ -345,7 +168,18 @@
     		</Setter.Value>
     	</Setter>
     </Style>
-    <Style x:Key="SaveButtonIcon" TargetType="{x:Type Button}">
+    
+    <Style TargetType="TextBox">
+        <Setter Property="TextWrapping" Value="Wrap"></Setter>
+        <Setter Property="BorderBrush" Value="#FF7E9D87"></Setter>
+        <Setter Property="BorderThickness" Value="3"></Setter>
+        <Setter Property="FontFamily" Value="Century Gothic"></Setter>
+        <Setter Property="FontWeight" Value="Light"></Setter>
+        <Setter Property="Foreground" Value="#FF2A3129"></Setter>
+        <Setter Property="Margin" Value="5"></Setter>
+    </Style>
+    <BitmapImage x:Key="EmptyImage" UriSource="/Images/empty-image.jpg" />
+    <Style x:Key="IconButton" TargetType="{x:Type Button}">
     	<Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}"/>
     	<Setter Property="Background" Value="{StaticResource ButtonNormalBackground}"/>
     	<Setter Property="BorderBrush" Value="{StaticResource ButtonNormalBorder}"/>
@@ -357,13 +191,16 @@
     	<Setter Property="Template">
     		<Setter.Value>
     			<ControlTemplate TargetType="{x:Type Button}">
-    				<Viewbox HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top">
+    				<Viewbox HorizontalAlignment="Left" VerticalAlignment="Top">
     					<VisualStateManager.VisualStateGroups>
     						<VisualStateGroup x:Name="CommonStates">
     							<VisualState x:Name="Normal"/>
     							<VisualState x:Name="MouseOver">
     								<Storyboard>
     									<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="path">
+    										<EasingColorKeyFrame KeyTime="0" Value="#FF74DB92"/>
+    									</ColorAnimationUsingKeyFrames>
+    									<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" Storyboard.TargetName="textBlock">
     										<EasingColorKeyFrame KeyTime="0" Value="#FF74DB92"/>
     									</ColorAnimationUsingKeyFrames>
     								</Storyboard>
@@ -373,6 +210,9 @@
     									<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="path">
     										<EasingColorKeyFrame KeyTime="0" Value="#FF09441B"/>
     									</ColorAnimationUsingKeyFrames>
+    									<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" Storyboard.TargetName="textBlock">
+    										<EasingColorKeyFrame KeyTime="0" Value="#FF09441B"/>
+    									</ColorAnimationUsingKeyFrames>
     								</Storyboard>
     							</VisualState>
     							<VisualState x:Name="Disabled">
@@ -380,39 +220,15 @@
     									<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="path">
     										<EasingColorKeyFrame KeyTime="0" Value="#FF939393"/>
     									</ColorAnimationUsingKeyFrames>
+    									<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" Storyboard.TargetName="textBlock">
+    										<EasingColorKeyFrame KeyTime="0" Value="#FF939393"/>
+    									</ColorAnimationUsingKeyFrames>
     								</Storyboard>
     							</VisualState>
     						</VisualStateGroup>
     					</VisualStateManager.VisualStateGroups>
-    					<Grid HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="20">
-    						<VisualStateManager.VisualStateGroups>
-    							<VisualStateGroup x:Name="CommonStates1">
-    								<VisualState x:Name="Normal1"/>
-    								<VisualState x:Name="MouseOver1">
-    									<Storyboard>
-    										<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="path">
-    											<EasingColorKeyFrame KeyTime="0" Value="#FF74DB92"/>
-    										</ColorAnimationUsingKeyFrames>
-    									</Storyboard>
-    								</VisualState>
-    								<VisualState x:Name="Pressed1">
-    									<Storyboard>
-    										<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="path">
-    											<EasingColorKeyFrame KeyTime="0" Value="#FF09441B"/>
-    										</ColorAnimationUsingKeyFrames>
-    									</Storyboard>
-    								</VisualState>
-    								<VisualState x:Name="Disabled1">
-    									<Storyboard>
-    										<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="path">
-    											<EasingColorKeyFrame KeyTime="0" Value="#FF939393"/>
-    										</ColorAnimationUsingKeyFrames>
-    									</Storyboard>
-    								</VisualState>
-    							</VisualStateGroup>
-    						</VisualStateManager.VisualStateGroups>
-    						<Rectangle Fill="#00000000" HorizontalAlignment="Left" Height="20" Margin="-0.009,0,0,0" VerticalAlignment="Top" Width="20"/>
-    						<Path x:Name="path" Fill="#FF316E42" Height="Auto" Width="Auto" Data="M43.945455,62.003399 L49.959089,62.003399 49.959089,68 43.945455,68 z M38.974999,36.01813 C38.674998,36.018132 38.426135,36.116716 38.228408,36.313881 38.030681,36.51105 37.931818,36.75241 37.931818,37.03796 L37.931818,44.972238 C37.931818,45.257791 38.030681,45.49915 38.228408,45.696318 38.426135,45.893484 38.674998,45.992068 38.974999,45.992069 L60.94318,45.992069 C61.243177,45.992068 61.495451,45.893484 61.699999,45.696318 61.904545,45.49915 62.006817,45.257791 62.006817,44.972238 L62.006817,37.03796 C62.006817,36.75241 61.904545,36.51105 61.699999,36.313881 61.495451,36.116716 61.243177,36.018132 60.94318,36.01813 z M34.025,31.999999 L65.93409,31.999999 C66.220451,32.000002 66.486362,32.050994 66.731815,32.152975 66.977272,32.25496 67.195454,32.397736 67.386364,32.581303 67.577271,32.764875 67.727272,32.979039 67.836361,33.223796 67.945454,33.468557 68,33.733713 68,34.019262 L68,65.960339 C68,66.245892 67.945454,66.514446 67.836361,66.766006 67.727272,67.017563 67.577271,67.235126 67.386364,67.418697 67.195454,67.602268 66.977272,67.745041 66.731815,67.847027 66.486362,67.949009 66.220451,68 65.93409,68 L60.002272,68 60.002272,57.067423 C60.00227,56.768272 59.896587,56.516714 59.685226,56.312748 59.47386,56.108782 59.231815,56.0068 58.959089,56.0068 L40.979545,56.0068 C40.679543,56.0068 40.427271,56.108782 40.222727,56.312748 40.01818,56.516714 39.915907,56.768272 39.915909,57.067423 L39.915909,68 34.025,68 C33.738636,68 33.472726,67.949009 33.227273,67.847027 32.981817,67.745041 32.767045,67.602268 32.582954,67.418697 32.398863,67.235126 32.255681,67.017563 32.153408,66.766006 32.051135,66.514446 31.999999,66.245892 31.999999,65.960339 L31.999999,34.019262 C31.999999,33.448161 32.194317,32.968841 32.582954,32.581303 32.97159,32.19377 33.452272,32.000002 34.025,31.999999 z M49.977499,7.1524334 C46.043673,7.1524334 42.251398,7.6665173 38.600688,8.6946774 34.949977,9.7228432 31.537681,11.16823 28.363796,13.030842 25.189912,14.893459 22.299142,17.12859 19.691493,19.736254 17.083841,22.343911 14.848711,25.234688 12.986103,28.408581 11.123495,31.582479 9.6781101,34.994786 8.64995,38.645504 7.6217918,42.296229 7.1077118,46.088514 7.1077118,50.02235 7.1077118,53.956188 7.6217918,57.748472 8.64995,61.399191 9.6781101,65.049923 11.123495,68.454777&#xA;12.986103,71.61377 14.848711,74.772755 17.083841,77.663536 19.691493,80.286098 22.299142,82.908657 25.189912,85.143787 28.363796,86.991505 31.537681,88.839214 34.949977,90.277157 38.600688,91.305313 42.251398,92.333485 46.043673,92.847561 49.977499,92.847561 53.911327,92.847561 57.703594,92.333485 61.354311,91.305313 65.005024,90.277157 68.41732,88.839214 71.591202,86.991505 74.765087,85.143787 77.655853,82.908657 80.263512,80.286098 82.871159,77.663536&#xA;85.106281,74.772755 86.968899,71.61377 88.831497,68.454777 90.269428,65.049923 91.282696,61.399191 92.295952,57.748472 92.802582,53.956188 92.802589,50.02235 92.802582,46.088514 92.295952,42.296229 91.282696,38.645504 90.269428,34.994786 88.831497,31.582479 86.968899,28.408581 85.106281,25.234688 82.871159,22.343911 80.263512,19.736254 77.655853,17.12859 74.765087,14.893459 71.591202,13.030842 68.41732,11.16823 65.005024,9.7228432 61.354311,8.6946774&#xA;57.703594,7.6665173 53.911327,7.1524334 49.977499,7.1524334 z M49.977499,0 C54.566965,7.6293945E-06 58.992521,0.59604263 63.254171,1.7881107 67.515816,2.9801903 71.494347,4.66399 75.189758,6.8395176 78.885181,9.0150509 82.252769,11.622709 85.292549,14.662497 88.332317,17.702283 90.939976,21.077336 93.115501,24.787662 95.291031,28.497986 96.974823,32.48398 98.166893,36.745639 99.358963,41.007298 99.955002,45.432874 99.955002,50.02235 99.955002,54.61183 99.358963,59.029949 98.166893,63.276707 96.974823,67.523464 95.291031,71.502003&#xA;93.115501,75.212337 90.939976,78.922661 88.332317,82.297718 85.292549,85.337505 82.252769,88.377289 78.885181,90.984951 75.189758,93.16048 71.494347,95.33601 67.515816,97.019814 63.254171,98.211891 58.992521,99.403969 54.566965,100 49.977499,100 45.388035,100 40.962475,99.403969 36.700829,98.211891 32.439179,97.019814 28.46065,95.33601 24.765237,93.16048 21.069822,90.984951 17.702227,88.377289 14.662451,85.337505 11.622673,82.297718&#xA;9.0150223,78.922661 6.8394966,75.212337 4.663969,71.502003 2.9801712,67.523464 1.7881031,63.276707 0.596035,59.029949 0,54.61183 0,50.02235 0,45.432874 0.596035,41.007298 1.7881031,36.745639 2.9801712,32.48398 4.663969,28.497986 6.8394966,24.787662 9.0150223,21.077336 11.622673,17.702283 14.662451,14.662497 17.702227,11.622709 21.069822,9.0150509 24.765237,6.8395176 28.46065,4.66399 32.439179,2.9801903 36.700829,1.7881107&#xA;40.962475,0.59604263 45.388035,7.6293945E-06 49.977499,0 z" Margin="0,0,0.009,0" RenderTransformOrigin="0.500225092132064,0.5" Stretch="Fill">
+    					<Grid Background="#00A92323">
+    						<Path x:Name="path" Data="M42.21875,15.782082 C39.385414,15.782082 36.65625,16.151875 34.03125,16.891457 C31.406248,17.631042 28.953123,18.672707 26.671875,20.016457 C24.390625,21.360207 22.3125,22.974792 20.4375,24.860207 C18.5625,26.745625 16.958332,28.834167 15.625001,31.125832 C14.291666,33.4175 13.255208,35.875832 12.515626,38.500832 C11.776041,41.125832 11.40625,43.844582 11.40625,46.657082 C11.40625,49.490417 11.776041,52.214375 12.515626,54.828957 C13.255208,57.443542 14.291666,59.896667 15.625001,62.188332 C16.958332,64.479996 18.5625,66.563332 20.4375,68.438332 C22.3125,70.313332 24.390625,71.917496 26.671875,73.250832 C28.953123,74.584167 31.406248,75.620621 34.03125,76.360207 C36.65625,77.099792 39.385414,77.469582 42.21875,77.469582 C45.03125,77.469582 47.75,77.099792 50.375,76.360207 C53,75.620621 55.458332,74.578957 57.75,73.235207 C60.041664,71.891457 62.130207,70.282082 64.015625,68.407082 C65.901039,66.532082 67.515625,64.453957 68.859375,62.172707 C70.203125,59.891457 71.244789,57.438332 71.984375,54.813332 C72.723953,52.188332 73.09375,49.469582 73.09375,46.657082 C73.09375,43.844582 72.71875,41.125832 71.96875,38.500832 C71.21875,35.875832 70.171875,33.4175 68.828125,31.125832 C67.484375,28.834167 65.864578,26.745625 63.96875,24.860207 C62.072914,22.974792 59.984371,21.360207 57.703125,20.016457 C55.421871,18.672707 52.973953,17.631042 50.359375,16.891457 C47.744789,16.151875 45.03125,15.782082 42.21875,15.782082 z M42.25,11.094582 C45.479164,11.094582 48.598957,11.526875 51.609375,12.391457 C54.619789,13.256042 57.442707,14.469582 60.078125,16.032082 C62.713539,17.594582 65.119789,19.464375 67.296875,21.641457 C69.473953,23.818542 71.34375,26.224792 72.90625,28.860207 C74.46875,31.495625 75.677078,34.318542 76.53125,37.328957 C77.385414,40.339375 77.8125,43.459167 77.8125,46.688332 C77.8125,49.938332 77.385414,53.068542 76.53125,56.078957 C75.677078,59.089375 74.46875,61.912289 72.90625,64.547707 C71.34375,67.183121 69.473953,69.584167 67.296875,71.750832 C65.119789,73.917496 62.713539,75.771667 60.078125,77.313332 C57.442707,78.854996 54.619789,80.052917 51.609375,80.907082 C48.598957,81.761246 45.479164,82.188332 42.25,82.188332 C39.020832,82.188332 35.901039,81.761246 32.890625,80.907082 C29.880207,80.052917 27.057291,78.844582 24.421875,77.282082 C21.786457,75.719582 19.385416,73.854996 17.21875,71.688332 C15.052082,69.521667 13.187499,67.120621 11.625,64.485207 C10.0625,61.849792 8.854166,59.032082 7.9999995,56.032082 C7.145833,53.032082 6.71875,49.9175 6.71875,46.688332 C6.71875,43.438332 7.145833,40.302917 7.9999995,37.282082 C8.854166,34.26125 10.0625,31.433125 11.625,28.797707 C13.187499,26.162292 15.052082,23.756042 17.21875,21.578957 C19.385416,19.401875 21.786457,17.537292 24.421875,15.985207 C27.057291,14.433128 29.880207,13.230003 32.890625,12.375831 C35.901039,11.521667 39.020832,11.094582 42.25,11.094582 z" Fill="#FF316E42" HorizontalAlignment="Center" Margin="0" RenderTransformOrigin="0.5,0.5" Stretch="Fill" VerticalAlignment="Center">
     							<Path.RenderTransform>
     								<TransformGroup>
     									<ScaleTransform/>
@@ -422,6 +238,7 @@
     								</TransformGroup>
     							</Path.RenderTransform>
     						</Path>
+    						<TextBlock x:Name="textBlock" HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap" VerticalAlignment="Center" FontFamily="/Beursfuif.Server;component/Fonts/#Segoe UI Symbol" Text="{TemplateBinding Content}" Foreground="#FF316E42" FontSize="40" TextAlignment="Center"/>
     					</Grid>
     				</Viewbox>
     				<ControlTemplate.Triggers>
@@ -435,14 +252,4 @@
     		</Setter.Value>
     	</Setter>
     </Style>
-    
-    <Style TargetType="TextBox">
-        <Setter Property="TextWrapping" Value="Wrap"></Setter>
-        <Setter Property="BorderBrush" Value="#FF7E9D87"></Setter>
-        <Setter Property="BorderThickness" Value="3"></Setter>
-        <Setter Property="FontFamily" Value="Century Gothic"></Setter>
-        <Setter Property="FontWeight" Value="Light"></Setter>
-        <Setter Property="Foreground" Value="#FF2A3129"></Setter>
-    </Style>
-    <BitmapImage x:Key="EmptyImage" UriSource="/Images/empty-image.jpg" />
 </ResourceDictionary>

@@ -105,7 +105,7 @@
       <DependentUpon>MessageGridControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Messages\ChangeVisibilityMessage.cs" />
-    <Compile Include="Messages\ErrorMessage.cs" />
+    <Compile Include="Messages\AlertMessage.cs" />
     <Compile Include="UserControls\UCMenuItem.xaml.cs">
       <DependentUpon>UCMenuItem.xaml</DependentUpon>
     </Compile>
@@ -178,6 +178,15 @@
     </BlendEmbeddedFont>
   </ItemGroup>
   <ItemGroup>
+    <BlendEmbeddedFont Include="Fonts\seguisym.ttf">
+      <IsSystemFont>True</IsSystemFont>
+      <All>True</All>
+      <AutoFill>True</AutoFill>
+      <Uppercase>True</Uppercase>
+      <Lowercase>True</Lowercase>
+      <Numbers>True</Numbers>
+      <Punctuation>True</Punctuation>
+    </BlendEmbeddedFont>
     <Resource Include="MVVMLight.Nuget.Readme.txt" />
   </ItemGroup>
   <ItemGroup>

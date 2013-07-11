@@ -24,7 +24,7 @@ namespace Beursfuif.Server.ViewModel
         private const string FADE_IN = "FadeIn";
         private const string FADE_OUT = "FadeOut";
         private bool _visible = true;
-        private  ErrorMessage _em = new Beursfuif.Server.Messages.ErrorMessage();
+        private  AlertMessage _em = new Beursfuif.Server.Messages.AlertMessage();
 
          
 
@@ -239,7 +239,7 @@ namespace Beursfuif.Server.ViewModel
         private bool ValidateDrink()
         {
             bool valid = true;
-            _em = new ErrorMessage("Drank niet in orde");
+            _em = new AlertMessage("Drank niet in orde");
             _em.Nay = Visibility.Collapsed;
 
             if (string.IsNullOrEmpty(NewEditDrink.Name))
@@ -269,7 +269,7 @@ namespace Beursfuif.Server.ViewModel
             if (!valid)
             {
                 _em.AnswerChanged += ErrorMessage_AnswerChanged;
-                MessengerInstance.Send<ErrorMessage>(_em);
+                MessengerInstance.Send<AlertMessage>(_em);
             }
 
             return valid;
