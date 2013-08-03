@@ -1,0 +1,36 @@
+﻿<UserControl
+            x:Class="Beursfuif.Server.Views.IntervalView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d" 
+            d:DesignHeight="715" MinHeight="715" d:DesignWidth="751" MinWidth="751"
+             DataContext="{Binding Interval,Source={StaticResource Locator}}"
+                         xmlns:interact="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:mvvm= "clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WPF4"
+             x:Name="intervalView">
+    <Grid Background="White">
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="HideShow">
+                <VisualState x:Name="FadeIn">
+                    <Storyboard>
+                        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="intervalView">
+                            <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                            <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="1"/>
+                        </DoubleAnimationUsingKeyFrames>
+                    </Storyboard>
+                </VisualState>
+                <VisualState x:Name="FadeOut">
+                    <Storyboard>
+                        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="intervalView">
+                            <EasingDoubleKeyFrame KeyTime="0" Value="1"/>
+                            <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0"/>
+                        </DoubleAnimationUsingKeyFrames>
+                    </Storyboard>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        <TextBlock Text="Van" Foreground="Green" FontSize="90"></TextBlock>
+    </Grid>
+</UserControl>

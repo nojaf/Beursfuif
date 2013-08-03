@@ -7,7 +7,7 @@ using System.Windows;
 
 namespace Beursfuif.Server.Messages
 {
-    public class ErrorMessage
+    public class DialogMessage
     {
         public string Title { get; set; }
         public List<string> Errors { get; set; }
@@ -31,12 +31,12 @@ namespace Beursfuif.Server.Messages
         }
 
 
-        public ErrorMessage()
+        public DialogMessage()
         {
 
         }
 
-        public ErrorMessage(string title)
+        public DialogMessage(string title)
         {
             Title = title;
             Errors = new List<string>();

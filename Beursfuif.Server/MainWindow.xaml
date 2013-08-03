@@ -84,7 +84,9 @@
 				</interact:Interaction.Triggers>
 			</uc:UCMenuItem>
 		</StackPanel>
-		<view:DrinkView Grid.Column="2" Grid.Row="1" />
+        <view:IntervalView Grid.Column="2" Grid.Row="1" />
+        <view:DrinkView Grid.Column="2" Grid.Row="1" />
+   
         <uc:MessageGridControl DataContext="{Binding ErrorMessage}" Grid.ColumnSpan="3" Margin="0" Grid.RowSpan="2" x:Name="messageGrid"/>
 	</Grid>
 </Window>

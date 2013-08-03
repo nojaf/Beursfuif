@@ -30,7 +30,7 @@ namespace Beursfuif.Server.UserControls
             Button btn = sender as Button;
             if (btn != null)
             {
-                (this.DataContext as AlertMessage).Answer = Convert.ToBoolean(btn.Tag);
+                (this.DataContext as DialogMessage).Answer = Convert.ToBoolean(btn.Tag);
                 VisualStateManager.GoToState(this, "FadeOut", true);
             }
         }

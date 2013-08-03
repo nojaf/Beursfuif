@@ -15,16 +15,11 @@ using System.Windows;
 
 namespace Beursfuif.Server.ViewModel
 {
-    public class DrinkViewModel : ViewModelBase
+    public class DrinkViewModel : BeursfuifViewModelBase
     {
         #region fields and properties
         private IOManager _ioManager;
-        private IStateChange _stateChanger;
-
-        private const string FADE_IN = "FadeIn";
-        private const string FADE_OUT = "FadeOut";
-        private bool _visible = true;
-        private  AlertMessage _em = new Beursfuif.Server.Messages.AlertMessage();
+        private  DialogMessage _dm = new Beursfuif.Server.Messages.DialogMessage();
 
          
 
@@ -178,6 +173,37 @@ namespace Beursfuif.Server.ViewModel
             }
         }
 
+        /// <summary>
+        /// The <see cref="Downloading" /> property's name.
+        /// </summary>
+        public const string DownloadingPropertyName = "Downloading";
+
+        private bool _downloading = false;
+
+        /// <summary>
+        /// Sets and gets the Downloading property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool Downloading
+        {
+            get
+            {
+                return _downloading;
+            }
+
+            set
+            {
+                if (_downloading == value)
+                {
+                    return;
+                }
+
+                RaisePropertyChanging(DownloadingPropertyName);
+                _downloading = value;
+                RaisePropertyChanged(DownloadingPropertyName);
+            }
+        }
+
         public RelayCommand DownloadImageCommand { get; set; }
 
         public RelayCommand CancelCommand { get; set; }
@@ -201,9 +227,8 @@ namespace Beursfuif.Server.ViewModel
                 CleanUpImages();
             }
 
-            InitMessages();
-            InitCommands();
 
+            InitCommands();
         }
 
         private void CleanUpImages()
@@ -230,7 +255,7 @@ namespace Beursfuif.Server.ViewModel
             RemoveDrink = new RelayCommand<int>(DeleteDrink, (int id) => { return (!BeursfuifBusy && Drinks.Any(x => x.Id == id)); });
             AddNewDrinkCommand = new RelayCommand(delegate() { NewEditDrink = new Drink() { Id = Drinks.Max(x => x.Id) + 1 }; },
                 () => { return (NewEditDrink == null); });
-            DownloadImageCommand = new RelayCommand(DownloadImage, () => { return !string.IsNullOrEmpty(DownloadUrl); });
+            DownloadImageCommand = new RelayCommand(DownloadImage, () => { return (!string.IsNullOrEmpty(DownloadUrl) && !Downloading); });
             CancelCommand = new RelayCommand(ResetValues);
             ChooseLocalImageCommand = new RelayCommand(ChooseLocalImage);
             SaveDrinkCommand = new RelayCommand(SaveDrink);
@@ -239,37 +264,37 @@ namespace Beursfuif.Server.ViewModel
         private bool ValidateDrink()
         {
             bool valid = true;
-            _em = new AlertMessage("Drank niet in orde");
-            _em.Nay = Visibility.Collapsed;
+            _dm = new DialogMessage("Drank niet in orde");
+            _dm.Nay = Visibility.Collapsed;
 
             if (string.IsNullOrEmpty(NewEditDrink.Name))
             {
                 valid = false;
-                _em.Errors.Add("De naam mag niet leeg zijn!");
+                _dm.Errors.Add("De naam mag niet leeg zijn!");
             }
 
             if (NewEditDrink.InitialPrice < NewEditDrink.MiniumPrice)
             {
                 valid = false;
-                _em.Errors.Add("De beginprijs mag niet onder de minimumprijs liggen.");
+                _dm.Errors.Add("De beginprijs mag niet onder de minimumprijs liggen.");
             }
 
             if (NewEditDrink.MaximumPrice < NewEditDrink.InitialPrice)
             {
                 valid = false;
-                _em.Errors.Add("De beginprijs mag niet boven de maximumprijs liggen.");
+                _dm.Errors.Add("De beginprijs mag niet boven de maximumprijs liggen.");
             }
 
             if (NewEditDrink.MiniumPrice > NewEditDrink.MaximumPrice)
             {
                 valid = false;
-                _em.Errors.Add("De minimumprijs mag niet boven de maximumprijs liggen.");
+                _dm.Errors.Add("De minimumprijs mag niet boven de maximumprijs liggen.");
             }
 
             if (!valid)
             {
-                _em.AnswerChanged += ErrorMessage_AnswerChanged;
-                MessengerInstance.Send<AlertMessage>(_em);
+                _dm.AnswerChanged += ErrorMessage_AnswerChanged;
+                MessengerInstance.Send<DialogMessage>(_dm);
             }
 
             return valid;
@@ -278,7 +303,7 @@ namespace Beursfuif.Server.ViewModel
         void ErrorMessage_AnswerChanged(object sender, AnswerChangedArgs e)
         {
             Console.WriteLine("You answered " + e);
-            _em.AnswerChanged -= ErrorMessage_AnswerChanged;
+            _dm.AnswerChanged -= ErrorMessage_AnswerChanged;
         }
 
         private void SaveDrink()
@@ -341,9 +366,11 @@ namespace Beursfuif.Server.ViewModel
 
         private void DownloadImage()
         {
+            Downloading = true;
             ThreadPool.QueueUserWorkItem(new WaitCallback((object target) => {
                 try
                 {
+                    
                     string dateStamp = DateTime.Now.ToString("dd-MM-yyyy-hhmmss");
                     string originalPath = PathManager.ASSETS_PATH + dateStamp + "-original" + Path.GetExtension(this.DownloadUrl);
                     string destinationPath = PathManager.ASSETS_PATH + dateStamp + Path.GetExtension(this.DownloadUrl);
@@ -357,7 +384,7 @@ namespace Beursfuif.Server.ViewModel
                     MessageBox.Show("Geen geldige url of geen internettoegang");
                 }
             }));
-
+            Downloading = false;
         }
 
         private void ResizeImage(string originalPath, string destinationPath)
@@ -385,30 +412,6 @@ namespace Beursfuif.Server.ViewModel
             }
         }
 
-        private void InitMessages()
-        {
-            MessengerInstance.Register<ChangeVisibilityMessage>(this, ChangeState);
-        }
-
-        private void ChangeState(ChangeVisibilityMessage message)
-        {
-            if (!_visible && message.ClassName == typeof(DrinkViewModel).Name)
-            {
-                _stateChanger.GoToState(FADE_IN);
-                _visible = true;
-            }
-            else if (_visible && message.ClassName != typeof(DrinkViewModel).Name)
-            {
-                _stateChanger.GoToState(FADE_OUT);
-                _visible = false;
-            }
-
-        }
-
-        public void SetStateChanger(IStateChange drinkView)
-        {
-            _stateChanger = drinkView;
-        }
 
         private void DownloadRemoteImageFile(string uri, string path)
         {

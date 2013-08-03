@@ -28,13 +28,13 @@ namespace Beursfuif.Server.ViewModel
         /// </summary>
         public const string ErrorMessagePropertyName = "ErrorMessage";
 
-        private AlertMessage _errorMessage = null;
+        private DialogMessage _errorMessage = null;
 
         /// <summary>
         /// Sets and gets the ErrorMessage property.
         /// Changes to that property's value raise the PropertyChanged event. 
         /// </summary>
-        public AlertMessage ErrorMessage
+        public DialogMessage ErrorMessage
         {
             get
             {
@@ -73,10 +73,10 @@ namespace Beursfuif.Server.ViewModel
             ////    // Code runs "for real"
             ////}
             InitializeViewModel();
-            MessengerInstance.Register<AlertMessage>(this,HandleErrorMessages);
+            MessengerInstance.Register<DialogMessage>(this,HandleErrorMessages);
         }
 
-        private void HandleErrorMessages(AlertMessage em)
+        private void HandleErrorMessages(DialogMessage em)
         {
             ErrorMessage = em;
             _stateChanger.GoToState("FadeIn", true,"messageGrid");
