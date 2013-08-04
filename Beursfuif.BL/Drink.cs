@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace Beursfuif.BL
 {
     [Serializable]
-    public class Drink:ObservableObject
+    public class Drink:BFObservableObject
     {
         #region properties
         /// <summary>

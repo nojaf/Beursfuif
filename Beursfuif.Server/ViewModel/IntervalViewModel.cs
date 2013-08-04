@@ -29,6 +29,37 @@ namespace Beursfuif.Server.ViewModel
         }
 
         /// <summary>
+        /// The <see cref="ChosenInterval" /> property's name.
+        /// </summary>
+        public const string ChosenIntervalPropertyName = "ChosenInterval";
+
+        private TimeSpan _chosenInterval = TimeSpan.Zero;
+
+        /// <summary>
+        /// Sets and gets the ChosenInterval property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public TimeSpan ChosenInterval
+        {
+            get
+            {
+                return _chosenInterval;
+            }
+
+            set
+            {
+                if (_chosenInterval == value)
+                {
+                    return;
+                }
+
+                RaisePropertyChanging(ChosenIntervalPropertyName);
+                _chosenInterval = value;
+                RaisePropertyChanged(ChosenIntervalPropertyName);
+            }
+        }
+
+        /// <summary>
         /// The <see cref="BeginTime" /> property's name.
         /// </summary>
         public const string BeginTimePropertyName = "BeginTime";
@@ -159,6 +190,15 @@ namespace Beursfuif.Server.ViewModel
                 };
             }
 
+            Intervals = _iomanager.LoadArrayFromBinary<Interval>(PathManager.INTERVAL_BINARY_PATH);
+            if (Intervals != null)
+            {
+                BeginTime = Intervals[0].StartTime;
+                EndTime = Intervals[Intervals.Length - 1].EndTime;
+                ChosenInterval = IntervalChoices.FirstOrDefault(x => x.TotalMinutes == Intervals[0].Duration.TotalMinutes);
+            }
+
+
             InitCommands();
         }
 
@@ -170,6 +210,43 @@ namespace Beursfuif.Server.ViewModel
         private void GenerateIntervals()
         {
             //Validate if the hours and interval match
+            TimeSpan period = EndTime.Subtract(BeginTime);
+            int numberOfIntervals = 0;
+            if(int.TryParse(""+(period.TotalMinutes / ChosenInterval.TotalMinutes),out numberOfIntervals))
+            {
+                CreateIntervals(numberOfIntervals);
+                SaveIntervals();
+                return;
+            }
+
+            //else throw a message that the settings aren't correct
+            Console.WriteLine("Error");
+            _dm = new DialogMessage("Het is onmogelijk om intervallen aan te maken.");
+            _dm.Nay = System.Windows.Visibility.Collapsed;
+            _dm.Errors.Add("Het is onmogelijk om een geheel aantal intervallen van \n\r"
+                + ChosenInterval.TotalMinutes + " min aan te maken tussen "+
+                BeginTime.ToShortTimeString() + " en " + EndTime.ToShortTimeString() + ".");
+            MessengerInstance.Send<DialogMessage>(_dm);
+        }
+
+
+        private void CreateIntervals(int numberOfIntervals)
+        {
+            Intervals = new Interval[numberOfIntervals];
+            for (int i = 0; i < numberOfIntervals; i++)
+            {
+                Intervals[i] = new Interval()
+                {
+                    StartTime = BeginTime.AddMinutes(i * ChosenInterval.TotalMinutes),
+                    EndTime = BeginTime.AddMinutes((i+1) * ChosenInterval.TotalMinutes),
+                    Id = i + 1
+                };
+            }
+        }
+
+        private void SaveIntervals()
+        {
+            _iomanager.SaveArrayToBinary<Interval>(PathManager.INTERVAL_BINARY_PATH, Intervals);
         }
 
     }

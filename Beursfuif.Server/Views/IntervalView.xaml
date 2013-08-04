@@ -34,12 +34,12 @@
         </VisualStateManager.VisualStateGroups>
         <StackPanel Orientation="Horizontal" Height="50" VerticalAlignment="Top">
             <TextBlock Text="Van" Style="{StaticResource LargeText}"></TextBlock>
-            <t:DateTimePicker Width="300"
+            <t:DateTimePicker Width="280"
                               Value="{Binding BeginTime}"
                               IsEnabled="True"></t:DateTimePicker>
             <TextBlock Text="tot"
                        Style="{StaticResource LargeText}"></TextBlock>
-            <t:DateTimePicker Width="300"
+            <t:DateTimePicker Width="280"
                           Value="{Binding EndTime}"
                               IsEnabled="True"></t:DateTimePicker>
         </StackPanel>
@@ -48,7 +48,7 @@
                     VerticalAlignment="Top">
             <TextBlock Text="Duur"
                        Style="{StaticResource LargeText}"></TextBlock>
-            <ComboBox SelectedIndex="0"
+            <ComboBox SelectedValue="{Binding ChosenInterval,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                       Margin="5"
                       MinWidth="110"
                       ItemsSource="{Binding IntervalChoices}">
@@ -74,10 +74,10 @@
                   ItemsSource="{Binding Intervals}">
             <ListView.View>
             <GridView>
-                <GridViewColumn Header="Id" DisplayMemberBinding="{Binding Id}"></GridViewColumn>
+                <GridViewColumn Header="Id" DisplayMemberBinding="{Binding Id}" Width="100"></GridViewColumn>
                 <GridViewColumn Header="Van"
-                                DisplayMemberBinding="{Binding StartTime, StringFormat=HH:mm}"></GridViewColumn>
-                <GridViewColumn Header="Tot" DisplayMemberBinding="{Binding EndTime, StringFormat=HH:mm}"></GridViewColumn>
+                                DisplayMemberBinding="{Binding StartTime, StringFormat=HH:mm}" Width="100"></GridViewColumn>
+                <GridViewColumn Header="Tot" DisplayMemberBinding="{Binding EndTime, StringFormat=HH:mm}" Width="100"></GridViewColumn>
             </GridView>
             </ListView.View>
         </ListView>

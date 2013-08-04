@@ -20,7 +20,42 @@ namespace Beursfuif.Server.ViewModel
         protected const string FADE_OUT = "FadeOut";
         protected bool _visible = true;
 
-        public bool BeursfuifBusy { get; set; }
+        protected DialogMessage _dm = new Beursfuif.Server.Messages.DialogMessage();
+
+        /// <summary>
+        /// The <see cref="BeursfuifBusy" /> property's name.
+        /// </summary>
+        public const string BeursfuifBusyPropertyName = "BeursfuifBusy";
+
+        private bool _beursfuifBusy = false;
+
+        /// <summary>
+        /// Sets and gets the BeursfuifBusy property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool BeursfuifBusy
+        {
+            get
+            {
+                return _beursfuifBusy;
+            }
+
+            set
+            {
+                if (_beursfuifBusy == value)
+                {
+                    return;
+                }
+
+                RaisePropertyChanging(BeursfuifBusyPropertyName);
+                RaisePropertyChanging("NotBeursfuifBusy");
+                _beursfuifBusy = value;
+                RaisePropertyChanged(BeursfuifBusyPropertyName);
+                RaisePropertyChanged("NotBeursfuifBusy");
+            }
+        }
+
+        //public bool BeursfuifBusy { get; set; }
 
         public BeursfuifViewModelBase()
         {
@@ -33,7 +68,7 @@ namespace Beursfuif.Server.ViewModel
             MessengerInstance.Register<BeursfuifBusyMessage>(this, ChangePartyBusy);
         }
 
-        private void ChangePartyBusy(BeursfuifBusyMessage obj)
+        protected virtual void ChangePartyBusy(BeursfuifBusyMessage obj)
         {
             BeursfuifBusy = obj.Value;
         }
@@ -59,6 +94,9 @@ namespace Beursfuif.Server.ViewModel
             _stateChanger = drinkView;
         }
 
-
+        public bool NotBeursfuifBusy
+        {
+            get { return !BeursfuifBusy; }
+        }
     }
 }

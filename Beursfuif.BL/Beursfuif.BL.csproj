@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BFObservableObject.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="ClientDrink.cs" />
     <Compile Include="ClientDrinkOrder.cs" />

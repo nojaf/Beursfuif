@@ -41,8 +41,12 @@ namespace Beursfuif.Server
 
         public void GoToState(string name, bool transition = true, string who = null)
         {
-            FrameworkElement item = gdMain.FindName(who) as FrameworkElement;
-            VisualStateManager.GoToState(item, name, transition);
+            Action changeState = delegate(){
+                FrameworkElement item = gdMain.FindName(who) as FrameworkElement;
+                VisualStateManager.GoToState(item, name, transition);
+            };
+
+            Dispatcher.BeginInvoke(changeState);
         }
     }
 }

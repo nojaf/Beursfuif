@@ -2,7 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 
 namespace Beursfuif.Server.DataAccess
@@ -57,6 +59,35 @@ namespace Beursfuif.Server.DataAccess
             file.Close();
         }
 
+        public void SaveArrayToBinary<T>(string path, T[] objects) where T : class
+        {
+            var formatter = new BinaryFormatter();
+            using (var stream = File.Create(path))
+            {
+                formatter.Serialize(stream, objects);
+            }
+        }
+
+        public T[] LoadArrayFromBinary<T>(string path) where T : class
+        {
+            if (File.Exists(path))
+            {
+                try
+                {
+                    var formatter = new BinaryFormatter();
+                    using (var stream = File.OpenRead(path))
+                    {
+                        return (T[])formatter.Deserialize(stream);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Could read intervalstream, " + ex.Message);
+                    return null;
+                }
+            }
+            return null;
+        }
 
     }
 }

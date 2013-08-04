@@ -32,9 +32,12 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type GridViewColumnHeader}">
-                    <TextBlock Text="{TemplateBinding Content}"
-                               Foreground="#263029" Padding="5" Width="{TemplateBinding Width}" TextAlignment="Center" Background="Transparent"/>
-				</ControlTemplate>
+                    <Grid Margin="5"
+                           Width="{TemplateBinding Width}">
+                    <TextBlock Text="{TemplateBinding Content}" VerticalAlignment="Center" HorizontalAlignment="Center"
+                               Foreground="#263029" TextAlignment="Center" Background="Transparent"/>
+                    </Grid>
+                </ControlTemplate>
 			</Setter.Value>
 		</Setter>
 	</Style>

@@ -19,7 +19,6 @@ namespace Beursfuif.Server.ViewModel
     {
         #region fields and properties
         private IOManager _ioManager;
-        private  DialogMessage _dm = new Beursfuif.Server.Messages.DialogMessage();
 
         /// <summary>
         /// The <see cref="Drinks" /> property's name.
@@ -199,8 +198,24 @@ namespace Beursfuif.Server.ViewModel
         {
             if (IsInDesignMode)
             {
-                var dummyService = new DummyDrinkService();
-                Drinks = dummyService.GetDrinksFromXml();
+                Drinks = new ObservableCollection<Drink>()
+                        {
+                            new Drink()
+                            {
+                                Available = true,
+                                Id = 1,
+                                Name = "Coke",
+                                ImageString =  @"C:\Skydrive\Projects\Beursfuif\Beursfuif.Server\bin\Debug\Images\DummyDrinkImage.png"
+                            },
+
+                            new Drink()
+                            {
+                                Available = true,
+                                Id = 2,
+                                Name = "Tongerloo Blond",
+                                ImageString = @"C:\Skydrive\Projects\Beursfuif\Beursfuif.Server\bin\Debug\Images\DummyDrinkImage.png"
+                            }
+                       };
             }
             else
             {
@@ -220,7 +235,7 @@ namespace Beursfuif.Server.ViewModel
             var query = from path in paths
                         where !images.Contains(path)
                         select path;
-                        
+
             foreach (var path in query)
             {
                 //Remove images
@@ -236,7 +251,7 @@ namespace Beursfuif.Server.ViewModel
             //It shouldn't be posible to remove a drink when the party is busy
             RemoveDrink = new RelayCommand<int>(DeleteDrink, (int id) => { return (!BeursfuifBusy && Drinks.Any(x => x.Id == id)); });
             AddNewDrinkCommand = new RelayCommand(delegate() { NewEditDrink = new Drink() { Id = Drinks.Max(x => x.Id) + 1 }; },
-                () => { return (NewEditDrink == null); });
+                () => { return (!BeursfuifBusy && NewEditDrink == null); });
             DownloadImageCommand = new RelayCommand(DownloadImage, () => { return (!string.IsNullOrEmpty(DownloadUrl) && !Downloading); });
             CancelCommand = new RelayCommand(ResetValues);
             ChooseLocalImageCommand = new RelayCommand(ChooseLocalImage);
@@ -303,7 +318,7 @@ namespace Beursfuif.Server.ViewModel
                 previousDrinkSaved = true;
                 NewEditDrink = null;
                 DownloadUrl = string.Empty;
-                
+
             }
         }
 
@@ -328,7 +343,7 @@ namespace Beursfuif.Server.ViewModel
                     string filename = dlg.FileName;
                     string dateStamp = DateTime.Now.ToString("dd-MM-yyyy-hhmmss");
                     string originalPath = PathManager.ASSETS_PATH + dateStamp + "-original" + Path.GetExtension(filename);
-                    string destinationPath = PathManager.ASSETS_PATH  + dateStamp + Path.GetExtension(filename);
+                    string destinationPath = PathManager.ASSETS_PATH + dateStamp + Path.GetExtension(filename);
                     File.Copy(filename, originalPath, true);
                     ResizeImage(originalPath, destinationPath);
                     NewEditDrink.ImageString = destinationPath;
@@ -351,10 +366,11 @@ namespace Beursfuif.Server.ViewModel
         private void DownloadImage()
         {
             Downloading = true;
-            ThreadPool.QueueUserWorkItem(new WaitCallback((object target) => {
+            ThreadPool.QueueUserWorkItem(new WaitCallback((object target) =>
+            {
                 try
                 {
-                    
+
                     string dateStamp = DateTime.Now.ToString("dd-MM-yyyy-hhmmss");
                     string originalPath = PathManager.ASSETS_PATH + dateStamp + "-original" + Path.GetExtension(this.DownloadUrl);
                     string destinationPath = PathManager.ASSETS_PATH + dateStamp + Path.GetExtension(this.DownloadUrl);
@@ -365,7 +381,10 @@ namespace Beursfuif.Server.ViewModel
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
-                    MessageBox.Show("Geen geldige url of geen internettoegang");
+                    _dm = new DialogMessage("Downloaden mislukt");
+                    _dm.Nay = Visibility.Collapsed;
+                    _dm.Errors.Add("Geen geldige url of geen internettoegang");
+                    MessengerInstance.Send<DialogMessage>(_dm);
                 }
             }));
             Downloading = false;
@@ -392,7 +411,7 @@ namespace Beursfuif.Server.ViewModel
                     _ioManager.SaveObservableCollectionToXml<Drink>(PathManager.DRINK_XML_PATH, Drinks);
                 }), null);
                 if (NewEditDrink != null && NewEditDrink.Id == id) NewEditDrink = null;
-                
+
             }
         }
 

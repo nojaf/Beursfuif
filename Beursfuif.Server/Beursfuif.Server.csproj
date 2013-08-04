@@ -96,10 +96,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="DataAccess\DummyDrinkService.cs" />
-    <Compile Include="DataAccess\IDrinkService.cs" />
     <Compile Include="DataAccess\IOManager.cs" />
     <Compile Include="DataAccess\PathManager.cs" />
+    <Compile Include="Messages\BeursfuifBusyMessage.cs" />
     <Compile Include="UserControls\MessageGridControl.xaml.cs">
       <DependentUpon>MessageGridControl.xaml</DependentUpon>
     </Compile>

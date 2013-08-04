@@ -6,7 +6,8 @@ using System.Text;
 
 namespace Beursfuif.BL
 {
-    public class Interval:ObservableObject
+    [Serializable]
+    public class Interval:BFObservableObject
     {
         #region properties
         /// <summary>
