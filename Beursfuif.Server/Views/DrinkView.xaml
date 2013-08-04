@@ -5,8 +5,8 @@
              xmlns:m="clr-namespace:Beursfuif.BL;assembly=Beursfuif.BL"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:t="http://schemas.xceed.com/wpf/xaml/toolkit"
-                     xmlns:interact="http://schemas.microsoft.com/expression/2010/interactivity"
-        xmlns:mvvm= "clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WPF4"
+             xmlns:interact="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:mvvm= "clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WPF4"
              mc:Ignorable="d" 
              DataContext="{Binding Drink,Source={StaticResource Locator}}"
              d:DesignHeight="715" MinHeight="715" d:DesignWidth="751" MinWidth="751"
@@ -37,10 +37,9 @@
             <ColumnDefinition Width="31*" />
         </Grid.ColumnDefinitions>
         <ListView ItemsSource="{Binding Drinks}" 
-                  SelectedItem="{Binding NewEditDrink}"
-                  AlternationCount="2" BorderBrush="Transparent" BorderThickness="0" Background="Transparent">
+                  SelectedItem="{Binding NewEditDrink}" >
             <ListView.View>
-                <GridView ColumnHeaderContainerStyle="{StaticResource HeaderColumnText}">
+                <GridView>
                     <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="Naam">
                     </GridViewColumn>
                     <GridViewColumn Header="Image">

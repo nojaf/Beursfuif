@@ -16,7 +16,7 @@
 		<Setter Property="FontSize" Value="48" />
 		<Setter Property="Margin" Value="30,30,30,50" />
 	</Style>
-	<Style TargetType="{x:Type GridViewColumnHeader}" x:Key="HeaderColumnText">
+	<Style TargetType="{x:Type GridViewColumnHeader}">
 		<Setter Property="Foreground" Value="#7e9d87"/>
 		<Setter Property="FontSize" Value="12"/>
 		<Setter Property="Margin">
@@ -32,7 +32,8 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type GridViewColumnHeader}">
-					<TextBlock Text="{TemplateBinding Content}" Padding="5" Width="{TemplateBinding Width}" TextAlignment="Center" Background="Transparent"/>
+                    <TextBlock Text="{TemplateBinding Content}"
+                               Foreground="#263029" Padding="5" Width="{TemplateBinding Width}" TextAlignment="Center" Background="Transparent"/>
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
@@ -55,6 +56,19 @@
 	</LinearGradientBrush>
 	<SolidColorBrush x:Key="ButtonNormalBorder" Color="#FF707070"/>
 
+    <!--AlternationCount="2" BorderBrush="Transparent" BorderThickness="0" Background="Transparent"-->
+    <Style TargetType="ListView">
+        <Setter Property="AlternationCount"
+                Value="2">
+        </Setter>
+        <Setter Property="BorderBrush"
+                Value="Transparent"></Setter>
+        <Setter Property="BorderThickness"
+                Value="0"></Setter>
+        <Setter Property="Background"
+                Value="Transparent"></Setter>
+    </Style>
+    
 	<Style TargetType="{x:Type ListViewItem}">
 		<Setter Property="FontFamily" Value="/Beursfuif.Server;component/Styles/#Coolvetica Rg" />
 		<Setter Property="Foreground" Value="Black"/>
@@ -251,5 +265,222 @@
     			</ControlTemplate>
     		</Setter.Value>
     	</Setter>
+    </Style>
+    
+    <!-- Intervals -->
+    <Style x:Key="LargeText" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource BaseTextBlock}">
+        <Setter Property="Foreground" Value="#09cf41"></Setter>
+        <Setter Property="FontSize" Value="36"></Setter>
+        <Setter Property="Margin" Value="5"></Setter>
+    </Style>
+    
+    <Style TargetType="t:DateTimePicker">
+        <Setter Property="Margin"
+                Value="5"></Setter>
+        <Setter Property="FontFamily"
+                Value="/Beursfuif.Server;component/Styles/#Coolvetica Rg" />
+        <Setter Property="FontWeight"
+                Value="Light"></Setter>
+        <Setter Property="Foreground"
+                Value="#316e42"></Setter>
+        <Setter Property="Margin"
+                Value="5"></Setter>
+        <Setter Property="Background"
+                Value="#afc1b4"></Setter>
+        <Setter Property="FontSize"
+                Value="18"></Setter>
+        <Setter Property="Margin"
+                Value="5"></Setter>
+    </Style>
+    <Style x:Key="ComboBoxFocusVisual">
+    	<Setter Property="Control.Template">
+    		<Setter.Value>
+    			<ControlTemplate>
+    				<Rectangle Margin="4,4,21,4" SnapsToDevicePixels="true"
+                               Stroke="#316e42" StrokeThickness="1" StrokeDashArray="1 2"/>
+    			</ControlTemplate>
+    		</Setter.Value>
+    	</Setter>
+    </Style>
+    <Geometry x:Key="DownArrowGeometry">M 0 0 L 3.5 4 L 7 0 Z</Geometry>
+    <Style x:Key="ComboBoxReadonlyToggleButton" TargetType="{x:Type ToggleButton}">
+    	<Setter Property="OverridesDefaultStyle" Value="true"/>
+    	<Setter Property="IsTabStop" Value="false"/>
+    	<Setter Property="Focusable" Value="false"/>
+    	<Setter Property="ClickMode" Value="Press"/>
+    	<Setter Property="Template">
+    		<Setter.Value>
+    			<ControlTemplate TargetType="{x:Type ToggleButton}">
+    				<Themes:ButtonChrome x:Name="Chrome" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" RenderMouseOver="{TemplateBinding IsMouseOver}" RenderPressed="{TemplateBinding IsPressed}" SnapsToDevicePixels="true">
+    					<Grid HorizontalAlignment="Right" Width="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}">
+                            <Path x:Name="Arrow"
+                                  Data="{StaticResource DownArrowGeometry}"
+                                  Fill="#316e42" HorizontalAlignment="Center" Margin="3,1,0,0" VerticalAlignment="Center"/>
+    					</Grid>
+    				</Themes:ButtonChrome>
+    				<ControlTemplate.Triggers>
+    					<Trigger Property="IsChecked" Value="true">
+    						<Setter Property="RenderPressed" TargetName="Chrome" Value="true"/>
+    					</Trigger>
+    					<Trigger Property="IsEnabled" Value="false">
+    						<Setter Property="Fill" TargetName="Arrow" Value="#AFAFAF"/>
+    					</Trigger>
+    				</ControlTemplate.Triggers>
+    			</ControlTemplate>
+    		</Setter.Value>
+    	</Setter>
+    </Style>
+    <Style x:Key="ComboBoxEditableTextBox" TargetType="{x:Type TextBox}">
+    	<Setter Property="OverridesDefaultStyle" Value="true"/>
+    	<Setter Property="AllowDrop" Value="true"/>
+    	<Setter Property="MinWidth" Value="0"/>
+    	<Setter Property="MinHeight" Value="0"/>
+    	<Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+    	<Setter Property="Template">
+    		<Setter.Value>
+    			<ControlTemplate TargetType="{x:Type TextBox}">
+    				<ScrollViewer x:Name="PART_ContentHost" Background="#afc1b4" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+    			</ControlTemplate>
+    		</Setter.Value>
+    	</Setter>
+    </Style>
+    <Style x:Key="ComboBoxToggleButton" TargetType="{x:Type ToggleButton}">
+    	<Setter Property="OverridesDefaultStyle" Value="true"/>
+    	<Setter Property="IsTabStop" Value="false"/>
+    	<Setter Property="Focusable" Value="false"/>
+    	<Setter Property="ClickMode" Value="Press"/>
+    	<Setter Property="Template">
+    		<Setter.Value>
+    			<ControlTemplate TargetType="{x:Type ToggleButton}">
+    				<Themes:ButtonChrome x:Name="Chrome" BorderBrush="#afc1b4"
+					 Background="#afc1b4" RenderMouseOver="{TemplateBinding IsMouseOver}"
+					  RenderPressed="{TemplateBinding IsPressed}" RoundCorners="false"
+					   SnapsToDevicePixels="true" 
+					   Width="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}">
+    					<Path x:Name="Arrow" Data="{StaticResource DownArrowGeometry}" 
+						Fill="#316e42" HorizontalAlignment="Center" Margin="0,1,0,0" VerticalAlignment="Center"/>
+    				</Themes:ButtonChrome>
+    				<ControlTemplate.Triggers>
+    					<Trigger Property="IsChecked" Value="true">
+    						<Setter Property="RenderPressed" TargetName="Chrome" Value="true"/>
+    					</Trigger>
+    					<Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Fill"
+                                    TargetName="Arrow"
+                                    Value="#316e42"/>
+    					</Trigger>
+    				</ControlTemplate.Triggers>
+    			</ControlTemplate>
+    		</Setter.Value>
+    	</Setter>
+    </Style>
+    <ControlTemplate x:Key="ComboBoxEditableTemplate" TargetType="{x:Type ComboBox}">
+    	<Grid x:Name="Placement" SnapsToDevicePixels="true">
+    		<Grid.ColumnDefinitions>
+    			<ColumnDefinition Width="*"/>
+    			<ColumnDefinition Width="Auto"/>
+    		</Grid.ColumnDefinitions>
+    		<Popup x:Name="PART_Popup" AllowsTransparency="true" 
+			Grid.ColumnSpan="2" 
+			IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}" 
+			PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}" 
+			Placement="Bottom">
+    			<Themes:SystemDropShadowChrome x:Name="Shdw" Color="#afc1b4" MaxHeight="{TemplateBinding MaxDropDownHeight}" MinWidth="{Binding ActualWidth, ElementName=Placement}">
+    				<Border x:Name="DropDownBorder" 
+					BorderBrush="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}" BorderThickness="1" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
+    					<ScrollViewer>
+    						<ItemsPresenter KeyboardNavigation.DirectionalNavigation="Contained" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+    					</ScrollViewer>
+    				</Border>
+    			</Themes:SystemDropShadowChrome>
+    		</Popup>
+    		<Themes:ListBoxChrome x:Name="Border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Grid.ColumnSpan="2" RenderMouseOver="{TemplateBinding IsMouseOver}" RenderFocused="{TemplateBinding IsKeyboardFocusWithin}"/>
+    		<TextBox x:Name="PART_EditableTextBox" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource TemplatedParent}}" Margin="{TemplateBinding Padding}" Style="{StaticResource ComboBoxEditableTextBox}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+    		<ToggleButton Grid.Column="1" IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Style="{StaticResource ComboBoxToggleButton}"/>
+    	</Grid>
+    	<ControlTemplate.Triggers>
+    		<Trigger Property="IsKeyboardFocusWithin" Value="true">
+    			<Setter Property="Foreground" Value="Black"/>
+    		</Trigger>
+    		<Trigger Property="IsDropDownOpen" Value="true">
+    			<Setter Property="RenderFocused" TargetName="Border" Value="true"/>
+    		</Trigger>
+    		<Trigger Property="HasItems" Value="false">
+    			<Setter Property="Height" TargetName="DropDownBorder" Value="95"/>
+    		</Trigger>
+    		<Trigger Property="IsEnabled" Value="false">
+    			<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+    			<Setter Property="Background" Value="#FFF4F4F4"/>
+    		</Trigger>
+    		<Trigger Property="IsGrouping" Value="true">
+    			<Setter Property="ScrollViewer.CanContentScroll" Value="false"/>
+    		</Trigger>
+    		<Trigger Property="HasDropShadow" SourceName="PART_Popup" Value="true">
+    			<Setter Property="Margin" TargetName="Shdw" Value="0,0,5,5"/>
+    			<Setter Property="Color" TargetName="Shdw" Value="#71000000"/>
+    		</Trigger>
+    	</ControlTemplate.Triggers>
+    </ControlTemplate>
+    <Style TargetType="{x:Type ComboBox}">
+        <Setter Property="FontFamily"
+                Value="/Beursfuif.Server;component/Styles/#Coolvetica Rg" />
+        <Setter Property="FontSize"
+                Value="18"></Setter>
+        <Setter Property="Foreground"
+                Value="#316e42"></Setter>
+            <Setter Property="FocusVisualStyle" Value="{StaticResource ComboBoxFocusVisual}"/>
+        <Setter Property="Background"
+                Value="#afc1b4"/>
+    	<Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
+    	<Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+    	<Setter Property="Padding" Value="4,3"/>
+    	<Setter Property="Template">
+    		<Setter.Value>
+    			<ControlTemplate TargetType="{x:Type ComboBox}">
+    				<Grid x:Name="MainGrid" SnapsToDevicePixels="true">
+    					<Grid.ColumnDefinitions>
+    						<ColumnDefinition Width="*"/>
+    						<ColumnDefinition MinWidth="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}" Width="0"/>
+    					</Grid.ColumnDefinitions>
+    					<Popup x:Name="PART_Popup" AllowsTransparency="true" Grid.ColumnSpan="2" IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}" Margin="1" PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}" Placement="Bottom">
+    						<Themes:SystemDropShadowChrome x:Name="Shdw" Color="#afc1b4" MaxHeight="{TemplateBinding MaxDropDownHeight}" MinWidth="{Binding ActualWidth, ElementName=MainGrid}">
+    							<Border x:Name="DropDownBorder" BorderBrush="#afc1b4" BorderThickness="0" Background="#afc1b4">
+    								<ScrollViewer CanContentScroll="true">
+    									<ItemsPresenter KeyboardNavigation.DirectionalNavigation="Contained" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    								</ScrollViewer>
+    							</Border>
+    						</Themes:SystemDropShadowChrome>
+    					</Popup>
+    					<ToggleButton Grid.ColumnSpan="2" IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Style="{StaticResource ComboBoxReadonlyToggleButton}" Background="#FFAFC1B4" Foreground="#FF316E42"/>
+    					<ContentPresenter ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" Content="{TemplateBinding SelectionBoxItem}" ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}" IsHitTestVisible="false" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    				</Grid>
+    				<ControlTemplate.Triggers>
+    					<Trigger Property="HasDropShadow" SourceName="PART_Popup" Value="true">
+    						<Setter Property="Margin" TargetName="Shdw" Value="0,0,5,5"/>
+    						<Setter Property="Color" TargetName="Shdw" Value="#71000000"/>
+    					</Trigger>
+    					<Trigger Property="HasItems" Value="false">
+    						<Setter Property="Height" TargetName="DropDownBorder" Value="95"/>
+    					</Trigger>
+    					<Trigger Property="IsEnabled" Value="false">
+    						<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+    						<Setter Property="Background" Value="#FFF4F4F4"/>
+    					</Trigger>
+    					<Trigger Property="IsGrouping" Value="true">
+    						<Setter Property="ScrollViewer.CanContentScroll" Value="false"/>
+    					</Trigger>
+    				</ControlTemplate.Triggers>
+    			</ControlTemplate>
+    		</Setter.Value>
+    	</Setter>
+    	<Style.Triggers>
+    		<Trigger Property="IsEditable" Value="true">
+    			<Setter Property="BorderBrush" Value="#afc1b4"/>
+    			<Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"/>
+    			<Setter Property="IsTabStop" Value="false"/>
+    			<Setter Property="Padding" Value="3"/>
+    			<Setter Property="Template" Value="{StaticResource ComboBoxEditableTemplate}"/>
+    		</Trigger>
+    	</Style.Triggers>
     </Style>
 </ResourceDictionary>

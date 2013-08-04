@@ -9,6 +9,7 @@
              DataContext="{Binding Interval,Source={StaticResource Locator}}"
                          xmlns:interact="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:mvvm= "clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WPF4"
+        xmlns:t="http://schemas.xceed.com/wpf/xaml/toolkit"
              x:Name="intervalView">
     <Grid Background="White">
         <VisualStateManager.VisualStateGroups>
@@ -31,6 +32,54 @@
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
-        <TextBlock Text="Van" Foreground="Green" FontSize="90"></TextBlock>
+        <StackPanel Orientation="Horizontal" Height="50" VerticalAlignment="Top">
+            <TextBlock Text="Van" Style="{StaticResource LargeText}"></TextBlock>
+            <t:DateTimePicker Width="300"
+                              Value="{Binding BeginTime}"
+                              IsEnabled="True"></t:DateTimePicker>
+            <TextBlock Text="tot"
+                       Style="{StaticResource LargeText}"></TextBlock>
+            <t:DateTimePicker Width="300"
+                          Value="{Binding EndTime}"
+                              IsEnabled="True"></t:DateTimePicker>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="0,50,0,0"
+                    Height="50"
+                    VerticalAlignment="Top">
+            <TextBlock Text="Duur"
+                       Style="{StaticResource LargeText}"></TextBlock>
+            <ComboBox SelectedIndex="0"
+                      Margin="5"
+                      MinWidth="110"
+                      ItemsSource="{Binding IntervalChoices}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate DataType="TimeSpan">
+                        <TextBlock Width="100" TextAlignment="Center">
+                            <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0:D2}:{1:D2}">
+                                        <Binding Path="Hours" />
+                                        <Binding Path="Minutes" />
+                                    </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            <Button Style="{StaticResource IconButton}" Height="30"
+                    Command="{Binding GenerateIntervalsCommand}"
+                    Content=""></Button>
+        </StackPanel>
+        <ListView Margin="0,150,0,0"
+                  HorizontalAlignment="Left"
+                  ItemsSource="{Binding Intervals}">
+            <ListView.View>
+            <GridView>
+                <GridViewColumn Header="Id" DisplayMemberBinding="{Binding Id}"></GridViewColumn>
+                <GridViewColumn Header="Van"
+                                DisplayMemberBinding="{Binding StartTime, StringFormat=HH:mm}"></GridViewColumn>
+                <GridViewColumn Header="Tot" DisplayMemberBinding="{Binding EndTime, StringFormat=HH:mm}"></GridViewColumn>
+            </GridView>
+            </ListView.View>
+        </ListView>
     </Grid>
 </UserControl>

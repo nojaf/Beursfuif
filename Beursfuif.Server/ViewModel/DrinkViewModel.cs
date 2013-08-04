@@ -21,8 +21,6 @@ namespace Beursfuif.Server.ViewModel
         private IOManager _ioManager;
         private  DialogMessage _dm = new Beursfuif.Server.Messages.DialogMessage();
 
-         
-
         /// <summary>
         /// The <see cref="Drinks" /> property's name.
         /// </summary>
@@ -62,6 +60,8 @@ namespace Beursfuif.Server.ViewModel
         private Drink _previousValuesOfEditDrink = new Drink();
         private Drink _newEditDrink = null;
 
+        private bool previousDrinkSaved = false;
+
         /// <summary>
         /// Sets and gets the NewEditDrink property.
         /// Changes to that property's value raise the PropertyChanged event. 
@@ -80,7 +80,20 @@ namespace Beursfuif.Server.ViewModel
                     return;
                 }
 
+                if (_newEditDrink != null && !previousDrinkSaved)
+                {
+                    _newEditDrink.Name = _previousValuesOfEditDrink.Name;
+                    _newEditDrink.InitialPrice = _previousValuesOfEditDrink.InitialPrice;
+                    _newEditDrink.MiniumPrice = _previousValuesOfEditDrink.MiniumPrice;
+                    _newEditDrink.MaximumPrice = _previousValuesOfEditDrink.MaximumPrice;
+                    _newEditDrink.ImageString = _previousValuesOfEditDrink.ImageString;
+                    _newEditDrink = null;
+                    DownloadUrl = string.Empty;
+                    RaisePropertyChanged(NewEditDrinkPropertyName);
+                }
+
                 RaisePropertyChanging(NewEditDrinkPropertyName);
+
                 _newEditDrink = value;
                 //previous values
                 if (_newEditDrink != null)
@@ -88,48 +101,17 @@ namespace Beursfuif.Server.ViewModel
                     _previousValuesOfEditDrink.Name = _newEditDrink.Name;
                     _previousValuesOfEditDrink.InitialPrice = _newEditDrink.InitialPrice;
                     _previousValuesOfEditDrink.MiniumPrice = _newEditDrink.MiniumPrice;
-                    _previousValuesOfEditDrink.MaximumPrice = _newEditDrink.MiniumPrice;
+                    _previousValuesOfEditDrink.MaximumPrice = _newEditDrink.MaximumPrice;
                     _previousValuesOfEditDrink.ImageString = _newEditDrink.ImageString;
                 }
 
                 RaisePropertyChanged(NewEditDrinkPropertyName);
                 RaisePropertyChanged(AddOrEditMenuVisiblePropertyName);
-                
+                previousDrinkSaved = false;
             }
         }
 
         public RelayCommand<int> RemoveDrink { get; set; }
-
-        /// <summary>
-        /// The <see cref="BeursfuifBusy" /> property's name.
-        /// </summary>
-        public const string BeursfuifBusyPropertyName = "BeursfuifBusy";
-
-        private bool _beursfuifBusy = false;
-
-        /// <summary>
-        /// Sets and gets the BeursfuifBusy property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public bool BeursfuifBusy
-        {
-            get
-            {
-                return _beursfuifBusy;
-            }
-
-            set
-            {
-                if (_beursfuifBusy == value)
-                {
-                    return;
-                }
-
-                RaisePropertyChanging(BeursfuifBusyPropertyName);
-                _beursfuifBusy = value;
-                RaisePropertyChanged(BeursfuifBusyPropertyName);
-            }
-        }
 
         public const string AddOrEditMenuVisiblePropertyName = "AddOrEditMenuVisible";
         public Visibility AddOrEditMenuVisible
@@ -318,8 +300,10 @@ namespace Beursfuif.Server.ViewModel
                 {
                     _ioManager.SaveObservableCollectionToXml(PathManager.DRINK_XML_PATH, Drinks);
                 }));
+                previousDrinkSaved = true;
                 NewEditDrink = null;
                 DownloadUrl = string.Empty;
+                
             }
         }
 
@@ -411,7 +395,6 @@ namespace Beursfuif.Server.ViewModel
                 
             }
         }
-
 
         private void DownloadRemoteImageFile(string uri, string path)
         {

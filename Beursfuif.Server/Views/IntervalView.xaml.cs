@@ -29,6 +29,11 @@ namespace Beursfuif.Server.Views
         public void GoToState(string name, bool transition = true, string who = null)
         {
             VisualStateManager.GoToState(this, name, transition);
+            if (name == "FadeOut")
+            {
+                this.IsHitTestVisible = false;
+            }
+            else this.IsHitTestVisible = true;
         }
     }
 }
