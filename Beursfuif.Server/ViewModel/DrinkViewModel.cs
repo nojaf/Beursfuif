@@ -307,6 +307,7 @@ namespace Beursfuif.Server.ViewModel
         {
             if (ValidateDrink())
             {
+                NewEditDrink.CurrentPrice = NewEditDrink.InitialPrice;
                 if (!Drinks.Any(x => x.Id == NewEditDrink.Id))
                 {
                     Drinks.Add(NewEditDrink);
@@ -343,7 +344,7 @@ namespace Beursfuif.Server.ViewModel
                     string filename = dlg.FileName;
                     string dateStamp = DateTime.Now.ToString("dd-MM-yyyy-hhmmss");
                     string originalPath = PathManager.ASSETS_PATH + dateStamp + "-original" + Path.GetExtension(filename);
-                    string destinationPath = PathManager.ASSETS_PATH + dateStamp + Path.GetExtension(filename);
+                    string destinationPath = PathManager.ASSETS_PATH + dateStamp + ".png";
                     File.Copy(filename, originalPath, true);
                     ResizeImage(originalPath, destinationPath);
                     NewEditDrink.ImageString = destinationPath;
@@ -373,7 +374,7 @@ namespace Beursfuif.Server.ViewModel
 
                     string dateStamp = DateTime.Now.ToString("dd-MM-yyyy-hhmmss");
                     string originalPath = PathManager.ASSETS_PATH + dateStamp + "-original" + Path.GetExtension(this.DownloadUrl);
-                    string destinationPath = PathManager.ASSETS_PATH + dateStamp + Path.GetExtension(this.DownloadUrl);
+                    string destinationPath = PathManager.ASSETS_PATH + dateStamp + ".png";
                     //Download image
                     DownloadRemoteImageFile(this.DownloadUrl, originalPath);
                     ResizeImage(originalPath, destinationPath);
@@ -394,7 +395,7 @@ namespace Beursfuif.Server.ViewModel
         {
             //Crop to square format
             ImageResizer.ImageJob i = new ImageResizer.ImageJob(originalPath, destinationPath, new ImageResizer.ResizeSettings(
-               "height=100;format=" + Path.GetExtension(this.DownloadUrl) + ";mode=max;"));
+               "height=100;format=png;mode=max;"));
             i.CreateParentDirectory = true; //Auto-create the uploads directory.
             i.Build();
             NewEditDrink.ImageString = destinationPath;

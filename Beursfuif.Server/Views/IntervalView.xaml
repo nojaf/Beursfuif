@@ -36,12 +36,12 @@
             <TextBlock Text="Van" Style="{StaticResource LargeText}"></TextBlock>
             <t:DateTimePicker Width="280"
                               Value="{Binding BeginTime}"
-                              IsEnabled="True"></t:DateTimePicker>
+                              IsEnabled="{Binding NotBeursfuifBusy}"></t:DateTimePicker>
             <TextBlock Text="tot"
                        Style="{StaticResource LargeText}"></TextBlock>
             <t:DateTimePicker Width="280"
                           Value="{Binding EndTime}"
-                              IsEnabled="True"></t:DateTimePicker>
+                              IsEnabled="{Binding NotBeursfuifBusy}"></t:DateTimePicker>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Margin="0,50,0,0"
                     Height="50"
@@ -51,6 +51,7 @@
             <ComboBox SelectedValue="{Binding ChosenInterval,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                       Margin="5"
                       MinWidth="110"
+                      IsEnabled="{Binding NotBeursfuifBusy}"
                       ItemsSource="{Binding IntervalChoices}">
                 <ComboBox.ItemTemplate>
                     <DataTemplate DataType="TimeSpan">
@@ -66,6 +67,7 @@
                 </ComboBox.ItemTemplate>
             </ComboBox>
             <Button Style="{StaticResource IconButton}" Height="30"
+                    IsEnabled="{Binding NotBeursfuifBusy}"
                     Command="{Binding GenerateIntervalsCommand}"
                     Content=""></Button>
         </StackPanel>

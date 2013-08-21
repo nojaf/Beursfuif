@@ -89,5 +89,46 @@ namespace Beursfuif.Server.DataAccess
             return null;
         }
 
+        public ObservableCollection<T> LoadObservableCollectionFromBinary<T>(string path) where T : class
+        {
+            if (File.Exists(path))
+            {
+                try
+                {
+                    var formatter = new BinaryFormatter();
+                    using (var stream = File.OpenRead(path))
+                    {
+                        return (ObservableCollection<T>)formatter.Deserialize(stream);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Could read stream, " + ex.Message);
+                    return null;
+                }
+            }
+            return null;
+        }
+
+        public T LoadObjectFromBinary<T>(string path) where T : class
+        {
+            if (File.Exists(path))
+            {
+                try
+                {
+                    var formatter = new BinaryFormatter();
+                    using (var stream = File.OpenRead(path))
+                    {
+                        return (T)formatter.Deserialize(stream);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Could read stream, " + ex.Message);
+                    return null;
+                }
+            }
+            return null;
+        }
     }
 }

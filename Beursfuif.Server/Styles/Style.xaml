@@ -101,10 +101,26 @@
         <Setter Property="Foreground" Value="#FF7E9D87"></Setter>
         <Setter Property="FontSize" Value="16"></Setter>
     </Style>
-
-
-
-	<LinearGradientBrush x:Key="TextBoxBorder" StartPoint="0,0" MappingMode="Absolute" EndPoint="0,20">
+    
+    <Style x:Key="Data"
+           TargetType="{x:Type TextBlock}">
+        <Setter Property="TextWrapping"
+                Value="Wrap" />
+        <Setter Property="TextTrimming"
+                Value="None" />
+        <Setter Property="Margin"
+                Value="5,7" />
+        <Setter Property="FontFamily"
+                Value="Century Gothic"></Setter>
+        <Setter Property="Foreground"
+                Value="#FF000000"></Setter>
+        <Setter Property="FontSize"
+                Value="14"></Setter>
+        <Setter Property="FontWeight"
+                Value="Light">
+        </Setter>
+    </Style>
+    <LinearGradientBrush x:Key="TextBoxBorder" StartPoint="0,0" MappingMode="Absolute" EndPoint="0,20">
 		<GradientStop Color="#ABADB3" Offset="0.05"/>
 		<GradientStop Color="#E2E3EA" Offset="0.07"/>
 		<GradientStop Color="#E3E9EF" Offset="1"/>

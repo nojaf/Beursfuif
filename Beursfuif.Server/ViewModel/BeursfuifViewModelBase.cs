@@ -52,6 +52,8 @@ namespace Beursfuif.Server.ViewModel
                 _beursfuifBusy = value;
                 RaisePropertyChanged(BeursfuifBusyPropertyName);
                 RaisePropertyChanged("NotBeursfuifBusy");
+
+                MessengerInstance.Send<BeursfuifBusyMessage>(new BeursfuifBusyMessage() { Value = value });
             }
         }
 
