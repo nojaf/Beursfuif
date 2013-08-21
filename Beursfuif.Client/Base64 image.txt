@@ -1,0 +1,11 @@
+﻿            AlchemyChatServer.MessageReceived = function (event) {
+                var arrayBuffer = event.data;
+                console.log(arrayBuffer);
+                var bytes = new Uint8Array(arrayBuffer);
+                console.log(bytes);
+
+                var image = document.createElement("img");
+                
+                image.src = 'data:image/png;base64,'+ event.data;
+                document.getElementsByTagName("body")[0].appendChild(image);
+            };

@@ -18,6 +18,8 @@ namespace Beursfuif.BL
 
         public byte Price { get; set; }
 
+        public string Base64Image { get; set; }
+
         #endregion
 
         public ClientDrink()

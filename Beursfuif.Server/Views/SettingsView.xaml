@@ -103,6 +103,11 @@
                 <TextBlock Style="{StaticResource Data}"
                            Text="{Binding BeursfuifCurrentTime,StringFormat=HH:mm:ss}" />
             </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Style="{StaticResource Label}">Server IP adress</TextBlock>
+                <TextBlock Style="{StaticResource Data}"
+                           Text="{Binding IPAdress}"></TextBlock>
+            </StackPanel>
         </StackPanel>
     </Grid>
 </UserControl>

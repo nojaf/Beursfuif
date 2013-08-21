@@ -4,6 +4,8 @@ using GalaSoft.MvvmLight.Command;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Windows;
@@ -12,6 +14,7 @@ namespace Beursfuif.Server.ViewModel
 {
     public class SettingsViewModel:BeursfuifViewModelBase
     {
+        #region Fields and Properties
         /// <summary>
         /// The <see cref="CurrentInterval" /> property's name.
         /// </summary>
@@ -122,6 +125,19 @@ namespace Beursfuif.Server.ViewModel
 
         private IOManager _ioManager;
         private System.Threading.Timer _tmrMain;
+        private Alchemy.WebSocketServer _server;
+        private const int PORT = 5678;
+
+        public string IPAdress
+        {
+            get
+            {
+                var ip = LocalIPAddress();
+                return (ip != null ? ip.ToString() + ":"+PORT : "");
+            }
+        }
+
+#endregion
 
         public SettingsViewModel(IOManager ioManager)
         {
@@ -137,6 +153,7 @@ namespace Beursfuif.Server.ViewModel
             }
 
             InitCommands();
+            InitServer();
         }
 
         private Interval LoadCurrentInterval()
@@ -209,9 +226,9 @@ namespace Beursfuif.Server.ViewModel
 
             //start timer
             _tmrMain = new Timer(MainTimer_Tick, null, 1000, 1000);
+
+            StartServer();
         }
-
-
 
         public void MainTimer_Tick(object state)
         {
@@ -228,6 +245,91 @@ namespace Beursfuif.Server.ViewModel
             //END CODE
             _tmrMain.Change(1000, 1000);
         }
+
+        #region Websocket
+        private void InitServer()
+        {
+            _server = new Alchemy.WebSocketServer(5678, IPAddress.Any)
+            {
+                OnReceive = OnWebSocketMessageReceive,
+                OnSend = OnWebSocketMessageSend,
+                OnConnected = OnWebSocketClientConnect,
+                OnDisconnect = OnWebSocketClientDisconnect,
+                TimeOut = new TimeSpan(0,5,0)
+            };
+
+            App.Current.MainWindow.Closing += (a, b) => {
+                StopServer();
+            };
+        }
+
+
+
+        private void OnWebSocketClientDisconnect(Alchemy.Classes.UserContext context)
+        {
+
+        }
+
+        private void OnWebSocketClientConnect(Alchemy.Classes.UserContext context)
+        {
+            Console.WriteLine("Client " + context.ClientAddress.ToString() + " connected");
+        }
+
+        private void OnWebSocketMessageSend(Alchemy.Classes.UserContext context)
+        {
+
+        }
+
+        private void OnWebSocketMessageReceive(Alchemy.Classes.UserContext context)
+        {
+
+        }
+
+        public void StartServer()
+        {
+            _server.Start();
+        }
+
+        public void StopServer()
+        {
+            _server.Stop();
+        }
+
+        public void RestartServer()
+        {
+            _server.Restart();
+        }
+
+        private IPAddress LocalIPAddress()
+        {
+            if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+            {
+                return null;
+            }
+
+
+            IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
+
+            return host
+                .AddressList
+                .FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork && IsIPLocal(ip));
+        }
+
+        private bool IsIPLocal(IPAddress ipaddress)
+        {
+            String[] straryIPAddress = ipaddress.ToString().Split(new String[] { "." }, StringSplitOptions.RemoveEmptyEntries);
+            int[] iaryIPAddress = new int[] { int.Parse(straryIPAddress[0]), int.Parse(straryIPAddress[1]), int.Parse(straryIPAddress[2]), int.Parse(straryIPAddress[3]) };
+            if (iaryIPAddress[0] == 10 || (iaryIPAddress[0] == 192 && iaryIPAddress[1] == 168) || (iaryIPAddress[0] == 172 && (iaryIPAddress[1] >= 16 && iaryIPAddress[1] <= 31)))
+            {
+                return true;
+            }
+            else
+            {
+                // IP Address is "probably" public. This doesn't catch some VPN ranges like OpenVPN and Hamachi.
+                return false;
+            }
+        }
+        #endregion
 
         public ViewModelLocator GetLocator()
         {

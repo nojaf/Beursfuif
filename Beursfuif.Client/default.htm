@@ -1,15 +1,35 @@
 ﻿<!DOCTYPE html>
-
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title>TypeScript HTML App</title>
-    <link rel="stylesheet" href="app.css" type="text/css" />
-    <script src="app.js"></script>
+    <title>Beursfuif Client</title>
+        <script src="Scripts/jquery-2.0.3.min.js"></script>
+    <link href="bootstrap-3.0.0/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="bootstrap-3.0.0/js/bootstrap.min.js"></script>
+    <link href="Style.css" rel="stylesheet" />
 </head>
 <body>
-    <h1>TypeScript HTML App</h1>
-
-    <div id="content"></div>
+    <div class="navbar navbar-inverse">
+        <div class="navbar-inner">
+            <div class="container">
+                <h1 class="navbar-brand">Beursfuif</h1>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <p>23</p>
+        <div class="imgContainer"></div>
+    </div>
+    <script src="Models/models.js"></script>
+    <script>
+        var obj = new Interval(JSON.parse(dummyData));
+        console.log(obj);
+        for (var i = 0; i < obj.ClientDrinks.length; i++) {
+            var string = obj.ClientDrinks[i].Base64Image;
+            var image = document.createElement("img");
+            image.src = 'data:image/png;base64,' + string;
+            document.getElementsByClassName("imgContainer")[0].appendChild(image);
+        }
+    </script>
 </body>
 </html>
