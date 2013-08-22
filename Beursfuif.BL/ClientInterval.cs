@@ -18,7 +18,7 @@ namespace Beursfuif.BL
 
         public ClientDrink[] ClientDrinks { get; set; }
 
-        public string AuthenticationString { get; set; }      
+        public DateTime CurrentTime { get; set; }
         #endregion
 
         public ClientInterval()
@@ -28,7 +28,7 @@ namespace Beursfuif.BL
 
         public override string ToString()
         {
-            return string.Format("[ClientInterval]:[{0},{1}-{2},{3}]", Id, Start, End, AuthenticationString);
+            return string.Format("[ClientInterval]:[{0},{1}-{2},{3}]", Id, Start, End, CurrentTime);
         }
 
         public override bool Equals(object obj)

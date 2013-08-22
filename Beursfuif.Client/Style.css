@@ -1,3 +1,45 @@
-﻿h1{
+﻿html { 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+#mask{
+    width:100%;
+    height:100%;
+    background-color:white;
+    position:fixed;
+    display:none;
+}
+
+.navbar-inverse .navbar-brand{
     color:white;
+    font-size:28px;
+}
+
+.navbar .navbar-text{
+    margin-top:35px;
+}
+
+.navbar .navbar-inner .navbar .container .row p{
+    float:left;
+}
+
+#login{
+    position:fixed;
+    width:100%;
+    height:100%;
+    background-color:rgba(0,0,0,0.7);
+    z-index:2000;
+}
+
+#login .container{
+    display:block;
+    margin-left:auto;
+    margin-right:auto;
+    background-color:white;
+    width:300px;
+    padding:10px;
+    border-radius:10px;
 }

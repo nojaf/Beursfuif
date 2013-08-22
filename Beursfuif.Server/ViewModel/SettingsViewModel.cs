@@ -1,6 +1,7 @@
 ﻿using Beursfuif.BL;
 using Beursfuif.Server.DataAccess;
 using GalaSoft.MvvmLight.Command;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -125,7 +126,7 @@ namespace Beursfuif.Server.ViewModel
 
         private IOManager _ioManager;
         private System.Threading.Timer _tmrMain;
-        private Alchemy.WebSocketServer _server;
+        private BeursfuifServer _server;
         private const int PORT = 5678;
 
         public string IPAdress
@@ -227,7 +228,7 @@ namespace Beursfuif.Server.ViewModel
             //start timer
             _tmrMain = new Timer(MainTimer_Tick, null, 1000, 1000);
 
-            StartServer();
+            _server.StartServer();
         }
 
         public void MainTimer_Tick(object state)
@@ -249,56 +250,16 @@ namespace Beursfuif.Server.ViewModel
         #region Websocket
         private void InitServer()
         {
-            _server = new Alchemy.WebSocketServer(5678, IPAddress.Any)
-            {
-                OnReceive = OnWebSocketMessageReceive,
-                OnSend = OnWebSocketMessageSend,
-                OnConnected = OnWebSocketClientConnect,
-                OnDisconnect = OnWebSocketClientDisconnect,
-                TimeOut = new TimeSpan(0,5,0)
-            };
+            _server = new BeursfuifServer(PORT);
 
             App.Current.MainWindow.Closing += (a, b) => {
-                StopServer();
+                _server.StopServer();
             };
         }
 
 
 
-        private void OnWebSocketClientDisconnect(Alchemy.Classes.UserContext context)
-        {
 
-        }
-
-        private void OnWebSocketClientConnect(Alchemy.Classes.UserContext context)
-        {
-            Console.WriteLine("Client " + context.ClientAddress.ToString() + " connected");
-        }
-
-        private void OnWebSocketMessageSend(Alchemy.Classes.UserContext context)
-        {
-
-        }
-
-        private void OnWebSocketMessageReceive(Alchemy.Classes.UserContext context)
-        {
-
-        }
-
-        public void StartServer()
-        {
-            _server.Start();
-        }
-
-        public void StopServer()
-        {
-            _server.Stop();
-        }
-
-        public void RestartServer()
-        {
-            _server.Restart();
-        }
 
         private IPAddress LocalIPAddress()
         {
