@@ -35,8 +35,11 @@ namespace Beursfuif.BL
         private void OnWebSocketClientDisconnect(Alchemy.Classes.UserContext context)
         {
             var kv = Clients.FirstOrDefault(x => x.Value == context);
-            Clients.Remove(kv.Key);
-            Console.WriteLine("Client ID:"+kv.Key + " , " +kv.Value.ClientAddress.ToString() + " left.");
+            if (kv.Value != null)
+            {
+                Console.WriteLine("Client ID:" + kv.Key + " , " + kv.Value.ClientAddress.ToString() + " left.");
+                Clients.Remove(kv.Key);
+            }
         }
 
         private void OnWebSocketClientConnect(Alchemy.Classes.UserContext context)

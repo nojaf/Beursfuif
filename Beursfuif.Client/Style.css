@@ -15,6 +15,7 @@ body{
     height:100%;
     background-color:white;
     position:fixed;
+    top:0px;
     display:none;
 }
 
@@ -57,8 +58,16 @@ body{
 }
 
 .drink .row img{
-    height:50px;
     display:block;
     margin:auto;
+    height:50px;
 }
 
+#mainControls{
+    display:none;
+}
+
+#order{
+    background:white;
+    border-radius:15px;
+}

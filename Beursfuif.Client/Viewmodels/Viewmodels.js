@@ -6,9 +6,9 @@
 //#region LOGIN
 function LoginViewModel() {
 
-    this.name = ko.observable("Florian");
-    this.serverAdress = ko.observable("192.168.1.100");
-    this.port = ko.observable("5678");
+    this.name = ko.observable("");
+    this.serverAdress = ko.observable("");
+    this.port = ko.observable("");
 
     this.isValid = ko.computed(function () {
         //Name

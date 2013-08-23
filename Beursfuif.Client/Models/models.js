@@ -23,9 +23,12 @@ function ClientDrink(json) {
 
     this.Image = function () {
         return 'data:image/png;base64,' + this.Base64Image;
-    }
+    };
 
-    for (var prop in json) this[prop] = json[prop];
+    for(var prop in json)
+    {
+        this[prop] = json[prop];
+    }
 }
 
 /*        public int DrinkId { get; set; }
@@ -40,6 +43,8 @@ function ClientDrinkOrder(json) {
 
     this.DrinkId;
     this.Count;
+    //non serializable essential member
+    this.Name;
 
     this.init = function (id, count) {
         this.DrinkId = id;
