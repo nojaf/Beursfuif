@@ -32,7 +32,7 @@
             </form>
         </div>
     </div>
-    <div class="navbar navbar-inverse">
+    <div id="nav" class="navbar navbar-inverse">
         <div class="navbar-inner">
             <div class="container">
                 <h1 class="navbar-brand">Beursfuif</h1>
@@ -44,8 +44,32 @@
         </div>
     </div>
     <div class="container">
-        <p>23</p>
-        <div class="imgContainer"></div>
+        <div class="col-md-8" id="drinks" data-bind="foreach: drinks">
+            <div class="col-md-3">
+                <div class="drink">
+                    <div class="row">
+                        <h5 class="text-info text-center col-md-10" data-bind="text: Name"></h5>
+                    </div>
+                    <div class="row">
+                        <img data-bind="attr: { src: Image() }" class="img-rounded" />
+                    </div>
+                    <div class="row">
+                           <strong data-bind="text: Price + ' bongs'" class="col-md-12 text-center"></strong>
+                    </div>
+                    <div class="row">
+                        <a class="btn btn-default col-md-4 col-md-offset-1">
+                            <span class="glyphicon glyphicon-plus text-info"></span>
+                        </a>
+                        <a class="btn btn-default col-md-4 col-md-offset-2">
+                            <span class="glyphicon glyphicon-minus text-info"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4" id="order">
+            1 kolom
+        </div>
     </div>
     <div id="mask"></div>
 </body>

@@ -34,7 +34,9 @@ namespace Beursfuif.BL
 
         private void OnWebSocketClientDisconnect(Alchemy.Classes.UserContext context)
         {
-
+            var kv = Clients.FirstOrDefault(x => x.Value == context);
+            Clients.Remove(kv.Key);
+            Console.WriteLine("Client ID:"+kv.Key + " , " +kv.Value.ClientAddress.ToString() + " left.");
         }
 
         private void OnWebSocketClientConnect(Alchemy.Classes.UserContext context)
@@ -59,8 +61,10 @@ namespace Beursfuif.BL
                 switch (p.MessageId)
                 {
                     case 1:
-                        OnNewClientEvent(this,new NewClientEventArgs(p.ClientName, context.ClientAddress.ToString()));
-                        Clients.Add(GetNextId(), context);
+                        int nextId = GetNextId();
+                        Clients.Add(nextId, context);
+                        OnNewClientEvent(this,new NewClientEventArgs(p.ClientName, context.ClientAddress.ToString(),nextId));
+                        
                         //TODO: ack ID + currentInterval, methode here but called from VM after event
                         break;
                 }
@@ -96,6 +100,19 @@ namespace Beursfuif.BL
         public int GetNextId()
         {
             return (Clients == null || Clients.Count == 0 ? 1 : Clients.Max(x => x.Key) + 1);
+        }
+
+        public void SendAckInitialClientConnect(ClientInterval currentInterval, int clientId)
+        {
+            Package p = new Package()
+            {
+                MessageId = 2,
+                ClientId = clientId,
+                CurrentInterval = currentInterval
+            };
+
+            string data = p.ToJSON();
+            Clients.FirstOrDefault(x => x.Key == clientId).Value.Send(data);
         }
     }
 }

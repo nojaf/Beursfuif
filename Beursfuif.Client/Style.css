@@ -3,6 +3,11 @@
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
+  overflow:hidden;
+}
+
+body{
+    background-color:transparent;
 }
 
 #mask{
@@ -43,3 +48,17 @@
     padding:10px;
     border-radius:10px;
 }
+
+.drink{
+    background-color:white;
+    border-radius:15px;
+    margin-bottom:10px;
+    padding:5px 10px;
+}
+
+.drink .row img{
+    height:50px;
+    display:block;
+    margin:auto;
+}
+

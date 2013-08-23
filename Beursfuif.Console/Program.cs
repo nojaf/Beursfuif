@@ -16,9 +16,12 @@ namespace Beursfuif.ConsoleApp
     {
         private static BeursfuifServer _server;
         private static Client _client;
+        private static ClientInterval _clientInterval;
 
         static void Main(string[] args)
         {
+            JSONEncodeClientInterval();
+
             _server = new BeursfuifServer(5678);
             _server.NewClientEvent += _server_NewClientEvent;
             _server.StartServer();
@@ -39,6 +42,7 @@ namespace Beursfuif.ConsoleApp
                     }
                 }
             }
+            _server.StopServer();
             
         }
 
@@ -49,12 +53,14 @@ namespace Beursfuif.ConsoleApp
         {
             _client = new Client()
             {
-                Id = 1,
+                Id = e.Id,
                 Ip = e.Ip,
                  Name = e.Name,
                  OrderCount = 0,
                  LastActivity = DateTime.Now
             };
+
+            _server.SendAckInitialClientConnect( _clientInterval, e.Id);
 
             //TODO send ack
         }
@@ -88,7 +94,7 @@ namespace Beursfuif.ConsoleApp
 
         private static void JSONEncodeClientInterval()
         {
-            ClientInterval ci = new ClientInterval()
+             _clientInterval = new ClientInterval()
             {
                 Id = 1,
                 Start = new DateTime(2013, 1, 1, 21, 0, 0),
@@ -120,8 +126,8 @@ namespace Beursfuif.ConsoleApp
                     }
                 }
             };
-            string isoJson = JsonConvert.SerializeObject(ci);
-            Console.WriteLine(isoJson);
+             string isoJson = JsonConvert.SerializeObject(_clientInterval);
+            //Console.WriteLine(isoJson);
         }
 
         private static void JSONEncodeFullPackage()

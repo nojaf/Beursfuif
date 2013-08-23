@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beursfuif.BL", "Beursfuif.B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beursfuif.Console", "Beursfuif.Console\Beursfuif.Console.csproj", "{5D6259E2-206F-41A7-A274-9920628960A6}"
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Beursfuif.Client(1)", "http://localhost:32529", "{16861313-B60C-4D01-80D2-F04A6224868D}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Beursfuif.Client", "http://localhost:32530", "{16861313-B60C-4D01-80D2-F04A6224868D}"
 	ProjectSection(WebsiteProperties) = preProject
 		UseIISExpress = "true"
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"

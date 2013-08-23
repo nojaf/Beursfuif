@@ -3,7 +3,7 @@
 /// <reference path="../Scripts/jquery-2.0.3.js" />
 /// <reference path="../Scripts/app.js" />
 
-
+//#region LOGIN
 function LoginViewModel() {
 
     this.name = ko.observable("Florian");
@@ -37,8 +37,6 @@ function LoginViewModel() {
     };
 }
 
-//regex ip '\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b'
-//regex port '\d*^[0-9]\d*$'
 
 function validate_ip(ip) {
     // See if x looks like an IP address using our "almost IP regex".
@@ -52,3 +50,11 @@ function validate_ip(ip) {
     }
     return true;
 }
+//#endregion
+
+//#region DRINKS
+function DrinkViewModel() {
+    this.drinks = ko.observableArray();
+
+}
+//#endregion
