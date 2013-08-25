@@ -7,9 +7,8 @@
 window.onload = initApp;
 
 //GLOBALS
-var loginVM;
-var drinksVM;
-var webSocket;
+var app;
+
 
 function initApp(e) {
 
@@ -17,11 +16,16 @@ function initApp(e) {
 
     initLoginScreen();
 
-    loginVM = new LoginViewModel();
-    drinksVM = new DrinkViewModel();
+    app = {
+        loginVM: new LoginViewModel(),
+        drinksVM: new DrinkViewModel(),
+        webSocket: null,
+        orderVM: new OrderViewModel()
+    };
 
-    ko.applyBindings(loginVM, document.getElementById("login"));
-    ko.applyBindings(drinksVM, document.getElementById("drinks"));
+    ko.applyBindings(app.loginVM, document.getElementById("login"));
+    ko.applyBindings(app.drinksVM, document.getElementById("drinks"));
+    ko.applyBindings(app.orderVM, document.getElementById("order"));
 
     checkForCachedValues();
 }
@@ -68,20 +72,20 @@ function changeBackground() {
 
 //#region Websocket
 function initWebsocketMethodes(url) {
-    webSocket = new WebSocket(url);
-    webSocket.onopen = webSocketOpenHandler;
-    webSocket.onclose = webSocketCloseHandler;
-    webSocket.onmessage = webSocketMessageHandler;
-    webSocket.onerror = webSocketErrorHandler;
+    app.webSocket = new WebSocket(url);
+    app.webSocket.onopen = webSocketOpenHandler;
+    app.webSocket.onclose = webSocketCloseHandler;
+    app.webSocket.onmessage = webSocketMessageHandler;
+    app.webSocket.onerror = webSocketErrorHandler;
 }
 
 function webSocketOpenHandler(e) {
     console.log("Connection established");
     $("#login").fadeOut(400);
     $("#mainControls").fadeIn(400);
-    var initialPackage = new Package({ ClientName: loginVM.name() , MessageId:1});
-    webSocket.send(JSON.stringify(initialPackage));
-    cacheLoginValues(loginVM.name(), loginVM.serverAdress(), loginVM.port());
+    var initialPackage = new Package({ ClientName: app.loginVM.name() , MessageId:1});
+    app.webSocket.send(JSON.stringify(initialPackage));
+    cacheLoginValues(app.loginVM.name(), app.loginVM.serverAdress(), app.loginVM.port());
     //TODO: set Timer for ack
 }
 
@@ -96,7 +100,6 @@ function webSocketMessageHandler(e) {
         case PROTOCOLKIND.ACK_NEW_CLIENT_CONNECTS:
             ackNewClientConnects(pack);
             break;
-
     }
 }
 
@@ -110,10 +113,14 @@ function webSocketErrorHandler(e) {
 function ackNewClientConnects(pack) {
     var length = pack.CurrentInterval.ClientDrinks.length;
     for (var i = 0; i < length; i++) {
-        drinksVM.drinks.push(pack.CurrentInterval.ClientDrinks[i]);
+        app.drinksVM.drinks.push(pack.CurrentInterval.ClientDrinks[i]);
     }
 
     //image height:
+    resizeImages(length);
+}
+
+function resizeImages(length) {
     var drinksHeight = document.getElementById("drinks").clientHeight;
     console.log("drinksHeight = " + drinksHeight);
     var screenHeightMinNavHeight = document.documentElement.clientHeight - document.getElementById("nav").clientHeight;
@@ -145,7 +152,7 @@ function ackNewClientConnects(pack) {
             }
             $(".drink .row img").css("height", minHeight + "px");
             $(".drink .row img").css("width", "auto");
-            $(".drink .row img").css("max-width", (maxWidth - 30) +"px");
+            $(".drink .row img").css("max-width", (maxWidth - 30) + "px");
         }
     }
 }
@@ -157,15 +164,15 @@ function checkForCachedValues() {
         // Yes! localStorage and sessionStorage support!
         // Some code.....
         if (localStorage.getItem("name") !== undefined) {
-            loginVM.name(localStorage.getItem("name"));
+            app.loginVM.name(localStorage.getItem("name"));
         }
 
         if (localStorage.getItem("serverAdress") !== undefined) {
-            loginVM.serverAdress(localStorage.getItem("serverAdress"));
+            app.loginVM.serverAdress(localStorage.getItem("serverAdress"));
         }
 
         if (localStorage.getItem("port") !== undefined) {
-            loginVM.port(localStorage.getItem("port"));
+            app.loginVM.port(localStorage.getItem("port"));
         }
     }
 }

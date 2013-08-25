@@ -2,6 +2,9 @@
 /// <reference path="../Scripts/knockout-2.3.0.js" />
 /// <reference path="../Scripts/jquery-2.0.3.js" />
 /// <reference path="../Scripts/app.js" />
+/// <reference path="../Scripts/linq-vsdoc.js" />
+/// <reference path="../Scripts/linq.js" />
+/// 
 
 //#region LOGIN
 function LoginViewModel() {
@@ -12,6 +15,8 @@ function LoginViewModel() {
 
     this.isValid = ko.computed(function () {
         //Name
+        if (this.name() === undefined) return false;
+
         if (this.name().trim().length === 0) return false;
 
         //Adress
@@ -56,5 +61,45 @@ function validate_ip(ip) {
 function DrinkViewModel() {
     this.drinks = ko.observableArray();
 
+    this.addToCurrentOrder = function (dr) {
+        app.orderVM.addItemToOrder(dr);
+    };
+
+    this.substractToCurrentOrder = function (dr) {
+        app.orderVM.subItemToOrder(dr);
+    };
+}
+//#endregion
+
+//#region ORDER
+function OrderViewModel() {
+    this.items = ko.observableArray([]);
+
+    this.addItemToOrder = function (drink) {
+        //ClientDrinkOrder
+        //search if exists with linqJS
+        var clientOrderItem = Enumerable.From(app.orderVM.items()).FirstOrDefault(null, function (x) { return x.DrinkId === drink.DrinkId; });
+        if (clientOrderItem === null) {
+            clientOrderItem = new ClientDrinkOrder({
+                DrinkId: drink.DrinkId,
+                Name: drink.Name,
+                Count:1
+            });
+            app.orderVM.items.push(clientOrderItem);
+            return;
+        }
+        clientOrderItem.add(1);
+    };
+
+    this.subItemToOrder = function (drink) {
+        var clientOrderItem = Enumerable.From(app.orderVM.items()).FirstOrDefault(null, function (x) { return x.DrinkId === drink.DrinkId; });
+        if (clientOrderItem === null) {
+            return;
+        }
+        clientOrderItem.subtract(1);
+        if (clientOrderItem.Count() == 0) {
+            app.orderVM.items.remove(clientOrderItem);
+        }
+    };
 }
 //#endregion

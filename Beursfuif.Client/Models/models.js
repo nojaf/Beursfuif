@@ -1,4 +1,5 @@
 ﻿/// <reference path="../Scripts/moment.min.js" />
+/// <reference path="../Scripts/knockout-2.3.0.js" />
 
 
 /*       
@@ -42,7 +43,7 @@ function ClientDrink(json) {
 function ClientDrinkOrder(json) {
 
     this.DrinkId;
-    this.Count;
+    this.Count = ko.observable(0);
     //non serializable essential member
     this.Name;
 
@@ -52,15 +53,23 @@ function ClientDrinkOrder(json) {
     };
 
     this.add = function (many) {
-        this.Count += many;
+        var newValue = this.Count() + many;
+        if (newValue > 128) newValue = 128;
+        this.Count(newValue);
     };
 
     this.subtract = function (many) {
-        this.Count -= many;
+        var newValue = this.Count() - many;
+        if(newValue < 0) newValue = 0;
+        this.Count(newValue);
     };
 
     for (var prop in json) {
-        this[prop] = json[prop];
+        if (prop !== "Count") {
+            this[prop] = json[prop];
+        } else {
+            this.Count(json[prop]);
+        }
     }
 }
 
