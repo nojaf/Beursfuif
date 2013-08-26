@@ -10,6 +10,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Windows;
+using Beursfuif.BL.Extensions;
 
 namespace Beursfuif.Server.ViewModel
 {
@@ -127,22 +128,22 @@ namespace Beursfuif.Server.ViewModel
         private IOManager _ioManager;
         private System.Threading.Timer _tmrMain;
         private BeursfuifServer _server;
-        private const int PORT = 5678;
 
         public string IPAdress
         {
             get
             {
                 var ip = LocalIPAddress();
-                return (ip != null ? ip.ToString() + ":"+PORT : "");
+                return (ip != null ? ip.ToString() + ":" + BeursfuifServer.Port : "");
             }
         }
 
 #endregion
 
-        public SettingsViewModel(IOManager ioManager)
+        public SettingsViewModel(IOManager ioManager, BeursfuifServer server)
         {
             _ioManager = ioManager;
+            _server = server;
             CurrentInterval = LoadCurrentInterval();
             if (CurrentInterval != null)
             {
@@ -250,11 +251,16 @@ namespace Beursfuif.Server.ViewModel
         #region Websocket
         private void InitServer()
         {
-            _server = new BeursfuifServer(PORT);
+            _server.NewClientEvent += Server_NewClientEvent;
 
             App.Current.MainWindow.Closing += (a, b) => {
                 _server.StopServer();
             };
+        }
+
+        void Server_NewClientEvent(object sender, BL.Event.NewClientEventArgs e)
+        {
+            _server.SendAckInitialClientConnect(CurrentInterval.ToClientInterval(BeursfuifCurrentTime), e.Id);
         }
 
 

@@ -100,6 +100,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\BitmapFrameConverter.cs" />
     <Compile Include="DataAccess\IOManager.cs" />
     <Compile Include="DataAccess\PathManager.cs" />
     <Compile Include="Messages\BeursfuifBusyMessage.cs" />
@@ -112,6 +113,7 @@
       <DependentUpon>UCMenuItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModel\BeursfuifViewModelBase.cs" />
+    <Compile Include="ViewModel\ClientsViewModel.cs" />
     <Compile Include="ViewModel\DrinkViewModel.cs" />
     <Compile Include="ViewModel\IntervalViewModel.cs" />
     <Compile Include="ViewModel\IStateChange.cs" />

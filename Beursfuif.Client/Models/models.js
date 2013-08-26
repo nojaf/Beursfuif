@@ -46,6 +46,7 @@ function ClientDrinkOrder(json) {
     this.Count = ko.observable(0);
     //non serializable essential member
     this.Name;
+    this.Price;
 
     this.init = function (id, count) {
         this.DrinkId = id;
@@ -63,6 +64,11 @@ function ClientDrinkOrder(json) {
         if(newValue < 0) newValue = 0;
         this.Count(newValue);
     };
+
+    this.Total = ko.computed(function () {
+        return this.Count() * this.Price;
+
+    }, this);
 
     for (var prop in json) {
         if (prop !== "Count") {

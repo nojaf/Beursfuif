@@ -101,20 +101,6 @@ namespace Beursfuif.BL
                 RaisePropertyChanging(ImageStringPropertyName);
                 _imageString = value;
                 RaisePropertyChanged(ImageStringPropertyName);
-                RaisePropertyChanged("ImageUri");
-            }
-        }
-
-        [XmlIgnore]
-        public Uri ImageUri
-        {
-            get
-            {
-                if (!string.IsNullOrEmpty(ImageString))
-                {
-                    return new Uri(ImageString, UriKind.RelativeOrAbsolute);
-                }
-                return null;
             }
         }
 

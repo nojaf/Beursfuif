@@ -61,6 +61,9 @@ body{
     display:block;
     margin:auto;
     height:50px;
+    overflow-x:hidden;
+    max-height:100px;
+    max-width:132px;
 }
 
 #mainControls{
@@ -70,4 +73,24 @@ body{
 #order{
     background:white;
     border-radius:15px;
+}
+
+tr td .glyphicon:hover{
+    color:#428bca;
+    cursor:pointer;
+}
+
+table{
+    border:1px solid rgba(144,144,144,0.1);
+}
+
+td{
+    border-right:1px solid rgba(144,144,144,0.1);
+}
+
+
+#order #total{
+    margin:0px;
+    padding:0px;
+    margin-bottom:10px;
 }

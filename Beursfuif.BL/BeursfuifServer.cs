@@ -18,11 +18,13 @@ namespace Beursfuif.BL
         //ID , UserContext
         public Dictionary<int,UserContext> Clients { get; set; }
         private WebSocketServer _server;
+        //TODO: make port dynamic
+        public const int Port = 5678;
 
-        public BeursfuifServer(int port)
+        public BeursfuifServer()
         {
             Clients = new Dictionary<int, UserContext>();
-            _server = new Alchemy.WebSocketServer(port, IPAddress.Any)
+            _server = new Alchemy.WebSocketServer(Port, IPAddress.Any)
                         {
                             OnReceive = OnWebSocketMessageReceive,
                             OnSend = OnWebSocketMessageSend,

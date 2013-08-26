@@ -82,8 +82,9 @@ function OrderViewModel() {
         if (clientOrderItem === null) {
             clientOrderItem = new ClientDrinkOrder({
                 DrinkId: drink.DrinkId,
+                Price: drink.Price,
                 Name: drink.Name,
-                Count:1
+                Count: 1
             });
             app.orderVM.items.push(clientOrderItem);
             return;
@@ -97,9 +98,20 @@ function OrderViewModel() {
             return;
         }
         clientOrderItem.subtract(1);
-        if (clientOrderItem.Count() == 0) {
+        if (clientOrderItem.Count() === 0) {
             app.orderVM.items.remove(clientOrderItem);
         }
     };
+
+    this.removeItem = function (drink) {
+        app.orderVM.items.remove(drink);
+    };
+
+    this.totalPrice = ko.computed(function () {
+        return Enumerable.From(this.items()).Sum(function (x) {
+            return x.Total();
+        });
+    }, this);
+
 }
 //#endregion

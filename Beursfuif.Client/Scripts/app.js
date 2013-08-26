@@ -43,11 +43,12 @@ backGrounds = ["wallpaper-1113198.jpg",
                 "wallpaper-1376284.jpg",
                 "wallpaper-200796.jpg",
                 "wallpaper-27328.jpg",
-                "wallpaper-462260.jpg",
-                "wallpaper-1007744.jpg",
+                "wallpaper-645423.jpg",
+                "wallpaper-315078.jpg",
                 "wallpaper-13780.jpg",
                 "wallpaper-2962514.jpg",
-                "wallpaper-473462.jpg"];
+                "wallpaper-473462.jpg",
+                "wallpaper-1353552.jpg"];
 currentWallpaperIndex = Math.round(Math.random() * (backGrounds.length - 1));
 
 //no-repeat center center fixed;
@@ -100,6 +101,9 @@ function webSocketMessageHandler(e) {
         case PROTOCOLKIND.ACK_NEW_CLIENT_CONNECTS:
             ackNewClientConnects(pack);
             break;
+        case PROTOCOLKIND.TIME_UPDATE:
+
+            break;
     }
 }
 
@@ -121,21 +125,22 @@ function ackNewClientConnects(pack) {
 }
 
 function resizeImages(length) {
-    var drinksHeight = document.getElementById("drinks").clientHeight;
-    console.log("drinksHeight = " + drinksHeight);
-    var screenHeightMinNavHeight = document.documentElement.clientHeight - document.getElementById("nav").clientHeight;
-    console.log("ScreenLEft  =" + screenHeightMinNavHeight);
+    var mainHeight = document.getElementById("mainControls").clientHeight;
+    var spaceLeft = document.documentElement.clientHeight - document.getElementById("nav").clientHeight - mainHeight;
+    console.log("spaceLeft  =" + spaceLeft);
     var rows = Math.ceil(length / 4);
     console.log("rows = " + rows);
 
-    if (screenHeightMinNavHeight - drinksHeight > 0) {
+    var currentHeight = $(".drink .row img").height();
+
+    if (spaceLeft > 0) {
 
 
-        var imageHeight = ((screenHeightMinNavHeight - drinksHeight) / rows - 20);
+        var imageHeight = currentHeight +((spaceLeft - 20) / rows);
         console.log("imageHeight = " + imageHeight);
         $(".drink .row img").css("height", imageHeight + "px");
 
-        var maxWidth = $(".drink .row").width();
+        /*var maxWidth = $(".drink .row").width();
         console.log("MaxWidth = " + maxWidth);
         var imgWidth = $(".drink .row img").width();
         console.log("image width = " + $(".drink .row img").css("width"));
@@ -153,8 +158,12 @@ function resizeImages(length) {
             $(".drink .row img").css("height", minHeight + "px");
             $(".drink .row img").css("width", "auto");
             $(".drink .row img").css("max-width", (maxWidth - 30) + "px");
-        }
+        }*/
+    } else if (spaceLeft < 0) {
+        var smallerHeight = currentHeight + ((spaceLeft - 20) / 4);
+        $(".drink .row img").css("height", smallerHeight + "px");
     }
+
 }
 //#endregion
 

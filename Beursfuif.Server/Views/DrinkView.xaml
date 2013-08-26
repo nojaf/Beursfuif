@@ -7,10 +7,14 @@
              xmlns:t="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:interact="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:mvvm= "clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WPF4"
+             xmlns:conv="clr-namespace:Beursfuif.Server.Converters"
              mc:Ignorable="d" 
              DataContext="{Binding Drink,Source={StaticResource Locator}}"
              d:DesignHeight="715" MinHeight="715" d:DesignWidth="751" MinWidth="751"
-             x:Name="drinkView">	
+             x:Name="drinkView">
+    <UserControl.Resources>
+        <conv:BitmapFrameConverter x:Key="imgConv"></conv:BitmapFrameConverter>
+    </UserControl.Resources>
     <Grid Background="White">
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="HideShow">
@@ -46,7 +50,7 @@
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <Viewbox>
-                                    <Image  Source="{Binding ImageUri,TargetNullValue={StaticResource EmptyImage}}" Height="50" >
+                                    <Image Source="{Binding ImageString,TargetNullValue={StaticResource EmptyImage},Converter={StaticResource imgConv}}" Height="50" >
                                     </Image>
                                 </Viewbox>
                             </DataTemplate>
@@ -90,8 +94,11 @@
                 <TextBlock TextWrapping="Wrap" FontFamily="/Beursfuif.Server;component/Styles/#Coolvetica Rg" Foreground="#FF7E9D87" FontSize="16" Style="{DynamicResource Label}"><Run Language="nl-be" Text="Maximumprijs:"/></TextBlock>
                 <t:ByteUpDown Value="{Binding MaximumPrice, Mode=TwoWay}" Minimum="0" />
                 <TextBlock TextWrapping="Wrap" FontFamily="/Beursfuif.Server;component/Styles/#Coolvetica Rg" Foreground="#FF7E9D87" FontSize="16" Style="{DynamicResource Label}"><Run Language="nl-be" Text="Afbeelding:"/></TextBlock>
-                <Image x:Name="image" 
-                       Height="80" Width="80" Margin="0,5" Source="{Binding ImageUri, TargetNullValue={StaticResource EmptyImage}}"/>
+                <Image x:Name="image"
+                       Height="80"
+                       Width="80"
+                       Margin="0,5"
+                       Source="{Binding ImageString, TargetNullValue={StaticResource EmptyImage}, Converter={StaticResource imgConv}}"/>
                 <Button Content="Kies een bestand ..."
                         IsEnabled="{Binding DataContext.NotBeursfuifBusy, ElementName=drinkView}"
                         Command="{Binding DataContext.ChooseLocalImageCommand, ElementName=drinkView}" />
