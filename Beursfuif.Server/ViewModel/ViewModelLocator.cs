@@ -49,6 +49,7 @@ namespace Beursfuif.Server.ViewModel
             SimpleIoc.Default.Register<DrinkViewModel>();
             SimpleIoc.Default.Register<IntervalViewModel>();
             SimpleIoc.Default.Register<SettingsViewModel>();
+            SimpleIoc.Default.Register<ClientsViewModel>();
         }
 
         public MainViewModel Main
@@ -80,6 +81,14 @@ namespace Beursfuif.Server.ViewModel
             get
             {
                 return ServiceLocator.Current.GetInstance<SettingsViewModel>();
+            }
+        }
+
+        public ClientsViewModel Clients
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<ClientsViewModel>();
             }
         }
 

@@ -99,7 +99,7 @@ namespace Beursfuif.Server.ViewModel
                     MessengerInstance.Send<ChangeVisibilityMessage>(new ChangeVisibilityMessage(typeof(IntervalViewModel).Name));
                     break;
                 case "MenuClient":
-                   
+                    MessengerInstance.Send<ChangeVisibilityMessage>(new ChangeVisibilityMessage(typeof(ClientsViewModel).Name));
                     break;
                 case "MenuSetting":
                     MessengerInstance.Send<ChangeVisibilityMessage>(new ChangeVisibilityMessage(typeof(SettingsViewModel).Name));

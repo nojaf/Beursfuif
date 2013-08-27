@@ -48,7 +48,7 @@
             <StackPanel Orientation="Horizontal"
                         Margin="0,0,0,10">
                 <TextBlock Style="{DynamicResource Label}">Fuifdata resetten</TextBlock>
-                <Button Style="{StaticResource IconButton}"
+                <Button Style="{DynamicResource IconButton}"
                         Height="30"
                         Content=""></Button>
             </StackPanel>
@@ -62,10 +62,10 @@
         </StackPanel>
         <StackPanel HorizontalAlignment="Right" Visibility="{Binding BeursfuifBusyVisibility}"
                     Width="400">
-            <TextBlock Style="{StaticResource LargeText}">Fuifdata:</TextBlock>
+            <TextBlock Style="{DynamicResource LargeText}">Fuifdata:</TextBlock>
             <StackPanel Orientation="Horizontal">
-                <TextBlock Style="{StaticResource Label}">Huidig interval:</TextBlock>
-                <TextBlock Style="{StaticResource Data}">
+                <TextBlock Style="{DynamicResource Label}">Huidig interval:</TextBlock>
+                <TextBlock Style="{DynamicResource Data}">
                     <TextBlock.Text>
                         <MultiBinding StringFormat="{}{0:HH:mm} - {1:HH:mm}">
                             <Binding Path="CurrentInterval.StartTime" />
@@ -76,7 +76,7 @@
                 </TextBlock>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <TextBlock Style="{StaticResource Label}">Huidige dranken:</TextBlock>
+                <TextBlock Style="{DynamicResource Label}">Huidige dranken:</TextBlock>
                 <ListView ItemsSource="{Binding CurrentInterval.Drinks}" IsEnabled="False">
                     <ListView.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -86,11 +86,11 @@
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                            <TextBlock Style="{StaticResource Data}" Text="{Binding Name}" Margin="0,5,0,0"></TextBlock>
-                                <TextBlock Style="{StaticResource Data}"
+                                <TextBlock Style="{DynamicResource Data}" Text="{Binding Name}" Margin="0,5,0,0"></TextBlock>
+                                <TextBlock Style="{DynamicResource Data}"
                                            Text=" | "
                                            Margin="0,5,0,0"></TextBlock>
-                                <TextBlock Style="{StaticResource Data}"
+                                <TextBlock Style="{DynamicResource Data}"
                                            Text="{Binding CurrentPrice}"
                                            Margin="0,5,0,0"></TextBlock>
                             </StackPanel>
@@ -99,13 +99,13 @@
                 </ListView>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <TextBlock Style="{StaticResource Label}">Huidige tijd:</TextBlock>
-                <TextBlock Style="{StaticResource Data}"
+                <TextBlock Style="{DynamicResource Label}">Huidige tijd:</TextBlock>
+                <TextBlock Style="{DynamicResource Data}"
                            Text="{Binding BeursfuifCurrentTime,StringFormat=HH:mm:ss}" />
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <TextBlock Style="{StaticResource Label}">Server IP adress</TextBlock>
-                <TextBlock Style="{StaticResource Data}"
+                <TextBlock Style="{DynamicResource Label}">Server IP adress</TextBlock>
+                <TextBlock Style="{DynamicResource Data}"
                            Text="{Binding IPAdress}"></TextBlock>
             </StackPanel>
         </StackPanel>

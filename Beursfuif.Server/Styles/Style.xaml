@@ -16,6 +16,7 @@
 		<Setter Property="FontSize" Value="48" />
 		<Setter Property="Margin" Value="30,30,30,50" />
 	</Style>
+    
 	<Style TargetType="{x:Type GridViewColumnHeader}">
 		<Setter Property="Foreground" Value="#7e9d87"/>
 		<Setter Property="FontSize" Value="12"/>
@@ -501,5 +502,50 @@
     			<Setter Property="Template" Value="{StaticResource ComboBoxEditableTemplate}"/>
     		</Trigger>
     	</Style.Triggers>
+    </Style>
+    <Style TargetType="{x:Type GridViewColumnHeader}" x:Key="MediumViewColumnHeader">
+        <Setter Property="Foreground"
+                Value="#09cf41" />
+        <Setter Property="FontSize"
+                Value="24" />
+        <Setter Property="Margin">
+            <Setter.Value>
+                <Thickness Left="2"
+                           Right="2" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="FontFamily"
+                Value="/Beursfuif.Server;component/Styles/#Coolvetica Rg" />
+        <Setter Property="IsEnabled"
+                Value="False" />
+        <Setter Property="ToolBarTray.Background"
+                Value="Transparent" />
+        <Setter Property="Background"
+                Value="Transparent" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type GridViewColumnHeader}">
+                    <Grid Margin="15"
+                          Width="{TemplateBinding Width}">
+                        <TextBlock Text="{TemplateBinding Content}"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Center"
+                                   Foreground="#09cf41"
+                                   TextAlignment="Center"
+                                   Background="Transparent" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="{x:Type ListViewItem}" x:Key="MediumListViewItem">
+        <Setter Property="FontSize"
+                Value="16" />
+        <Setter Property="FontFamily"
+                Value="/Beursfuif.Server;component/Styles/#Coolvetica Rg" />
+        <Setter Property="Foreground"
+                Value="Black" />
+        <Setter Property="HorizontalContentAlignment"
+                Value="Center" />
     </Style>
 </ResourceDictionary>

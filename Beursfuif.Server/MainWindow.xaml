@@ -19,7 +19,7 @@
 			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
 		<StackPanel Background="#09cf41" Width="244" x:Name="menuContainer" Grid.RowSpan="2">
-			<TextBlock Text="Beursfuif" Style="{StaticResource MainTitleLeft}" />
+			<TextBlock Text="Beursfuif" Style="{DynamicResource MainTitleLeft}" />
 			<uc:UCMenuItem MenuText="Dranken" IsActive="True" x:Name="MenuDrink" MouseDown="MenuItem_MouseDown">
 				<interact:Interaction.Triggers>
 					<interact:EventTrigger EventName="MouseDown">
@@ -86,6 +86,8 @@
 		</StackPanel>
         <view:SettingsView Grid.Column="2"
                            Grid.Row="1" />
+        <view:ClientsView Grid.Column="2"
+                          Grid.Row="1" />
         <view:IntervalView Grid.Column="2" Grid.Row="1" />
         <view:DrinkView Grid.Column="2" Grid.Row="1" />
    
