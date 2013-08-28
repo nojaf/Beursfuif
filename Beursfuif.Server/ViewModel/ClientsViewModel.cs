@@ -1,4 +1,5 @@
 ﻿using Beursfuif.BL;
+using Beursfuif.Server.Messages;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -111,6 +112,7 @@ namespace Beursfuif.Server.ViewModel
             };
 
             App.Current.Dispatcher.BeginInvoke(action, System.Windows.Threading.DispatcherPriority.Normal);
+            MessengerInstance.Send<ToastMessage>(new ToastMessage("New client connected",e.Name + " heeft zich aangemeld."));
         }
     }
 }

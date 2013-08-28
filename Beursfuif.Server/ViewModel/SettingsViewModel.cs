@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Windows;
 using Beursfuif.BL.Extensions;
+using Beursfuif.Server.Messages;
 
 namespace Beursfuif.Server.ViewModel
 {
@@ -230,6 +231,8 @@ namespace Beursfuif.Server.ViewModel
             _tmrMain = new Timer(MainTimer_Tick, null, 1000, 1000);
 
             _server.StartServer();
+            MainActionButtonContent = PAUSE_PARTY;
+            base.MessengerInstance.Send<ToastMessage>(new ToastMessage("Server started"));
         }
 
         public void MainTimer_Tick(object state)

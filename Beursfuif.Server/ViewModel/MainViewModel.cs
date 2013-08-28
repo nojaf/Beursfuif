@@ -23,6 +23,7 @@ namespace Beursfuif.Server.ViewModel
     {
 
         private IStateChange _stateChanger;
+        private IToastManager _toastManager;
         /// <summary>
         /// The <see cref="ErrorMessage" /> property's name.
         /// </summary>
@@ -74,6 +75,12 @@ namespace Beursfuif.Server.ViewModel
             ////}
             InitializeViewModel();
             MessengerInstance.Register<DialogMessage>(this,HandleErrorMessages);
+            MessengerInstance.Register<ToastMessage>(this, HandleToasts);
+        }
+
+        private void HandleToasts(ToastMessage obj)
+        {
+            _toastManager.ShowToast(obj.Title, obj.Message);
         }
 
         private void HandleErrorMessages(DialogMessage em)
@@ -111,9 +118,14 @@ namespace Beursfuif.Server.ViewModel
             Console.WriteLine(menuItem);
         }
 
-        internal void SetStateChanger(IStateChange mainWindow)
+        public void SetStateChanger(IStateChange mainWindow)
         {
             _stateChanger = mainWindow;
+        }
+
+        public void SetToastManager(IToastManager mainWindow)
+        {
+            _toastManager = mainWindow;
         }
     }
 }
