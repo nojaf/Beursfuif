@@ -301,10 +301,6 @@ namespace Beursfuif.Server.ViewModel
         }
         #endregion
 
-        public ViewModelLocator GetLocator()
-        {
-            return  Application.Current.Resources["Locator"] as ViewModelLocator;          
-        }
 
         
     }

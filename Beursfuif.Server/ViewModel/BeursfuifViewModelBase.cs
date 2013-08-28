@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Windows;
 
 namespace Beursfuif.Server.ViewModel
 {
@@ -99,6 +100,11 @@ namespace Beursfuif.Server.ViewModel
         public bool NotBeursfuifBusy
         {
             get { return !BeursfuifBusy; }
+        }
+
+        protected ViewModelLocator GetLocator()
+        {
+            return Application.Current.Resources["Locator"] as ViewModelLocator;
         }
     }
 }

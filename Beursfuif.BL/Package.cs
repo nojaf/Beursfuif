@@ -15,7 +15,7 @@ namespace Beursfuif.BL
 
         public DateTime CurrentBeursfuifTime { get; set; }
 
-        public ClientOrder NewOrder { get; set; }
+        public ClientDrinkOrder[] NewOrder { get; set; }
 
         public string AuthenticationCode { get; set; }
 

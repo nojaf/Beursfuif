@@ -43,7 +43,8 @@ function ClientDrink(json) {
 function ClientDrinkOrder(json) {
 
     this.DrinkId;
-    this.Count = ko.observable(0);
+    this.CountObservable = ko.observable(0);
+    this.Count;
     //non serializable essential member
     this.Name;
     this.Price;
@@ -54,19 +55,21 @@ function ClientDrinkOrder(json) {
     };
 
     this.add = function (many) {
-        var newValue = this.Count() + many;
+        var newValue = this.CountObservable() + many;
         if (newValue > 128) newValue = 128;
-        this.Count(newValue);
+        this.CountObservable(newValue);
+        this.Count = this.CountObservable();
     };
 
     this.subtract = function (many) {
-        var newValue = this.Count() - many;
+        var newValue = this.CountObservable() - many;
         if(newValue < 0) newValue = 0;
-        this.Count(newValue);
+        this.CountObservable(newValue);
+        this.Count = this.CountObservable();
     };
 
     this.Total = ko.computed(function () {
-        return this.Count() * this.Price;
+        return this.CountObservable() * this.Price;
 
     }, this);
 
@@ -74,7 +77,8 @@ function ClientDrinkOrder(json) {
         if (prop !== "Count") {
             this[prop] = json[prop];
         } else {
-            this.Count(json[prop]);
+            this.Count = parseInt(json[prop], 0);
+            this.CountObservable(json[prop]);
         }
     }
 }
@@ -116,40 +120,7 @@ function ClientInterval(json) {
 
 }
 
-/*
-    public class ClientOrder
-    {
-        #region properties
-        public ClientDrinkOrder[] Items { get; set; }
 
-        public int ClientId { get; set; }
-
-        public string  AuthenticationCode { get; set; }
-*/
-
-function ClientOrder(json) {
-    this.Items = [];
-    this.ClientId;
-    this.AuthenticationCode;
-
-    this.init = function (items, id, code) {
-        Items = items;
-        ClientId = id;
-        AuthenticationCode = code;
-    };
-
-    if (json !== undefined) {
-        for (var prop in json) {
-            if (prop !== "Items") {
-                this[prop] = json[prop];
-            } else {
-                for (var i = 0; i < json[prop].length; i++) {
-                    this.Items.push(new ClientDrinkOrder(json[prop][i]));
-                }
-            }
-        }
-    }
-}
 
 /*
     public class Package
@@ -172,7 +143,7 @@ function ClientOrder(json) {
 function Package(json) {
     this.MessageId;
     this.CurrentInterval;
-    this.NewOrder;
+    this.NewOrder = [];
     this.CurrentBeursfuifTime;
     this.AuthenticationCode;
     this.ClientId;
@@ -187,7 +158,12 @@ function Package(json) {
             this[prop] = new ClientInterval(json[prop]);
         }
         else {
-            this[prop] = new ClientOrder(json[prop]);
+            if (json[prop] !== undefined && json[prop] !== null) {
+                var length = json[prop].length;
+                for (var i = 0; i < length; i++) {
+                    this.NewOrder.push(json[prop][i]);
+                }
+            }
         }
     }
 }

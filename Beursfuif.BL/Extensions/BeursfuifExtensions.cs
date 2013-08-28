@@ -59,5 +59,15 @@ namespace Beursfuif.BL.Extensions
                 return ms.ToArray();
             }
         }
+
+        public static int TotalPrice(this ClientDrinkOrder[] clientDrinkOrders, Interval currentInterval)
+        {
+            var query = from item in clientDrinkOrders
+                        join drink in currentInterval.Drinks
+                        on item.DrinkId equals drink.Id
+                        select item.Count * drink.CurrentPrice;
+            return query.Sum();           
+
+        }
     }
 }

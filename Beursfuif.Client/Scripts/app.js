@@ -20,12 +20,14 @@ function initApp(e) {
         loginVM: new LoginViewModel(),
         drinksVM: new DrinkViewModel(),
         webSocket: null,
-        orderVM: new OrderViewModel()
+        orderVM: new OrderViewModel(),
+        statusVM: new StatusViewModel()
     };
 
     ko.applyBindings(app.loginVM, document.getElementById("login"));
     ko.applyBindings(app.drinksVM, document.getElementById("drinks"));
     ko.applyBindings(app.orderVM, document.getElementById("order"));
+    ko.applyBindings(app.statusVM, document.getElementById("status"));
 
     checkForCachedValues();
 }
@@ -84,7 +86,7 @@ function webSocketOpenHandler(e) {
     console.log("Connection established");
     $("#login").fadeOut(400);
     $("#mainControls").fadeIn(400);
-    var initialPackage = new Package({ ClientName: app.loginVM.name() , MessageId:1});
+    var initialPackage = new Package({ ClientName: app.loginVM.name() , MessageId:PROTOCOLKIND.NEW_CLIENT_CONNECTS});
     app.webSocket.send(JSON.stringify(initialPackage));
     cacheLoginValues(app.loginVM.name(), app.loginVM.serverAdress(), app.loginVM.port());
     //TODO: set Timer for ack
@@ -115,6 +117,8 @@ function webSocketErrorHandler(e) {
 
 //#region ReceivedWebSocketMessages
 function ackNewClientConnects(pack) {
+    app.statusVM.ClientId(pack.ClientId);
+
     var length = pack.CurrentInterval.ClientDrinks.length;
     for (var i = 0; i < length; i++) {
         app.drinksVM.drinks.push(pack.CurrentInterval.ClientDrinks[i]);

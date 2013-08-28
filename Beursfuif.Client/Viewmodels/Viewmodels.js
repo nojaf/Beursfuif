@@ -68,6 +68,10 @@ function DrinkViewModel() {
     this.substractToCurrentOrder = function (dr) {
         app.orderVM.subItemToOrder(dr);
     };
+
+    this.getAuthenticationCode = function () {
+        return "zeikt in je eigen kulten";
+    };
 }
 //#endregion
 
@@ -113,5 +117,32 @@ function OrderViewModel() {
         });
     }, this);
 
+    this.SendOrder = function () {
+        var pack = new Package({
+            MessageId: PROTOCOLKIND.NEW_ORDER,
+            NewOrder:this.items(),
+            ClientId:app.statusVM.ClientId(),
+            AuthenticationCode: app.drinksVM.getAuthenticationCode()
+        });
+        console.log(pack);
+        app.webSocket.send(JSON.stringify(pack));
+        //TODO: some sort of timer to ensure the connection between client and server
+        /*  this.MessageId;
+this.CurrentInterval;
+this.NewOrder;
+this.CurrentBeursfuifTime;
+this.AuthenticationCode;
+this.ClientId;
+this.ClientName;*/ 
+
+    };
+
+    
+}
+//#endregion
+
+//#region StatusViewModel
+function StatusViewModel(){
+    this.ClientId = ko.observable(0);
 }
 //#endregion

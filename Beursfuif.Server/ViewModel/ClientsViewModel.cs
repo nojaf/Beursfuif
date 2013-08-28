@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using Beursfuif.BL.Extensions;
 
 namespace Beursfuif.Server.ViewModel
 {
@@ -15,7 +16,7 @@ namespace Beursfuif.Server.ViewModel
         /// <summary>
         /// The <see cref="MyProperty" /> property's name.
         /// </summary>
-        public const string ClientsPropertyName = "MyProperty";
+        public const string ClientsPropertyName = "Clients";
 
         private ObservableCollection<Client> _clients = null;
 
@@ -96,6 +97,16 @@ namespace Beursfuif.Server.ViewModel
         private void InitServer()
         {
             _server.NewClientEvent += Server_NewClientEventHandler;
+            _server.NewOrderEvent += Server_NewOrderEvent;
+        }
+
+        void Server_NewOrderEvent(object sender, BL.Event.NewOrderEventArgs e)
+        {
+            Client c = Clients.FirstOrDefault(x => x.Id == e.ClientId);
+            MessengerInstance.Send<ToastMessage>(new ToastMessage("Nieuwe bestelling ontvangen",
+                c.Name + ": " + e.Order.TotalPrice(GetCurrentInterval())));
+            c.LastActivity = DateTime.Now;
+            c.OrderCount++;
         }
 
         void Server_NewClientEventHandler(object sender, BL.Event.NewClientEventArgs e)
@@ -113,6 +124,12 @@ namespace Beursfuif.Server.ViewModel
 
             App.Current.Dispatcher.BeginInvoke(action, System.Windows.Threading.DispatcherPriority.Normal);
             MessengerInstance.Send<ToastMessage>(new ToastMessage("New client connected",e.Name + " heeft zich aangemeld."));
+        }
+
+        private Interval GetCurrentInterval()
+        {
+            var locator = base.GetLocator();
+            return locator.Settings.CurrentInterval;
         }
     }
 }

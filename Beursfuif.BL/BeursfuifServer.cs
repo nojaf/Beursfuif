@@ -14,6 +14,7 @@ namespace Beursfuif.BL
     public class BeursfuifServer
     {
         public event EventHandler<NewClientEventArgs> NewClientEvent;
+        public event EventHandler<NewOrderEventArgs> NewOrderEvent;
 
         //ID , UserContext
         public Dictionary<int,UserContext> Clients { get; set; }
@@ -65,12 +66,15 @@ namespace Beursfuif.BL
                 Package p = JsonConvert.DeserializeObject<Package>(context.DataFrame.ToString());
                 switch (p.MessageId)
                 {
-                    case 1:
+                    case ProtocolKind.NEW_CLIENT_CONNECTS:
                         int nextId = GetNextId();
                         Clients.Add(nextId, context);
                         OnNewClientEvent(this,new NewClientEventArgs(p.ClientName, context.ClientAddress.ToString(),nextId));
                         
                         //TODO: ack ID + currentInterval, methode here but called from VM after event
+                        break;
+                    case ProtocolKind.NEW_ORDER:
+                        OnNewOrderEvent(this, new NewOrderEventArgs(p.ClientId, p.AuthenticationCode, p.NewOrder));
                         break;
                 }
             }
@@ -98,6 +102,13 @@ namespace Beursfuif.BL
             if (NewClientEvent != null)
             {
                 NewClientEvent(sender, e);
+            }
+        }
+
+        public void OnNewOrderEvent(object sender, NewOrderEventArgs e)
+        {
+            if(NewOrderEvent != null){
+                NewOrderEvent(sender, e);
             }
         }
         #endregion

@@ -63,9 +63,9 @@
     <Compile Include="ClientDrink.cs" />
     <Compile Include="ClientDrinkOrder.cs" />
     <Compile Include="ClientInterval.cs" />
-    <Compile Include="ClientOrder.cs" />
     <Compile Include="Drink.cs" />
     <Compile Include="Event\NewClientEventArgs.cs" />
+    <Compile Include="Event\NewOrderEventArgs.cs" />
     <Compile Include="Extensions\BeursfuifExtensions.cs" />
     <Compile Include="Interval.cs" />
     <Compile Include="Package.cs" />
