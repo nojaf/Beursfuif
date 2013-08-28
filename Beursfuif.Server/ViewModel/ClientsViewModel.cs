@@ -84,7 +84,7 @@ namespace Beursfuif.Server.ViewModel
                     }
 
                 };
-                #endregion  
+                #endregion
             }
             else
             {
@@ -98,20 +98,35 @@ namespace Beursfuif.Server.ViewModel
         {
             _server.NewClientEvent += Server_NewClientEventHandler;
             _server.NewOrderEvent += Server_NewOrderEvent;
+            _server.ClientLeftEvent += Server_ClientLeftEvent;
+        }
+
+        void Server_ClientLeftEvent(object sender, BL.Event.ClientLeftEventArgs e)
+        {
+            Client c = Clients.FirstOrDefault(x => x.Id == e.ClientId);
+            if (c != null)
+            {
+                MessengerInstance.Send<ToastMessage>(new ToastMessage("Client left", c.Name + " heeft de server verlaten."));
+                App.Current.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    Clients.Remove(c);
+                }));
+            }
         }
 
         void Server_NewOrderEvent(object sender, BL.Event.NewOrderEventArgs e)
         {
             Client c = Clients.FirstOrDefault(x => x.Id == e.ClientId);
             MessengerInstance.Send<ToastMessage>(new ToastMessage("Nieuwe bestelling ontvangen",
-                c.Name + ": " + e.Order.TotalPrice(GetCurrentInterval())));
+            c.Name + ": " + e.Order.TotalPrice(GetCurrentInterval()) + " bongs."));
             c.LastActivity = DateTime.Now;
             c.OrderCount++;
         }
 
         void Server_NewClientEventHandler(object sender, BL.Event.NewClientEventArgs e)
         {
-            Action action = delegate(){
+            Action action = delegate()
+            {
                 Clients.Add(new Client()
                 {
                     Id = e.Id,
@@ -123,7 +138,7 @@ namespace Beursfuif.Server.ViewModel
             };
 
             App.Current.Dispatcher.BeginInvoke(action, System.Windows.Threading.DispatcherPriority.Normal);
-            MessengerInstance.Send<ToastMessage>(new ToastMessage("New client connected",e.Name + " heeft zich aangemeld."));
+            MessengerInstance.Send<ToastMessage>(new ToastMessage("New client connected", e.Name + " heeft zich aangemeld."));
         }
 
         private Interval GetCurrentInterval()

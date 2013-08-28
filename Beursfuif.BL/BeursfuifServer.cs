@@ -15,6 +15,7 @@ namespace Beursfuif.BL
     {
         public event EventHandler<NewClientEventArgs> NewClientEvent;
         public event EventHandler<NewOrderEventArgs> NewOrderEvent;
+        public event EventHandler<ClientLeftEventArgs> ClientLeftEvent;
 
         //ID , UserContext
         public Dictionary<int,UserContext> Clients { get; set; }
@@ -41,13 +42,17 @@ namespace Beursfuif.BL
             if (kv.Value != null)
             {
                 Console.WriteLine("Client ID:" + kv.Key + " , " + kv.Value.ClientAddress.ToString() + " left.");
+                OnClientLeftEvent(this, new ClientLeftEventArgs(kv.Key));
                 Clients.Remove(kv.Key);
             }
+           
         }
 
         private void OnWebSocketClientConnect(Alchemy.Classes.UserContext context)
         {
             Console.WriteLine("Client " + context.ClientAddress.ToString() + " connected");
+            int nextId = GetNextId();
+            Clients.Add(nextId, context);
         }
 
         private void OnWebSocketMessageSend(Alchemy.Classes.UserContext context)
@@ -57,8 +62,6 @@ namespace Beursfuif.BL
 
         private void OnWebSocketMessageReceive(Alchemy.Classes.UserContext context)
         {
-
-
             if (context.DataFrame != null)
             {
                 Console.WriteLine("Message received from " + context.ClientAddress.ToString() + ": " + context.DataFrame);
@@ -67,9 +70,12 @@ namespace Beursfuif.BL
                 switch (p.MessageId)
                 {
                     case ProtocolKind.NEW_CLIENT_CONNECTS:
-                        int nextId = GetNextId();
-                        Clients.Add(nextId, context);
-                        OnNewClientEvent(this,new NewClientEventArgs(p.ClientName, context.ClientAddress.ToString(),nextId));
+
+                        if (Clients.ContainsValue(context))
+                        {
+                            int id = Clients.First(x => x.Value == context).Key;
+                            OnNewClientEvent(this, new NewClientEventArgs(p.ClientName, context.ClientAddress.ToString(), id));
+                        }
                         
                         //TODO: ack ID + currentInterval, methode here but called from VM after event
                         break;
@@ -109,6 +115,14 @@ namespace Beursfuif.BL
         {
             if(NewOrderEvent != null){
                 NewOrderEvent(sender, e);
+            }
+        }
+
+        public void OnClientLeftEvent(object sender, ClientLeftEventArgs e)
+        {
+            if (ClientLeftEvent != null)
+            {
+                ClientLeftEvent(sender, e);
             }
         }
         #endregion

@@ -48,7 +48,11 @@ namespace Beursfuif.Server
         {
             Dispatcher.BeginInvoke(new Action(() =>
             {
-                (this.Parent as Grid).Children.Remove(this);
+                Grid parent = this.Parent as Grid;
+                if(parent != null  && parent.Children.Contains(this))
+                {
+                    parent.Children.Remove(this);
+                }
             }));
         }
 	}
