@@ -6,7 +6,8 @@
         xmlns:interact="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:mvvm= "clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WPF4"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:local="clr-namespace:Beursfuif.Server" mc:Ignorable="d" x:Class="Beursfuif.Server.MainWindow"
-        Title="MainWindow" MinHeight="768" MinWidth="1024"   
+        Title="Beursfuif" MinHeight="768" MinWidth="1024"   
+        WindowStartupLocation="CenterScreen"
         DataContext="{Binding Main, Source={StaticResource Locator}}">
 	<Grid x:Name="gdMain">
 		<Grid.RowDefinitions>

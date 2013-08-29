@@ -22,7 +22,7 @@
 		<Setter Property="FontSize" Value="12"/>
 		<Setter Property="Margin">
 			<Setter.Value>
-				<Thickness Left="2" Right="2" />
+				<Thickness Left="1" Right="1" />
 			</Setter.Value>
 		</Setter>
 		<Setter Property="FontFamily" Value="/Beursfuif.Server;component/Styles/#Coolvetica Rg" />

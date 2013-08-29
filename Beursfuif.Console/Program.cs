@@ -165,20 +165,7 @@ namespace Beursfuif.ConsoleApp
                 }
             };
 
-            ClientOrder co = new ClientOrder(){
-                AuthenticationCode = "zeikt",
-                ClientId = 1,
-                Items = new ClientDrinkOrder[]{
-                   new ClientDrinkOrder(){
-                       DrinkId = 1,
-                       Count =2
-                   },
-                   new ClientDrinkOrder(){
-                       DrinkId = 2,
-                       Count = 1
-                   }
-                }
-            };
+
 
             Package package = new Package()
             {
@@ -186,7 +173,6 @@ namespace Beursfuif.ConsoleApp
                 AuthenticationCode = "zeikt",
                 CurrentBeursfuifTime = DateTime.Now,
                 CurrentInterval = ci,
-                NewOrder = co,
                 ClientId = 1
             };
 
