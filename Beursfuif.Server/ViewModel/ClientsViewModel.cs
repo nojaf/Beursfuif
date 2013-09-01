@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using Beursfuif.BL.Extensions;
+using GalaSoft.MvvmLight.Command;
 
 namespace Beursfuif.Server.ViewModel
 {
@@ -43,6 +44,8 @@ namespace Beursfuif.Server.ViewModel
                 RaisePropertyChanged(ClientsPropertyName);
             }
         }
+
+        public RelayCommand<int> KickClientCommand { get; set; }
 
         public ClientsViewModel(BeursfuifServer server)
         {
@@ -92,6 +95,21 @@ namespace Beursfuif.Server.ViewModel
             }
 
             InitServer();
+            InitCommands();
+        }
+
+        private void InitCommands()
+        {
+            KickClientCommand = new RelayCommand<int>(KickClientHandler);
+        }
+
+        private void KickClientHandler(int id)
+        {
+            Client client = Clients.FirstOrDefault(x => x.Id == id);
+            if (client != null)
+            {
+                _server.KickClient(id);
+            }
         }
 
         private void InitServer()
@@ -146,5 +164,7 @@ namespace Beursfuif.Server.ViewModel
             var locator = base.GetLocator();
             return locator.Settings.CurrentInterval;
         }
+
+       
     }
 }

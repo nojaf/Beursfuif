@@ -49,8 +49,8 @@
                     <GridViewColumn Header="Image">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <Viewbox>
-                                    <Image Source="{Binding ImageString,TargetNullValue={StaticResource EmptyImage},Converter={StaticResource imgConv}}" Height="50" >
+                                <Viewbox Height="50">
+                                    <Image   Source="{Binding ImageString,TargetNullValue={StaticResource EmptyImage},Converter={StaticResource imgConv}}" >
                                     </Image>
                                 </Viewbox>
                             </DataTemplate>

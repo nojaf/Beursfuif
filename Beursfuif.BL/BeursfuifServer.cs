@@ -136,13 +136,23 @@ namespace Beursfuif.BL
         {
             Package p = new Package()
             {
-                MessageId = 2,
+                MessageId = ProtocolKind.ACK_NEW_CLIENT_CONNECTS,
                 ClientId = clientId,
                 CurrentInterval = currentInterval
             };
 
             string data = p.ToJSON();
             Clients.FirstOrDefault(x => x.Key == clientId).Value.Send(data);
+        }
+
+        public void KickClient(int id)
+        {
+            Package package = new Package()
+            {
+                MessageId = ProtocolKind.KICK_CLIENT
+            };
+            var context = Clients.FirstOrDefault(x => x.Key == id);
+            context.Value.Send(package.ToJSON());
         }
     }
 }

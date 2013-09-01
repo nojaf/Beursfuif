@@ -54,7 +54,10 @@
                     <GridViewColumn Header="Kick?">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <Button Height="25" Style="{StaticResource IconButton}"
+                                <Button Height="25"
+                                        Style="{StaticResource IconButton}"
+                                        Command="{Binding DataContext.KickClientCommand,ElementName=clientsView}"
+                                        CommandParameter="{Binding Id}"
                                         Content="" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>

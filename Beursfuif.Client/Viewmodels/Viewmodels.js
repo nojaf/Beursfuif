@@ -146,3 +146,10 @@ function StatusViewModel(){
     this.ClientId = ko.observable(0);
 }
 //#endregion
+
+//#region ErrorModal
+function ErrorModalViewModel() {
+    this.title = ko.observable("");
+    this.errorMessage = ko.observable("");
+}
+//#endregion

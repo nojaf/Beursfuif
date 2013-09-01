@@ -21,15 +21,19 @@ function initApp(e) {
         drinksVM: new DrinkViewModel(),
         webSocket: null,
         orderVM: new OrderViewModel(),
-        statusVM: new StatusViewModel()
+        statusVM: new StatusViewModel(),
+        errorModelVM:new ErrorModalViewModel()
     };
 
     ko.applyBindings(app.loginVM, document.getElementById("login"));
     ko.applyBindings(app.drinksVM, document.getElementById("drinks"));
     ko.applyBindings(app.orderVM, document.getElementById("order"));
     ko.applyBindings(app.statusVM, document.getElementById("status"));
+    ko.applyBindings(app.errorModelVM, document.getElementById("errorModal"));
 
     checkForCachedValues();
+
+    initErrorModal();
 }
 
 function initLoginScreen() {
@@ -94,6 +98,7 @@ function webSocketOpenHandler(e) {
 
 function webSocketCloseHandler(e) {
     console.log(e);
+    alert(e);
 }
 
 function webSocketMessageHandler(e) {
@@ -106,13 +111,15 @@ function webSocketMessageHandler(e) {
         case PROTOCOLKIND.TIME_UPDATE:
 
             break;
+        case PROTOCOLKIND.KICK_CLIENT:
+            clientGotKicked();
+            break;
     }
 }
 
 function webSocketErrorHandler(e) {
     console.log(e);
 }
-
 //#endregion
 
 //#region ReceivedWebSocketMessages
@@ -169,6 +176,15 @@ function resizeImages(length) {
     }
 
 }
+
+function clientGotKicked() {
+    //show error modal
+    app.webSocket.close();
+    app.errorModelVM.title("You got kicked from the server");
+    app.errorModelVM.errorMessage("De server heeft je express ervan gesmeten.\nProbeer opnieuw verbinding te maken of vraag es beleefd waar de server hem eigenlijk moet hebben.");
+    $("#errorModal").modal('show');
+
+}
 //#endregion
 
 //#region cached values
@@ -199,3 +215,14 @@ function cacheLoginValues(name, adress, port) {
     }
 }
 //#endregion
+
+function initErrorModal() {
+    $('#errorModal').on('hidden.bs.modal', function () {
+        app.drinksVM.drinks.removeAll();
+        app.orderVM.items.removeAll();
+        app.statusVM.ClientId(0);
+        app.webSocket = null;
+        $("#login").fadeIn(300);
+        $("#mainControls").fadeOut(300);
+    });
+}

@@ -77,15 +77,12 @@
                             <td>Drank</td>
                             <td>Aantal</td>
                             <td>Totaal</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
                         </tr>
                     </thead>
                     <tbody data-bind="foreach: items">
                         <tr>
                             <td data-bind="text: Name"></td>
-                            <td data-bind="text: CountObservable"></td>
+                            <td><span class="badge text-info" data-bind="text: CountObservable"></span></td>
                             <td data-bind="text: Total"></td>
                             <td><span class="glyphicon glyphicon-plus" data-bind="click: $root.addItemToOrder"></span></td>
                             <td><span class="glyphicon glyphicon-minus" data-bind="click: $root.subItemToOrder"></span></td>
@@ -101,6 +98,22 @@
             </div>
         </div>
     </div>
+     <div class="modal fade" id="errorModal" tabindex="-1" role="dialog"  aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close text-info" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title" data-bind="text: 'Error - ' + title()"></h4>
+        </div>
+        <div class="modal-body" data-bind="text: errorMessage">
+        
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default btn-primary" data-dismiss="modal">Aight</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
     <div id="mask"></div>
 </body>
 </html>
