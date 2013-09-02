@@ -112,7 +112,7 @@ namespace Beursfuif.Server.ViewModel
                     MessengerInstance.Send<ChangeVisibilityMessage>(new ChangeVisibilityMessage(typeof(SettingsViewModel).Name));
                     break;
                 case "MenuOrder":
-
+                    MessengerInstance.Send<ChangeVisibilityMessage>(new ChangeVisibilityMessage(typeof(OrdersViewModel).Name));
                     break;
             }
             Console.WriteLine(menuItem);

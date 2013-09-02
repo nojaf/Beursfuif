@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -68,6 +69,14 @@ namespace Beursfuif.BL.Extensions
                         select item.Count * drink.CurrentPrice;
             return query.Sum();           
 
+        }
+
+        public static string ToContentString(this ClientDrinkOrder[] clientDrinkOrders, ObservableCollection<Drink> drinks)
+        {
+            return  String.Join(",", (from clientDrink in clientDrinkOrders
+                                          join drink in drinks
+                                          on clientDrink.DrinkId equals drink.Id
+                                          select clientDrink.Count + " X " + drink.Name + ", ").ToArray());
         }
     }
 }

@@ -121,7 +121,7 @@ function OrderViewModel() {
         var pack = new Package({
             MessageId: PROTOCOLKIND.NEW_ORDER,
             NewOrder:this.items(),
-            ClientId:app.statusVM.ClientId(),
+            ClientId: app.statusVM.ClientId(),
             AuthenticationCode: app.drinksVM.getAuthenticationCode()
         });
         console.log(pack);

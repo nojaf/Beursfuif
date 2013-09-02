@@ -12,6 +12,8 @@ namespace Beursfuif.BL
 
         public byte Count { get; set; }
 
+        public int IntervalId { get; set; }
+
         public ClientDrinkOrder()
         {
 
@@ -19,7 +21,7 @@ namespace Beursfuif.BL
 
         public override string ToString()
         {
-            return string.Format("[ClientOrder]:[{0} x {1}]", DrinkId, Count);
+            return string.Format("[ClientOrder]:[{0} x {1} in {2}]", DrinkId, Count,IntervalId);
         }
 
         public override bool Equals(object obj)
@@ -27,9 +29,14 @@ namespace Beursfuif.BL
             if (obj is ClientDrinkOrder)
             {
                 ClientDrinkOrder other = obj as ClientDrinkOrder;
-                if (other.DrinkId == this.DrinkId && other.Count == this.Count) return true;
+                if (other.DrinkId == this.DrinkId && other.Count == this.Count && other.IntervalId == this.IntervalId) return true;
             }
             return false;
+        }
+
+        public override int GetHashCode()
+        {
+             return base.GetHashCode();
         }
     }
 }

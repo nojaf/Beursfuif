@@ -72,6 +72,7 @@
     <Compile Include="Package.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProtocolKind.cs" />
+    <Compile Include="ShowOrder.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

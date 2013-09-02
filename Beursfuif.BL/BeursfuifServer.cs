@@ -70,14 +70,7 @@ namespace Beursfuif.BL
                 switch (p.MessageId)
                 {
                     case ProtocolKind.NEW_CLIENT_CONNECTS:
-
-                        if (Clients.ContainsValue(context))
-                        {
-                            int id = Clients.First(x => x.Value == context).Key;
-                            OnNewClientEvent(this, new NewClientEventArgs(p.ClientName, context.ClientAddress.ToString(), id));
-                        }
-                        
-                        //TODO: ack ID + currentInterval, methode here but called from VM after event
+                        ReceivedNewClientConnect(context, p);
                         break;
                     case ProtocolKind.NEW_ORDER:
                         OnNewOrderEvent(this, new NewOrderEventArgs(p.ClientId, p.AuthenticationCode, p.NewOrder));
@@ -85,6 +78,8 @@ namespace Beursfuif.BL
                 }
             }
         }
+
+
 
         public void StartServer()
         {
@@ -127,6 +122,7 @@ namespace Beursfuif.BL
         }
         #endregion
 
+        #region Send to client(s)
         public int GetNextId()
         {
             return (Clients == null || Clients.Count == 0 ? 1 : Clients.Max(x => x.Key) + 1);
@@ -154,5 +150,19 @@ namespace Beursfuif.BL
             var context = Clients.FirstOrDefault(x => x.Key == id);
             context.Value.Send(package.ToJSON());
         }
+        #endregion
+
+        #region Received from client
+        private void ReceivedNewClientConnect(Alchemy.Classes.UserContext context, Package p)
+        {
+            if (Clients.ContainsValue(context))
+            {
+                int id = Clients.First(x => x.Value == context).Key;
+                OnNewClientEvent(this, new NewClientEventArgs(p.ClientName, context.ClientAddress.ToString(), id));
+            }
+
+            //TODO: ack ID + currentInterval, methode here but called from VM after event
+        }
+        #endregion
     }
 }
