@@ -53,21 +53,9 @@ namespace Beursfuif.Server.UserControls
         }
 
         private void UC_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            IsActive = !IsActive;
-            if (!IsActive)
-            {
-                VisualStateManager.GoToState(this, "Active", true);
-            }
-
-            if (IsActive)
-            {
-                VisualStateManager.GoToState(this, "Active", true);
-            }
-            else
-            {
-                VisualStateManager.GoToState(this, "NonActive", true);
-            }
+        {        
+            VisualStateManager.GoToState(this, "Active", true);
+            IsActive = true;
         }
 
         private void UC_MouseEnter(object sender, MouseEventArgs e)

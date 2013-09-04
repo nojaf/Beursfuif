@@ -1,8 +1,8 @@
 ﻿<UserControl x:Class="Beursfuif.Server.Views.OrdersView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
              d:DesignHeight="715"
              MinHeight="715"
@@ -37,8 +37,40 @@
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
-        <ListBox ItemsSource="{Binding AllClientDrinkOrders}">
-            
-        </ListBox>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="3*" />
+                <RowDefinition Height="4*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="505*" />
+                <ColumnDefinition Width="146*" />
+                <ColumnDefinition Width="100" />
+            </Grid.ColumnDefinitions>
+            <!-- graph control -->
+            <ComboBox ItemsSource="{Binding ReducedIntervals}"
+                      SelectedItem="{Binding SelectedInterval}"
+                      DisplayMemberPath="Value"
+                      Grid.Column="1"
+                      Height="30"
+                      VerticalAlignment="Top"
+                      Margin="1.2,5,0.2,0"></ComboBox>
+            <ListView Grid.Row="1"
+                      ItemsSource="{Binding ShowOrderList}"
+                      Grid.ColumnSpan="3" Margin="5">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Client" Width="75"
+                                        DisplayMemberBinding="{Binding ClientName}"></GridViewColumn>
+                        <GridViewColumn Header="Bestelling" Width="250"
+                                        DisplayMemberBinding="{Binding OrderContent}"></GridViewColumn>
+                        <GridViewColumn Header="Tijdstip" Width="100"
+                                        DisplayMemberBinding="{Binding Time,StringFormat={}{0:HH:mm}}"></GridViewColumn>
+                        <GridViewColumn Header="Totaal prijs" Width="100"
+                                        DisplayMemberBinding="{Binding TotalPrice}"></GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Grid>
     </Grid>
 </UserControl>

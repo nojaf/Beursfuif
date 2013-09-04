@@ -73,10 +73,10 @@ namespace Beursfuif.BL.Extensions
 
         public static string ToContentString(this ClientDrinkOrder[] clientDrinkOrders, ObservableCollection<Drink> drinks)
         {
-            return  String.Join(",", (from clientDrink in clientDrinkOrders
+            return  String.Join("\n\r", (from clientDrink in clientDrinkOrders
                                           join drink in drinks
                                           on clientDrink.DrinkId equals drink.Id
-                                          select clientDrink.Count + " X " + drink.Name + ", ").ToArray());
+                                          select clientDrink.Count + " X " + drink.Name).ToArray());
         }
     }
 }

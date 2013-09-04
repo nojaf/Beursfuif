@@ -12,5 +12,6 @@ namespace Beursfuif.BL
         public string OrderContent { get; set; }
         public string ClientName { get; set; }
         public int TotalPrice { get; set; }
+        public ClientDrinkOrder[] Orders { get; set; }
     }
 }
