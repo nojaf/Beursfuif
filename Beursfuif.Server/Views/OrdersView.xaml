@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:uc="clr-namespace:Beursfuif.Server.UserControls"
              mc:Ignorable="d"
              d:DesignHeight="715"
              MinHeight="715"
@@ -48,6 +49,7 @@
                 <ColumnDefinition Width="100" />
             </Grid.ColumnDefinitions>
             <!-- graph control -->
+            <uc:UCStats uc:UCStats.IntervalId="1"  />
             <ComboBox ItemsSource="{Binding ReducedIntervals}"
                       SelectedItem="{Binding SelectedInterval}"
                       DisplayMemberPath="Value"

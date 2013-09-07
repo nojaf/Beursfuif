@@ -60,7 +60,7 @@ namespace Beursfuif.ConsoleApp
                  LastActivity = DateTime.Now
             };
 
-            _server.SendAckInitialClientConnect( _clientInterval, e.Id);
+            _server.SendAckInitialClientConnect( _clientInterval, e.Id,DateTime.Now);
 
             //TODO send ack
         }

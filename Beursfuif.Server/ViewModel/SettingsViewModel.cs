@@ -150,11 +150,11 @@ namespace Beursfuif.Server.ViewModel
             {
                 SaveSettings settings = _ioManager.LoadObjectFromXml<SaveSettings>(PathManager.BUSY_AND_TIME_PATH);
                 BeursfuifBusy = settings.Busy;
+                BeursfuifCurrentTime = settings.CurrentTime;
 
                 if (BeursfuifBusy)
                 {
-                    MainActionButtonContent = PAUSE_PARTY;
-                    BeursfuifCurrentTime = settings.CurrentTime;
+                    MainActionButtonContent = PAUSE_PARTY;             
                     ResumeParty();
                 }
                 else
@@ -224,6 +224,8 @@ namespace Beursfuif.Server.ViewModel
         private void PauseParty()
         {
             BeursfuifBusy = false;
+            RaisePropertyChanged(BeursfuifBusyVisibilityPropertyName);
+
             _tmrMain.Change(Timeout.Infinite, Timeout.Infinite);
 
             _server.Pause();
@@ -239,6 +241,7 @@ namespace Beursfuif.Server.ViewModel
         private void ResumeParty()
         {
             BeursfuifBusy = true;
+            RaisePropertyChanged(BeursfuifBusyVisibilityPropertyName);
             _server.RestartServer();
 
             if (_tmrMain == null)
@@ -310,6 +313,9 @@ namespace Beursfuif.Server.ViewModel
                 {
                     ThreadPool.QueueUserWorkItem(SaveSettings);
                     //TODO save all orders (bin)
+
+                    //sync time with clients
+                    _server.UpdateTime(BeursfuifCurrentTime);
                 }
 
                 if (BeursfuifCurrentTime.CompareTo(CurrentInterval.EndTime) > 1)
@@ -334,7 +340,7 @@ namespace Beursfuif.Server.ViewModel
 
         void Server_NewClientEvent(object sender, BL.Event.NewClientEventArgs e)
         {
-            _server.SendAckInitialClientConnect(CurrentInterval.ToClientInterval(BeursfuifCurrentTime), e.Id);
+            _server.SendAckInitialClientConnect(CurrentInterval.ToClientInterval(BeursfuifCurrentTime), e.Id, BeursfuifCurrentTime);
         }
 
 

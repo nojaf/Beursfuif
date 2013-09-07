@@ -2,6 +2,8 @@
 /// <reference path="../Viewmodels/Viewmodels.js" />
 /// <reference path="../Models/models.js" />
 /// <reference path="jquery-2.0.3.js" />
+/// <reference path="moment.min.js" />
+
 
 
 window.onload = initApp;
@@ -98,7 +100,9 @@ function webSocketOpenHandler(e) {
 
 function webSocketCloseHandler(e) {
     console.log(e);
-    alert(e);
+    app.errorModelVM.title("De verbinding met de server is weggevallen");
+    app.errorModelVM.errorMessage("De connectie met de server is verloren. Controleer of het server programma nog actief is.");
+    $("#errorModal").modal('show');
 }
 
 function webSocketMessageHandler(e) {
@@ -109,7 +113,7 @@ function webSocketMessageHandler(e) {
             ackNewClientConnects(pack);
             break;
         case PROTOCOLKIND.TIME_UPDATE:
-
+            timeUpdate(pack);
             break;
         case PROTOCOLKIND.KICK_CLIENT:
             clientGotKicked();
@@ -119,12 +123,20 @@ function webSocketMessageHandler(e) {
 
 function webSocketErrorHandler(e) {
     console.log(e);
+    app.errorModelVM.title("Onverwacht probleem opgedoken");
+    app.errorModelVM.errorMessage("Er is een iets vreemd gebeurt, om veiligheidsredenen wordt de verbinding met de server verbroken. \nControleer of alles nog in orde is aan de serverkant en connecteer opnieuw.");
+    $("#errorModal").modal('show');
 }
 //#endregion
 
 //#region ReceivedWebSocketMessages
 function ackNewClientConnects(pack) {
     app.statusVM.ClientId(pack.ClientId);
+
+    console.log(pack.CurrentBeursfuifTime);
+    var time = pack.CurrentBeursfuifTime.toString().split("T")[1].substr(0,5);
+
+    app.statusVM.CurrentTime(time);
 
     var length = pack.CurrentInterval.ClientDrinks.length;
     for (var i = 0; i < length; i++) {
@@ -185,6 +197,20 @@ function clientGotKicked() {
     $("#errorModal").modal('show');
 
 }
+
+function timeUpdate(pack) {
+
+    var time = pack.CurrentBeursfuifTime.toString().split("T")[1].substr(0, 5);
+    console.log(time);
+    app.statusVM.CurrentTime(time);
+
+    var answerPack = new Package({
+        MessageId: PROTOCOLKIND.ACK_TIME_UPDATE,
+        ClientId: app.statusVM.ClientId(),
+        AuthenticationCode: app.drinksVM.getAuthenticationCode()
+    });
+    
+}
 //#endregion
 
 //#region cached values
@@ -218,11 +244,15 @@ function cacheLoginValues(name, adress, port) {
 
 function initErrorModal() {
     $('#errorModal').on('hidden.bs.modal', function () {
-        app.drinksVM.drinks.removeAll();
-        app.orderVM.items.removeAll();
-        app.statusVM.ClientId(0);
-        app.webSocket = null;
-        $("#login").fadeIn(300);
-        $("#mainControls").fadeOut(300);
+        resetAll();
     });
+}
+
+function resetAll() {
+    app.drinksVM.drinks.removeAll();
+    app.orderVM.items.removeAll();
+    app.statusVM.ClientId(0);
+    app.webSocket = null;
+    $("#login").fadeIn(300);
+    $("#mainControls").fadeOut(300);
 }

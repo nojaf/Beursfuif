@@ -128,13 +128,14 @@ namespace Beursfuif.BL
             return (Clients == null || Clients.Count == 0 ? 1 : Clients.Max(x => x.Key) + 1);
         }
 
-        public void SendAckInitialClientConnect(ClientInterval currentInterval, int clientId)
+        public void SendAckInitialClientConnect(ClientInterval currentInterval, int clientId, DateTime currentBeursfuifTime)
         {
             Package p = new Package()
             {
                 MessageId = ProtocolKind.ACK_NEW_CLIENT_CONNECTS,
                 ClientId = clientId,
-                CurrentInterval = currentInterval
+                CurrentInterval = currentInterval,
+                CurrentBeursfuifTime = currentBeursfuifTime
             };
 
             string data = p.ToJSON();
@@ -165,6 +166,21 @@ namespace Beursfuif.BL
                 client.Value.Send(package.ToJSON());
             }
         }
+
+        public void UpdateTime(DateTime currentTime)
+        {
+            Package package = new Package()
+            {
+                MessageId = ProtocolKind.TIME_UPDATE,
+                CurrentBeursfuifTime = currentTime
+            };
+
+            foreach (var client in Clients)
+            {
+                //TODO: add some sort of timer to check if the connection is still healthy
+                client.Value.Send(package.ToJSON());
+            }
+        }
         #endregion
 
         #region Received from client
@@ -177,6 +193,17 @@ namespace Beursfuif.BL
             }
 
             //TODO: ack ID + currentInterval, methode here but called from VM after event
+        }
+
+        //"zeikt in je eigen kulten"
+        private void ReceivedTimeAck(Alchemy.Classes.UserContext context, Package p)
+        {
+            if (p.AuthenticationCode != "zeikt in je eigen kulten")
+            {
+                Console.WriteLine("Foute auth code");
+            }
+
+            //TODO: stop the timer that checks for the clients response 
         }
         #endregion
 

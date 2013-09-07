@@ -9,6 +9,7 @@
     <script src="Scripts/knockout-2.3.0.js"></script>
     <link href="Style.css" rel="stylesheet" />
     <script src="Scripts/linq.min.js"></script>
+    <script src="Scripts/moment.min.js"></script>
     <script src="Models/models.js"></script>
     <script src="Viewmodels/Viewmodels.js"></script>
     <script src="Scripts/app.js"></script>
@@ -20,15 +21,15 @@
             <form role="form" data-bind="submit: connectToServer">
                 <div class="form-group">
                     <label for="inputName">Naam</label>
-                    <input type="text" data-bind="value: name" class="form-control" id="inputName" placeholder="bv Jimmy Frey">
+                    <input type="text" data-bind="value: name, valueUpdate: 'keyup'" class="form-control" id="inputName" placeholder="bv Jimmy Frey">
                 </div>
                 <div class="form-group">
                     <label for="inputServerIp">Server adres</label>
-                    <input type="text" id="inputServerIp" class="form-control" data-bind="value: serverAdress" placeholder="bv. 192.168.1.1">
+                    <input type="text" id="inputServerIp" class="form-control" data-bind="value: serverAdress, valueUpdate: 'keyup'" placeholder="bv. 192.168.1.1">
                 </div>
                 <div class="form-group">
                     <label for="inputServerIp">Poort</label>
-                    <input type="text" id="Text1" class="form-control" data-bind="value: port" placeholder="bv. 5678">
+                    <input type="text" id="Text1" class="form-control" data-bind="value: port, valueUpdate: 'keyup'" placeholder="bv. 5678">
                 </div>
                 <button type="submit" data-bind="enable: isValid" class="btn btn-default btn-primary">Aanmelden</button>
             </form>
@@ -40,6 +41,7 @@
                 <h1 class="navbar-brand">Beursfuif</h1>
                 <div class="row">
                            <p class="navbar-text col-md-2" data-bind="text: 'Id: ' + ClientId()"></p>
+                    <p class="navbar-text col-md-2" data-bind="text: 'Huidige tijd: '+ CurrentTime()"></p>
                 </div>
             </div>
         </div>

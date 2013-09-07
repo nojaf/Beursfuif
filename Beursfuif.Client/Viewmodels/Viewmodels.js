@@ -144,6 +144,7 @@ this.ClientName;*/
 //#region StatusViewModel
 function StatusViewModel(){
     this.ClientId = ko.observable(0);
+    this.CurrentTime = ko.observable("");
 }
 //#endregion
 
