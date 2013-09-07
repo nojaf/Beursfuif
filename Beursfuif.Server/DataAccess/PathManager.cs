@@ -13,7 +13,8 @@ namespace Beursfuif.Server.DataAccess
 
         public static string INTERVAL_BINARY_PATH = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Beursfuif\\Data\\" + "intervals.bin";
 
-        public static string CURRENT_INTERVAL_BINARY_PATH = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Beursfuif\\Data\\" + "current_intervals.bin";
+        public static string CURRENT_INTERVAL_XML_PATH = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Beursfuif\\Data\\" + "current_intervals.xml";
 
+        public static string BUSY_AND_TIME_PATH = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Beursfuif\\Data\\" + "time_and_busy.xml";
     }
 }

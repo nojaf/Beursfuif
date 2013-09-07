@@ -58,7 +58,10 @@ namespace Beursfuif.Server.ViewModel
             }
         }
 
-        //public bool BeursfuifBusy { get; set; }
+        public bool NotBeursfuifBusy
+        {
+            get { return !BeursfuifBusy; }
+        }
 
         public BeursfuifViewModelBase()
         {
@@ -97,10 +100,6 @@ namespace Beursfuif.Server.ViewModel
             _stateChanger = drinkView;
         }
 
-        public bool NotBeursfuifBusy
-        {
-            get { return !BeursfuifBusy; }
-        }
 
         protected ViewModelLocator GetLocator()
         {

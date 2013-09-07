@@ -50,24 +50,6 @@ namespace Beursfuif.Server.DataAccess
             return new ObservableCollection<T>();
         }
 
-
-        public void SaveObservableCollectionToXml<T>(string path,ObservableCollection<T> objects) where T : class
-        {        
-            System.Xml.Serialization.XmlSerializer writer = new System.Xml.Serialization.XmlSerializer(typeof(ObservableCollection<T>));
-            System.IO.StreamWriter file = new System.IO.StreamWriter(path,false);
-            writer.Serialize(file, objects);
-            file.Close();
-        }
-
-        public void SaveArrayToBinary<T>(string path, T[] objects) where T : class
-        {
-            var formatter = new BinaryFormatter();
-            using (var stream = File.Create(path))
-            {
-                formatter.Serialize(stream, objects);
-            }
-        }
-
         public T[] LoadArrayFromBinary<T>(string path) where T : class
         {
             if (File.Exists(path))
@@ -129,6 +111,60 @@ namespace Beursfuif.Server.DataAccess
                 }
             }
             return null;
+        }
+
+        public T LoadObjectFromXml<T>(string path) where T : class
+        {
+            if (File.Exists(path))
+            {
+                try
+                {
+                    System.Xml.Serialization.XmlSerializer reader = new System.Xml.Serialization.XmlSerializer(typeof(T));
+                    System.IO.StreamReader fileRead = new System.IO.StreamReader(path);
+                    var readedObject = reader.Deserialize(fileRead);
+                    return readedObject as T;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Could read stream, " + ex.Message);
+                    return null;
+                }
+            }
+            return null;
+        }
+
+        public void SaveObservableCollectionToXml<T>(string path,ObservableCollection<T> objects) where T : class
+        {        
+            System.Xml.Serialization.XmlSerializer writer = new System.Xml.Serialization.XmlSerializer(typeof(ObservableCollection<T>));
+            System.IO.StreamWriter file = new System.IO.StreamWriter(path,false);
+            writer.Serialize(file, objects);
+            file.Close();
+        }
+
+        public void SaveObjectToXml<T>(string path, T toSaveObject) where T : class
+        {
+            System.Xml.Serialization.XmlSerializer writer = new System.Xml.Serialization.XmlSerializer(typeof(T));
+            System.IO.StreamWriter file = new System.IO.StreamWriter(path, false);
+            writer.Serialize(file, toSaveObject);
+            file.Close();
+        }
+
+        public void SaveArrayToBinary<T>(string path, T[] objects) where T : class
+        {
+            var formatter = new BinaryFormatter();
+            using (var stream = File.Create(path))
+            {
+                formatter.Serialize(stream, objects);
+            }
+        }
+
+        public void SaveObjectToBinary<T>(string path, T toSaveObject) where T : class
+        {
+            var formatter = new BinaryFormatter();
+            using (var stream = File.Create(path))
+            {
+                formatter.Serialize(stream, toSaveObject);
+            }
         }
     }
 }

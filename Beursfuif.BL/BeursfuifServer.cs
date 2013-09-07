@@ -150,6 +150,21 @@ namespace Beursfuif.BL
             var context = Clients.FirstOrDefault(x => x.Key == id);
             context.Value.Send(package.ToJSON());
         }
+
+
+        //This methode will kick all the clients because the connection will be closed
+        public void Pause()
+        {
+            Package package = new Package()
+            {
+                MessageId = ProtocolKind.KICK_CLIENT
+            };
+
+            foreach (var client in Clients)
+            {
+                client.Value.Send(package.ToJSON());
+            }
+        }
         #endregion
 
         #region Received from client
@@ -164,5 +179,7 @@ namespace Beursfuif.BL
             //TODO: ack ID + currentInterval, methode here but called from VM after event
         }
         #endregion
+
+
     }
 }

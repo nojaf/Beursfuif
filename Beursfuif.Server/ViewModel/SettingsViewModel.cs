@@ -145,10 +145,24 @@ namespace Beursfuif.Server.ViewModel
         {
             _ioManager = ioManager;
             _server = server;
-            CurrentInterval = LoadCurrentInterval();
-            if (CurrentInterval != null)
+            
+            if (System.IO.File.Exists(PathManager.BUSY_AND_TIME_PATH))
             {
-                MainActionButtonContent = RESUME_PARTY;
+                SaveSettings settings = _ioManager.LoadObjectFromXml<SaveSettings>(PathManager.BUSY_AND_TIME_PATH);
+                BeursfuifBusy = settings.Busy;
+
+                if (BeursfuifBusy)
+                {
+                    MainActionButtonContent = PAUSE_PARTY;
+                    BeursfuifCurrentTime = settings.CurrentTime;
+                    ResumeParty();
+                }
+                else
+                {
+                    MainActionButtonContent = RESUME_PARTY;
+                }
+
+                CurrentInterval = LoadCurrentInterval();
             }
             else
             {
@@ -159,9 +173,11 @@ namespace Beursfuif.Server.ViewModel
             InitServer();
         }
 
+
+
         private Interval LoadCurrentInterval()
         {
-            return _ioManager.LoadObjectFromBinary<Interval>(PathManager.CURRENT_INTERVAL_BINARY_PATH);
+            return _ioManager.LoadObjectFromXml<Interval>(PathManager.CURRENT_INTERVAL_XML_PATH);
         }
 
         private void InitCommands()
@@ -197,12 +213,47 @@ namespace Beursfuif.Server.ViewModel
                     ThreadPool.QueueUserWorkItem(InitParty);
                     break;
                 case RESUME_PARTY:
-
+                    ResumeParty();
                     break;
                 case PAUSE_PARTY:
-
+                    PauseParty();
                     break;
             }
+        }
+
+        private void PauseParty()
+        {
+            BeursfuifBusy = false;
+            _tmrMain.Change(Timeout.Infinite, Timeout.Infinite);
+
+            _server.Pause();
+
+            _server.StopServer();
+
+            MainActionButtonContent = RESUME_PARTY;
+
+            ThreadPool.QueueUserWorkItem(SaveSettings);
+            MessengerInstance.Send<ToastMessage>(new ToastMessage("Server paused"));
+        }
+
+        private void ResumeParty()
+        {
+            BeursfuifBusy = true;
+            _server.RestartServer();
+
+            if (_tmrMain == null)
+            {
+                //start timer
+                _tmrMain = new Timer(MainTimer_Tick, null, 1000, 1000);
+            }
+            else
+            {
+                _tmrMain.Change(1000, 1000);
+            }
+
+            MainActionButtonContent = PAUSE_PARTY;
+
+            base.MessengerInstance.Send<ToastMessage>(new ToastMessage("Server restarted"));
         }
 
         public void InitParty(object state)
@@ -233,20 +284,40 @@ namespace Beursfuif.Server.ViewModel
             _server.StartServer();
             MainActionButtonContent = PAUSE_PARTY;
             base.MessengerInstance.Send<ToastMessage>(new ToastMessage("Server started"));
+
+            SaveSettings(state);
+        }
+
+        private void SaveSettings(object state)
+        {
+            //Busy? bool    }
+            //CurrentTime   } => Tuple<bool,DateTime>
+            _ioManager.SaveObjectToXml<SaveSettings>(PathManager.BUSY_AND_TIME_PATH, new SaveSettings(BeursfuifBusy,BeursfuifCurrentTime));
+
+            //CurrentInterval
+            _ioManager.SaveObjectToXml<Interval>(PathManager.CURRENT_INTERVAL_XML_PATH, CurrentInterval);
         }
 
         public void MainTimer_Tick(object state)
         {
             _tmrMain.Change(int.MaxValue,int.MaxValue);
             //BEGIN CODE
-            BeursfuifCurrentTime = BeursfuifCurrentTime.AddSeconds(1);
-
-            if (BeursfuifCurrentTime.CompareTo(CurrentInterval.EndTime) > 1)
+            if (BeursfuifBusy)
             {
-                //Update time
-                Console.WriteLine("Update");
-            }
+                BeursfuifCurrentTime = BeursfuifCurrentTime.AddSeconds(1);
 
+                if (BeursfuifCurrentTime.Second == 0)
+                {
+                    ThreadPool.QueueUserWorkItem(SaveSettings);
+                    //TODO save all orders (bin)
+                }
+
+                if (BeursfuifCurrentTime.CompareTo(CurrentInterval.EndTime) > 1)
+                {
+                    //TODO Update time
+                    Console.WriteLine("Update");
+                }
+            }
             //END CODE
             _tmrMain.Change(1000, 1000);
         }

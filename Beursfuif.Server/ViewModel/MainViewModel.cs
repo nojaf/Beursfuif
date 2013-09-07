@@ -80,7 +80,10 @@ namespace Beursfuif.Server.ViewModel
 
         private void HandleToasts(ToastMessage obj)
         {
-            _toastManager.ShowToast(obj.Title, obj.Message);
+            if (_toastManager != null)
+            {
+                _toastManager.ShowToast(obj.Title, obj.Message);
+            }
         }
 
         private void HandleErrorMessages(DialogMessage em)
