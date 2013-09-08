@@ -169,14 +169,42 @@ namespace Beursfuif.Server.ViewModel
             }
         }
 
+        /// <summary>
+        /// The <see cref="ReducedDrinks" /> property's name.
+        /// </summary>
+        public const string ReducedDrinksPropertyName = "ReducedDrinks";
+
+        private ReducedDrink[] _reducedDrinks = null;
+
+        /// <summary>
+        /// Sets and gets the ReducedDrinks property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public ReducedDrink[] ReducedDrinks
+        {
+            get
+            {
+                return _reducedDrinks;
+            }
+
+            set
+            {
+                if (_reducedDrinks == value)
+                {
+                    return;
+                }
+
+                RaisePropertyChanging(ReducedDrinksPropertyName);
+                _reducedDrinks = value;
+                RaisePropertyChanged(ReducedDrinksPropertyName);
+            }
+        }
+
         public OrdersViewModel(BeursfuifServer server)
         {
             _server = server;
             InitServer();
         }
-
-
-
 
         protected override void ChangePartyBusy(Messages.BeursfuifBusyMessage obj)
         {
@@ -201,9 +229,17 @@ namespace Beursfuif.Server.ViewModel
                 ReducedIntervals[i] = new ReducedInterval(intervals[i-1]);
             }
 
+            var drinks = base.GetLocator().Drink.Drinks;
+            int drinksLength = drinks.Count;
+
+            ReducedDrinks = new ReducedDrink[drinksLength];
+            for (int j = 0; j < drinksLength; j++)
+            {
+                ReducedDrinks[j] = new ReducedDrink() { Id = drinks[j].Id, Name = drinks[j].Name };
+            }
+
             SelectedInterval = ReducedIntervals[0];
         }
-
 
         private void UpdateShowOrderList()
         {
@@ -235,17 +271,24 @@ namespace Beursfuif.Server.ViewModel
             var currentInterval = locator.Settings.CurrentInterval;
             App.Current.Dispatcher.BeginInvoke(new Action(() =>
             {
+                ClientDrinkOrder[] items = e.Order;
+                foreach (var drinkItem in items)
+                {
+                    drinkItem.IntervalId = currentInterval.Id;
+                }
+
                 ShowOrder newOrder = new ShowOrder()
                 {
                     ClientName = locator.Clients.Clients.FirstOrDefault(x => x.Id == e.ClientId).Name,
                     IntervalId = currentInterval.Id,
                     OrderContent = e.Order.ToContentString(locator.Drink.Drinks),
-                    Time = DateTime.Now,
+                    Time = locator.Settings.BeursfuifCurrentTime,
                     TotalPrice = e.Order.TotalPrice(currentInterval),
-                    Orders = e.Order
+                    Orders = items
                 };
 
                 AllOrders.Add(newOrder);
+                RaisePropertyChanged(AllOrdersPropertyName);
                 if (SelectedInterval.Id == currentInterval.Id || SelectedInterval.Id == int.MaxValue)
                 {
                     ShowOrderList.Add(newOrder);

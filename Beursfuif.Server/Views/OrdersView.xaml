@@ -49,8 +49,11 @@
                 <ColumnDefinition Width="100" />
             </Grid.ColumnDefinitions>
             <!-- graph control -->
-            <uc:UCStats uc:UCStats.IntervalId="1"  />
-            <ComboBox ItemsSource="{Binding ReducedIntervals}"
+            <uc:UCStats uc:UCStats.IntervalId="{Binding ElementName=cboIntervals,Path=SelectedItem.Id,UpdateSourceTrigger=PropertyChanged}"
+                        uc:UCStats.AllOrders="{Binding ElementName=ordersView,Path=DataContext.AllOrders,UpdateSourceTrigger=PropertyChanged}"
+                        uc:UCStats.Drinks="{Binding ElementName=ordersView,Path=DataContext.ReducedDrinks,UpdateSourceTrigger=PropertyChanged}" />
+            <ComboBox x:Name="cboIntervals"
+                        ItemsSource="{Binding ReducedIntervals}"
                       SelectedItem="{Binding SelectedInterval}"
                       DisplayMemberPath="Value"
                       Grid.Column="1"

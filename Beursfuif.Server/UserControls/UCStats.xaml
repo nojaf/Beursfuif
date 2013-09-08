@@ -6,13 +6,28 @@
              mc:Ignorable="d"
              d:DesignHeight="360"
              d:DesignWidth="600">
-    <Grid Loaded="Grid_Loaded">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="45*" />
             <RowDefinition Height="10*" />
         </Grid.RowDefinitions>
         <Grid x:Name="graphGrid">
-            
+            <!--<Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <TextBlock Background="Yellow" TextAlignment="Center" VerticalAlignment="Bottom" Height="50">19.6%</TextBlock>
+            <TextBlock Background="Red"
+                       TextAlignment="Center"
+                       VerticalAlignment="Bottom"
+                       Grid.Column="1"
+                       Height="70">19.6%</TextBlock>
+            <TextBlock Background="Green"
+                       TextAlignment="Center"
+                       VerticalAlignment="Bottom"
+                       Grid.Column="2"
+                       Height="25">19.6%</TextBlock>-->
         </Grid>
         <Grid Grid.Row="1"
                 x:Name="titleGrid">
