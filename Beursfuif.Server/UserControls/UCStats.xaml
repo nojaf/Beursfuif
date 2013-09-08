@@ -6,11 +6,14 @@
              mc:Ignorable="d"
              d:DesignHeight="360"
              d:DesignWidth="600">
-    <Grid>
+    <Grid Loaded="Grid_Loaded">
         <Grid.RowDefinitions>
             <RowDefinition Height="45*" />
             <RowDefinition Height="10*" />
         </Grid.RowDefinitions>
+        <Grid x:Name="graphGrid">
+            
+        </Grid>
         <Grid Grid.Row="1"
                 x:Name="titleGrid">
                        
