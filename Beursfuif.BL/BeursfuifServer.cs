@@ -152,7 +152,6 @@ namespace Beursfuif.BL
             context.Value.Send(package.ToJSON());
         }
 
-
         //This methode will kick all the clients because the connection will be closed
         public void Pause()
         {
@@ -175,6 +174,23 @@ namespace Beursfuif.BL
                 CurrentBeursfuifTime = currentTime
             };
 
+            Broadcast(package);
+        }
+
+        public void UpdateInterval(ClientInterval clientInterval, DateTime currentBFTime)
+        {
+            Package package = new Package()
+            {
+                MessageId = ProtocolKind.UPDATE_CLIENT_INTERVAL,
+                CurrentInterval = clientInterval,
+                CurrentBeursfuifTime = currentBFTime
+            };
+            Broadcast(package);
+
+        }
+
+        private void Broadcast(Package package)
+        {
             foreach (var client in Clients)
             {
                 //TODO: add some sort of timer to check if the connection is still healthy

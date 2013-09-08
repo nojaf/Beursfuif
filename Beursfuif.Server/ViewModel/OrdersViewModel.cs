@@ -308,6 +308,7 @@ namespace Beursfuif.Server.ViewModel
             var currentInterval = locator.Settings.CurrentInterval;
             App.Current.Dispatcher.BeginInvoke(new Action(() =>
             {
+                //TODO: Check with auth code
                 ClientDrinkOrder[] items = e.Order;
                 foreach (var drinkItem in items)
                 {

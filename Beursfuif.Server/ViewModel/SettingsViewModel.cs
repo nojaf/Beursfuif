@@ -342,9 +342,11 @@ namespace Beursfuif.Server.ViewModel
                         Interval next = CalculatePriceUpdates(locator.Interval.Intervals, locator.Orders.AllOrderItems, CurrentInterval.Id);
                         App.Current.Dispatcher.BeginInvoke(new Action(() => {
                               CurrentInterval = next;
-                              _tmrMain.Change(1000, 1000);
                               locator.Interval.SaveIntervals();
+                              _server.UpdateInterval(next.ToClientInterval(BeursfuifCurrentTime), BeursfuifCurrentTime);
+                              _tmrMain.Change(1000, 1000);
                         }));
+                        
                     }));
                     return;
                 }
@@ -352,8 +354,6 @@ namespace Beursfuif.Server.ViewModel
             //END CODE
             _tmrMain.Change(1000, 1000);
         }
-
-
 
         #region Price Updates
         private Interval CalculatePriceUpdates(Interval[] intervals,List<ClientDrinkOrder>  allOrdersItems, int currentIntervalId)

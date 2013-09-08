@@ -102,7 +102,7 @@ function OrderViewModel() {
             return;
         }
         clientOrderItem.subtract(1);
-        if (clientOrderItem.Count() === 0) {
+        if (clientOrderItem.CountObservable() === 0) {
             app.orderVM.items.remove(clientOrderItem);
         }
     };
@@ -127,6 +127,7 @@ function OrderViewModel() {
         console.log(pack);
         app.webSocket.send(JSON.stringify(pack));
         //TODO: some sort of timer to ensure the connection between client and server
+        app.orderVM.items.removeAll();
         /*  this.MessageId;
 this.CurrentInterval;
 this.NewOrder;

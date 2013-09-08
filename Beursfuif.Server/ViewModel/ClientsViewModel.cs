@@ -135,10 +135,13 @@ namespace Beursfuif.Server.ViewModel
         void Server_NewOrderEvent(object sender, BL.Event.NewOrderEventArgs e)
         {
             Client c = Clients.FirstOrDefault(x => x.Id == e.ClientId);
-            MessengerInstance.Send<ToastMessage>(new ToastMessage("Nieuwe bestelling ontvangen",
-            c.Name + ": " + e.Order.TotalPrice(GetCurrentInterval()) + " bongs."));
-            c.LastActivity = base.GetLocator().Settings.BeursfuifCurrentTime;
-            c.OrderCount++;
+            if (c != null)
+            {
+                MessengerInstance.Send<ToastMessage>(new ToastMessage("Nieuwe bestelling ontvangen",
+                c.Name + ": " + e.Order.TotalPrice(GetCurrentInterval()) + " bongs."));
+                c.LastActivity = base.GetLocator().Settings.BeursfuifCurrentTime;
+                c.OrderCount++;
+            }
         }
 
         void Server_NewClientEventHandler(object sender, BL.Event.NewClientEventArgs e)

@@ -43,6 +43,11 @@ function initLoginScreen() {
     var screenHeight = document.documentElement.clientHeight;
     var offset = parseInt((screenHeight - login.clientHeight) / 2, 0);
     login.style.marginTop = offset + "px";
+
+    //loading circle
+    var loading = document.getElementById("loading");
+    loading.style.top = parseInt((screenHeight - loading.clientHeight) / 2, 0) + "px";
+    loading.style.left = parseInt((document.documentElement.clientWidth - 100) / 2, 0) + "px";
 }
 
 //#region Background
@@ -81,6 +86,8 @@ function changeBackground() {
 
 //#region Websocket
 function initWebsocketMethodes(url) {
+    $("#login").fadeOut(400);
+    $("#loading").fadeIn(100);
     app.webSocket = new WebSocket(url);
     app.webSocket.onopen = webSocketOpenHandler;
     app.webSocket.onclose = webSocketCloseHandler;
@@ -90,8 +97,6 @@ function initWebsocketMethodes(url) {
 
 function webSocketOpenHandler(e) {
     console.log("Connection established");
-    $("#login").fadeOut(400);
-    $("#mainControls").fadeIn(400);
     var initialPackage = new Package({ ClientName: app.loginVM.name() , MessageId:PROTOCOLKIND.NEW_CLIENT_CONNECTS});
     app.webSocket.send(JSON.stringify(initialPackage));
     cacheLoginValues(app.loginVM.name(), app.loginVM.serverAdress(), app.loginVM.port());
@@ -118,6 +123,9 @@ function webSocketMessageHandler(e) {
         case PROTOCOLKIND.KICK_CLIENT:
             clientGotKicked();
             break;
+        case PROTOCOLKIND.UPDATE_CLIENT_INTERVAL:
+            updateClientInterval(pack);
+            break;
     }
 }
 
@@ -132,19 +140,7 @@ function webSocketErrorHandler(e) {
 //#region ReceivedWebSocketMessages
 function ackNewClientConnects(pack) {
     app.statusVM.ClientId(pack.ClientId);
-
-    console.log(pack.CurrentBeursfuifTime);
-    var time = pack.CurrentBeursfuifTime.toString().split("T")[1].substr(0,5);
-
-    app.statusVM.CurrentTime(time);
-
-    var length = pack.CurrentInterval.ClientDrinks.length;
-    for (var i = 0; i < length; i++) {
-        app.drinksVM.drinks.push(pack.CurrentInterval.ClientDrinks[i]);
-    }
-
-    //image height:
-    resizeImages(length);
+    displayDrinks(pack);
 }
 
 function resizeImages(length) {
@@ -211,6 +207,38 @@ function timeUpdate(pack) {
     });
     
 }
+
+function updateClientInterval(pack) {
+    displayDrinks(pack);
+}
+
+function displayDrinks(pack) {
+    $("#drinks").fadeOut(100);
+    $("#order").fadeOut(100);
+    $("#loading").fadeIn(100);
+
+    console.log(pack.CurrentBeursfuifTime);
+    var time = pack.CurrentBeursfuifTime.toString().split("T")[1].substr(0, 5);
+
+    app.statusVM.CurrentTime(time);
+
+    app.orderVM.items.removeAll();
+
+    app.drinksVM.drinks.removeAll();
+    var length = pack.CurrentInterval.ClientDrinks.length;
+    for (var i = 0; i < length; i++) {
+        app.drinksVM.drinks.push(pack.CurrentInterval.ClientDrinks[i]);
+    }
+
+    //image height:
+    resizeImages(length);
+
+    setTimeout(function () {
+        $("#loading").fadeOut(100);
+        $("#drinks").fadeIn(250);
+        $("#order").fadeIn(250);
+    }, 500);
+}
 //#endregion
 
 //#region cached values
@@ -254,5 +282,7 @@ function resetAll() {
     app.statusVM.ClientId(0);
     app.webSocket = null;
     $("#login").fadeIn(300);
-    $("#mainControls").fadeOut(300);
+    $("#loading").fadeOut(300);
+    $("#drinks").fadeOut(300);
+    $("#order").fadeOut(300);
 }
