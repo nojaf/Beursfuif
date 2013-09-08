@@ -124,6 +124,7 @@
     <Compile Include="Converters\BitmapFrameConverter.cs" />
     <Compile Include="DataAccess\IOManager.cs" />
     <Compile Include="DataAccess\PathManager.cs" />
+    <Compile Include="Messages\AutoSaveAllOrdersMessage.cs" />
     <Compile Include="Messages\BeursfuifBusyMessage.cs" />
     <Compile Include="Messages\BeursfuifStartedMessage.cs" />
     <Compile Include="Messages\ToastMessage.cs" />

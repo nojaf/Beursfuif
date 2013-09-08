@@ -12,10 +12,11 @@ using System.Threading;
 using System.Windows;
 using Beursfuif.BL.Extensions;
 using Beursfuif.Server.Messages;
+using System.Collections.ObjectModel;
 
 namespace Beursfuif.Server.ViewModel
 {
-    public class SettingsViewModel:BeursfuifViewModelBase
+    public class SettingsViewModel : BeursfuifViewModelBase
     {
         #region Fields and Properties
         /// <summary>
@@ -88,8 +89,9 @@ namespace Beursfuif.Server.ViewModel
         private const string BeursfuifBusyVisibilityPropertyName = "BeursfuifBusyVisibility";
         public Visibility BeursfuifBusyVisibility
         {
-            get{
-                return (BeursfuifBusy ? Visibility.Visible : Visibility.Collapsed); 
+            get
+            {
+                return (BeursfuifBusy ? Visibility.Visible : Visibility.Collapsed);
             }
         }
 
@@ -139,22 +141,27 @@ namespace Beursfuif.Server.ViewModel
             }
         }
 
-#endregion
+        public RelayCommand AddOneMinute { get; set; }
+
+        public RelayCommand ForceAutoSaveAllOrders { get; set; }
+
+        #endregion
 
         public SettingsViewModel(IOManager ioManager, BeursfuifServer server)
         {
             _ioManager = ioManager;
             _server = server;
-            
+
             if (System.IO.File.Exists(PathManager.BUSY_AND_TIME_PATH))
             {
                 SaveSettings settings = _ioManager.LoadObjectFromXml<SaveSettings>(PathManager.BUSY_AND_TIME_PATH);
                 BeursfuifBusy = settings.Busy;
                 BeursfuifCurrentTime = settings.CurrentTime;
+                CurrentInterval = LoadCurrentInterval();
 
                 if (BeursfuifBusy)
                 {
-                    MainActionButtonContent = PAUSE_PARTY;             
+                    MainActionButtonContent = PAUSE_PARTY;
                     ResumeParty();
                 }
                 else
@@ -162,7 +169,7 @@ namespace Beursfuif.Server.ViewModel
                     MainActionButtonContent = RESUME_PARTY;
                 }
 
-                CurrentInterval = LoadCurrentInterval();
+
             }
             else
             {
@@ -171,9 +178,9 @@ namespace Beursfuif.Server.ViewModel
 
             InitCommands();
             InitServer();
+
+            MessengerInstance.Send<BeursfuifBusyMessage>(new BeursfuifBusyMessage() { Value = this.BeursfuifBusy });
         }
-
-
 
         private Interval LoadCurrentInterval()
         {
@@ -182,7 +189,9 @@ namespace Beursfuif.Server.ViewModel
 
         private void InitCommands()
         {
-            MainActionButtonCommand = new RelayCommand(MainActionCommand, ValidatePartyConditions); 
+            MainActionButtonCommand = new RelayCommand(MainActionCommand, ValidatePartyConditions);
+            AddOneMinute = new RelayCommand(() => { BeursfuifCurrentTime = BeursfuifCurrentTime.AddMinutes(1); });
+            ForceAutoSaveAllOrders = new RelayCommand(() => { MessengerInstance.Send<AutoSaveAllOrdersMessage>(new AutoSaveAllOrdersMessage()); });
         }
 
         private bool ValidatePartyConditions()
@@ -206,8 +215,9 @@ namespace Beursfuif.Server.ViewModel
             return false;
         }
 
-        private void MainActionCommand() {
-            switch(MainActionButtonContent)
+        private void MainActionCommand()
+        {
+            switch (MainActionButtonContent)
             {
                 case PARTY_NEVER_STARTED:
                     ThreadPool.QueueUserWorkItem(InitParty);
@@ -257,6 +267,7 @@ namespace Beursfuif.Server.ViewModel
             MainActionButtonContent = PAUSE_PARTY;
 
             base.MessengerInstance.Send<ToastMessage>(new ToastMessage("Server restarted"));
+            ThreadPool.QueueUserWorkItem(SaveSettings);
         }
 
         public void InitParty(object state)
@@ -271,11 +282,12 @@ namespace Beursfuif.Server.ViewModel
 
             //fill all intervals
             int intervalCount = locator.Interval.Intervals.Length;
-            
+
             for (int i = 0; i < intervalCount; i++)
             {
                 locator.Interval.Intervals[i].Drinks = drinks;
             }
+            locator.Interval.SaveIntervals();
 
             CurrentInterval = locator.Interval.Intervals[0];
 
@@ -295,7 +307,7 @@ namespace Beursfuif.Server.ViewModel
         {
             //Busy? bool    }
             //CurrentTime   } => Tuple<bool,DateTime>
-            _ioManager.SaveObjectToXml<SaveSettings>(PathManager.BUSY_AND_TIME_PATH, new SaveSettings(BeursfuifBusy,BeursfuifCurrentTime));
+            _ioManager.SaveObjectToXml<SaveSettings>(PathManager.BUSY_AND_TIME_PATH, new SaveSettings(BeursfuifBusy, BeursfuifCurrentTime));
 
             //CurrentInterval
             _ioManager.SaveObjectToXml<Interval>(PathManager.CURRENT_INTERVAL_XML_PATH, CurrentInterval);
@@ -303,7 +315,7 @@ namespace Beursfuif.Server.ViewModel
 
         public void MainTimer_Tick(object state)
         {
-            _tmrMain.Change(int.MaxValue,int.MaxValue);
+            _tmrMain.Change(int.MaxValue, int.MaxValue);
             //BEGIN CODE
             if (BeursfuifBusy)
             {
@@ -313,27 +325,76 @@ namespace Beursfuif.Server.ViewModel
                 {
                     ThreadPool.QueueUserWorkItem(SaveSettings);
                     //TODO save all orders (bin)
+                    MessengerInstance.Send<AutoSaveAllOrdersMessage>(new AutoSaveAllOrdersMessage());
 
                     //sync time with clients
                     _server.UpdateTime(BeursfuifCurrentTime);
                 }
 
-                if (BeursfuifCurrentTime.CompareTo(CurrentInterval.EndTime) > 1)
+                if (BeursfuifCurrentTime > CurrentInterval.EndTime)
                 {
                     //TODO Update time
                     Console.WriteLine("Update");
+                    var locator = base.GetLocator();
+
+                    ThreadPool.QueueUserWorkItem(new WaitCallback((object target) =>
+                    {
+                        Interval next = CalculatePriceUpdates(locator.Interval.Intervals, locator.Orders.AllOrderItems, CurrentInterval.Id);
+                        App.Current.Dispatcher.BeginInvoke(new Action(() => {
+                              CurrentInterval = next;
+                              _tmrMain.Change(1000, 1000);
+                              locator.Interval.SaveIntervals();
+                        }));
+                    }));
+                    return;
                 }
             }
             //END CODE
             _tmrMain.Change(1000, 1000);
         }
 
+
+
+        #region Price Updates
+        private Interval CalculatePriceUpdates(Interval[] intervals,List<ClientDrinkOrder>  allOrdersItems, int currentIntervalId)
+        {
+            Interval currentInterval = intervals.FirstOrDefault(x => x.Id == currentIntervalId);
+            int indexCurrentInterval = Array.IndexOf(intervals, currentInterval);
+            if (indexCurrentInterval == intervals.Length - 1) return null;
+
+            Interval nextInterval = intervals[indexCurrentInterval + 1];
+            if (indexCurrentInterval == 0) return nextInterval;
+
+            //In this scenario the change of prices will only trigger after the second interval
+            Interval previousInterval = intervals[indexCurrentInterval - 1];
+
+            foreach (Drink dr in nextInterval.Drinks)
+            {
+                int currentPrice = currentInterval.Drinks.First(x => x.Id == dr.Id).CurrentPrice;
+
+                int previousCount = allOrdersItems.Where(x => x.IntervalId == previousInterval.Id &&
+                    x.DrinkId == dr.Id).Sum(x => x.Count);
+                int currentCount = allOrdersItems.Where(x => x.IntervalId == currentIntervalId &&
+                    x.DrinkId == dr.Id).Sum(x => x.Count);
+
+                dr.CurrentPrice = (byte)Math.Round(currentPrice * ((double)currentCount / (double)previousCount));
+
+                if (dr.CurrentPrice > dr.MaximumPrice) dr.CurrentPrice = dr.MaximumPrice;
+                if (dr.CurrentPrice < dr.MiniumPrice) dr.CurrentPrice = dr.MiniumPrice;
+            }
+
+
+            return nextInterval;
+        }
+        #endregion
+
         #region Websocket
         private void InitServer()
         {
             _server.NewClientEvent += Server_NewClientEvent;
 
-            App.Current.MainWindow.Closing += (a, b) => {
+            App.Current.MainWindow.Closing += (a, b) =>
+            {
                 _server.StopServer();
             };
         }
@@ -379,6 +440,6 @@ namespace Beursfuif.Server.ViewModel
         #endregion
 
 
-        
+
     }
 }

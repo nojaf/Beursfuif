@@ -70,8 +70,8 @@
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <Button Style="{DynamicResource IconButton}" Content=""
-                                        CommandParameter="{Binding Id}"
-                                        Command="{Binding Path=DataContext.RemoveDrink,ElementName=drinkView}" Height="25" HorizontalAlignment="Center"></Button>
+                                        CommandParameter="{Binding Id}" IsEnabled="{Binding ElementName=drinkView,Path=DataContext.NotBeursfuifBusy}"
+                                        Command="{Binding Path=DataContext.RemoveDrinkCommand,ElementName=drinkView}" Height="25" HorizontalAlignment="Center"></Button>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -80,6 +80,7 @@
         </ListView>
         <StackPanel HorizontalAlignment="Left" Height="715" VerticalAlignment="Top" Width="211.645" Grid.Column="1">
             	<Button Height="30" Command="{Binding AddNewDrinkCommand}"
+                    IsEnabled="{Binding ElementName=drinkView,Path=DataContext.NotBeursfuifBusy}"
             		Margin="15,5,0,5" Style="{DynamicResource IconButton}" HorizontalAlignment="Left" Content="&#xE109;"/>
             <StackPanel x:Name="stackPanel" Margin="5,0" Background="#FFEFEFEF"
                         Visibility="{Binding DataContext.AddOrEditMenuVisible, ElementName=drinkView}"
@@ -88,9 +89,11 @@
                 <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          IsEnabled="{Binding DataContext.NotBeursfuifBusy, ElementName=drinkView}" />
                 <TextBlock TextWrapping="Wrap" FontFamily="/Beursfuif.Server;component/Styles/#Coolvetica Rg" Foreground="#FF7E9D87" FontSize="16" Style="{DynamicResource Label}"><Run Language="nl-be" Text="Startprijs:"/></TextBlock>
-                <t:ByteUpDown Value="{Binding InitialPrice, Mode=TwoWay}" Minimum="0" />
+                <t:ByteUpDown Value="{Binding InitialPrice, Mode=TwoWay}"
+                              Minimum="0"
+                              IsEnabled="{Binding ElementName=drinkView,Path=DataContext.NotBeursfuifBusy}" />
                 <TextBlock TextWrapping="Wrap" FontFamily="/Beursfuif.Server;component/Styles/#Coolvetica Rg" Foreground="#FF7E9D87" FontSize="16" Style="{DynamicResource Label}"><Run Language="nl-be" Text="Minimumprijs:"/></TextBlock>
-                <t:ByteUpDown Value="{Binding MiniumPrice, Mode=TwoWay}" Minimum="0" />
+                <t:ByteUpDown Value="{Binding MiniumPrice, Mode=TwoWay}" Minimum="0"  />
                 <TextBlock TextWrapping="Wrap" FontFamily="/Beursfuif.Server;component/Styles/#Coolvetica Rg" Foreground="#FF7E9D87" FontSize="16" Style="{DynamicResource Label}"><Run Language="nl-be" Text="Maximumprijs:"/></TextBlock>
                 <t:ByteUpDown Value="{Binding MaximumPrice, Mode=TwoWay}" Minimum="0" />
                 <TextBlock TextWrapping="Wrap" FontFamily="/Beursfuif.Server;component/Styles/#Coolvetica Rg" Foreground="#FF7E9D87" FontSize="16" Style="{DynamicResource Label}"><Run Language="nl-be" Text="Afbeelding:"/></TextBlock>

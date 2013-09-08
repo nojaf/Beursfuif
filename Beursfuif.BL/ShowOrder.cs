@@ -5,6 +5,7 @@ using System.Text;
 
 namespace Beursfuif.BL
 {
+    [Serializable]
     public class ShowOrder
     {
         public DateTime Time { get; set; }

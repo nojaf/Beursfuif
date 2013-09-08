@@ -41,8 +41,6 @@ namespace Beursfuif.BL
             }
         }
 
-   
-
         /// <summary>
         /// The <see cref="StartTime" /> property's name.
         /// </summary>

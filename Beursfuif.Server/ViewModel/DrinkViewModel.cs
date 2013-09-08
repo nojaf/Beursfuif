@@ -110,7 +110,7 @@ namespace Beursfuif.Server.ViewModel
             }
         }
 
-        public RelayCommand<int> RemoveDrink { get; set; }
+        public RelayCommand<int> RemoveDrinkCommand { get; set; }
 
         public const string AddOrEditMenuVisiblePropertyName = "AddOrEditMenuVisible";
         public Visibility AddOrEditMenuVisible
@@ -196,39 +196,14 @@ namespace Beursfuif.Server.ViewModel
 
         public DrinkViewModel(IOManager iomanager)
         {
-            if (IsInDesignMode)
-            {
-                Drinks = new ObservableCollection<Drink>()
-                        {
-                            new Drink()
-                            {
-                                Available = true,
-                                Id = 1,
-                                Name = "Coke",
-                                ImageString =  @"C:\Skydrive\Projects\Beursfuif\Beursfuif.Server\bin\Debug\Images\DummyDrinkImage.png"
-                            },
-
-                            new Drink()
-                            {
-                                Available = true,
-                                Id = 2,
-                                Name = "Tongerloo Blond",
-                                ImageString = @"C:\Skydrive\Projects\Beursfuif\Beursfuif.Server\bin\Debug\Images\DummyDrinkImage.png"
-                            }
-                       };
-            }
-            else
-            {
-                _ioManager = iomanager;
-                Drinks = iomanager.LoadObservableCollectionFromXml<Drink>(PathManager.DRINK_XML_PATH);
-                CleanUpImages();
-            }
-
-
+            _ioManager = iomanager;
+            Drinks = iomanager.LoadObservableCollectionFromXml<Drink>(PathManager.DRINK_XML_PATH);
+            ThreadPool.QueueUserWorkItem(CleanUpImages);
+            
             InitCommands();
         }
 
-        private void CleanUpImages()
+        private void CleanUpImages(object state)
         {
             string[] paths = Directory.GetFiles(PathManager.ASSETS_PATH);
             string[] images = Drinks.Select(x => x.ImageString).ToArray();
@@ -249,7 +224,7 @@ namespace Beursfuif.Server.ViewModel
         private void InitCommands()
         {
             //It shouldn't be posible to remove a drink when the party is busy
-            RemoveDrink = new RelayCommand<int>(DeleteDrink, (int id) => { return (!BeursfuifBusy && Drinks.Any(x => x.Id == id)); });
+            RemoveDrinkCommand = new RelayCommand<int>(DeleteDrink, (int id) => { return (!BeursfuifBusy && Drinks.Any(x => x.Id == id)); });
             AddNewDrinkCommand = new RelayCommand(delegate() { NewEditDrink = new Drink() { Id = Drinks.Max(x => x.Id) + 1 }; },
                 () => { return (!BeursfuifBusy && NewEditDrink == null); });
             DownloadImageCommand = new RelayCommand(DownloadImage, () => { return (!string.IsNullOrEmpty(DownloadUrl) && !Downloading); });
@@ -316,6 +291,7 @@ namespace Beursfuif.Server.ViewModel
                 {
                     _ioManager.SaveObservableCollectionToXml(PathManager.DRINK_XML_PATH, Drinks);
                 }));
+                MessengerInstance.Send<ToastMessage>(new ToastMessage("Dranken saved"));
                 previousDrinkSaved = true;
                 NewEditDrink = null;
                 DownloadUrl = string.Empty;

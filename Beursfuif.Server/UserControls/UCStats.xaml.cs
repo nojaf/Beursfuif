@@ -130,32 +130,6 @@ namespace Beursfuif.Server.UserControls
         
         #endregion
 
-        private void PopulateOrders()
-        {
-            Random rand = new Random();
-            for (int i = 0; i < 1000; i++)
-            {
-                int orderLength = Drinks.Length;
-                ShowOrder showOrder = new ShowOrder()
-                {
-                    IntervalId = 1,
-                    Orders = new ClientDrinkOrder[orderLength]
-                };
-
-                for (int j = 1; j < orderLength + 1; j++)
-                {
-                    showOrder.Orders[j - 1] = new ClientDrinkOrder()
-                    {
-                        Count = (byte)rand.Next(0, 10),
-                        DrinkId = j,
-                        IntervalId = showOrder.IntervalId
-                    };
-                }
-
-                AllOrders.Add(showOrder);
-            }
-        }
-
         public void CreateGraph(object state = null)
         {
             List<ClientDrinkOrder> allOrderItems = new List<ClientDrinkOrder>();
@@ -181,11 +155,11 @@ namespace Beursfuif.Server.UserControls
                     int sum;
                     if (IntervalId != int.MaxValue)
                     {
-                        sum = allOrderItems.Where(x => x.IntervalId == IntervalId && x.DrinkId == i + 1).Sum(x => x.Count);
+                        sum = allOrderItems.Where(x => x.IntervalId == IntervalId && x.DrinkId == Drinks[i].Id).Sum(x => x.Count);
                     }
                     else
                     {
-                        sum = allOrderItems.Where(x => x.DrinkId == i + 1).Sum(x => x.Count);
+                        sum = allOrderItems.Where(x => x.DrinkId == Drinks[i].Id).Sum(x => x.Count);
                     }
 
                     percentages[i] = (double)sum / (double)total;

@@ -19,6 +19,7 @@ namespace Beursfuif.BL
         /// <summary>
         /// Occurs after a property value changes.
         /// </summary>
+        [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
@@ -36,6 +37,7 @@ namespace Beursfuif.BL
         /// <summary>
         /// Occurs before a property value changes.
         /// </summary>
+        [field:NonSerialized]
         public event PropertyChangingEventHandler PropertyChanging;
 
         /// <summary>

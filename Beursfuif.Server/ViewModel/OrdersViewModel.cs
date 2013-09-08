@@ -5,12 +5,23 @@ using System.Linq;
 using System.Text;
 using Beursfuif.BL.Extensions;
 using System.Collections.ObjectModel;
+using Beursfuif.Server.Messages;
+using System.Threading;
+using Beursfuif.Server.DataAccess;
 
 namespace Beursfuif.Server.ViewModel
 {
     public class OrdersViewModel : BeursfuifViewModelBase
     {
+        #region Fields and Properties
         private BeursfuifServer _server;
+        private IOManager _ioManager;
+
+        private List<ClientDrinkOrder> _allOrderItems = new List<ClientDrinkOrder>();
+        public List<ClientDrinkOrder> AllOrderItems
+        {
+            get { return _allOrderItems; }
+        }
 
         /// <summary>
         /// The <see cref="AllOrders" /> property's name.
@@ -199,46 +210,70 @@ namespace Beursfuif.Server.ViewModel
                 RaisePropertyChanged(ReducedDrinksPropertyName);
             }
         }
+        #endregion
 
-        public OrdersViewModel(BeursfuifServer server)
+        public OrdersViewModel(BeursfuifServer server, IOManager ioManager)
         {
             _server = server;
+            _ioManager = ioManager;
             InitServer();
+            InitMessages();
+            InitData();
         }
 
-        protected override void ChangePartyBusy(Messages.BeursfuifBusyMessage obj)
+        #region Messages
+        private void InitMessages()
         {
-            base.ChangePartyBusy(obj);
-            if (BeursfuifBusy && AllOrders == null && ShowOrderList == null)
-            {
-                InitData();
-            }
+            MessengerInstance.Register<AutoSaveAllOrdersMessage>(this, AutoSaveAllOrdersHandler);
         }
+
+        private void AutoSaveAllOrdersHandler(AutoSaveAllOrdersMessage obj)
+        {
+            ThreadPool.QueueUserWorkItem(new WaitCallback((object target) =>
+            {
+                _ioManager.SaveObservableCollectionToBinary<ShowOrder>(PathManager.AUTO_SAVE_ALL_ORDERS, AllOrders);
+            }));
+            MessengerInstance.Send<ToastMessage>(new ToastMessage("Autosaved", "Alle bestellingen werden bewaard."));
+
+        }
+
+        #endregion
+
+        #region Data
+
 
         private void InitData()
         {
-            AllOrders = new ObservableCollection<ShowOrder>();
+            AllOrders = _ioManager.LoadObservableCollectionFromBinary<ShowOrder>(PathManager.AUTO_SAVE_ALL_ORDERS);
+            if (AllOrders == null) AllOrders = new ObservableCollection<ShowOrder>();
+
+            foreach (ShowOrder sh in AllOrders)
+            {
+                _allOrderItems.AddRange(sh.Orders);
+            }
+
             ShowOrderList = new ObservableCollection<ShowOrder>();
 
+            //ReducedIntervals to populate the combobox
             Interval[] intervals = base.GetLocator().Interval.Intervals;
             int length = intervals.Length + 1;
             ReducedIntervals = new ReducedInterval[length];
             ReducedIntervals[0] = new ReducedInterval("Alle Intervalen");
             for (int i = 1; i < length; i++)
             {
-                ReducedIntervals[i] = new ReducedInterval(intervals[i-1]);
+                ReducedIntervals[i] = new ReducedInterval(intervals[i - 1]);
             }
+            SelectedInterval = ReducedIntervals[0];
 
+            //Reduced drinks to populate the graph control
             var drinks = base.GetLocator().Drink.Drinks;
             int drinksLength = drinks.Count;
-
             ReducedDrinks = new ReducedDrink[drinksLength];
             for (int j = 0; j < drinksLength; j++)
             {
                 ReducedDrinks[j] = new ReducedDrink() { Id = drinks[j].Id, Name = drinks[j].Name };
             }
-
-            SelectedInterval = ReducedIntervals[0];
+            
         }
 
         private void UpdateShowOrderList()
@@ -259,7 +294,9 @@ namespace Beursfuif.Server.ViewModel
                 }
             }));
         }
+        #endregion
 
+        #region Server
         private void InitServer()
         {
             _server.NewOrderEvent += Server_NewOrderEvent;
@@ -292,8 +329,11 @@ namespace Beursfuif.Server.ViewModel
                 if (SelectedInterval.Id == currentInterval.Id || SelectedInterval.Id == int.MaxValue)
                 {
                     ShowOrderList.Add(newOrder);
-                }       
+                }
+
+                _allOrderItems.AddRange(e.Order);
             }));
         }
+        #endregion
     }
 }

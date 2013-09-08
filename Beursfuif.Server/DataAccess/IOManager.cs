@@ -11,6 +11,7 @@ namespace Beursfuif.Server.DataAccess
 {
     public  class IOManager
     {
+        #region Load
         public  T[] LoadArrayFromXml<T>(string path) where T : class
         {
             if (System.IO.File.Exists(path))
@@ -19,6 +20,7 @@ namespace Beursfuif.Server.DataAccess
                 System.Xml.Serialization.XmlSerializer reader = new System.Xml.Serialization.XmlSerializer(arrayType);
                 System.IO.StreamReader fileRead = new System.IO.StreamReader(path);
                 var readedObjects = reader.Deserialize(fileRead);
+                fileRead.Close();
                 return readedObjects as T[];
             }
             return new T[0];
@@ -32,6 +34,7 @@ namespace Beursfuif.Server.DataAccess
                 System.Xml.Serialization.XmlSerializer reader = new System.Xml.Serialization.XmlSerializer(arrayType);
                 System.IO.StreamReader fileRead = new System.IO.StreamReader(path);
                 var readedObjects = reader.Deserialize(fileRead);
+                fileRead.Close();
                 return readedObjects as List<T>;
             }
             return new List<T>();
@@ -45,6 +48,7 @@ namespace Beursfuif.Server.DataAccess
                 System.Xml.Serialization.XmlSerializer reader = new System.Xml.Serialization.XmlSerializer(arrayType);
                 System.IO.StreamReader fileRead = new System.IO.StreamReader(path);
                 var readedObjects = reader.Deserialize(fileRead);
+                fileRead.Close();
                 return readedObjects as ObservableCollection<T>;
             }
             return new ObservableCollection<T>();
@@ -122,6 +126,7 @@ namespace Beursfuif.Server.DataAccess
                     System.Xml.Serialization.XmlSerializer reader = new System.Xml.Serialization.XmlSerializer(typeof(T));
                     System.IO.StreamReader fileRead = new System.IO.StreamReader(path);
                     var readedObject = reader.Deserialize(fileRead);
+                    fileRead.Close();
                     return readedObject as T;
                 }
                 catch (Exception ex)
@@ -132,7 +137,9 @@ namespace Beursfuif.Server.DataAccess
             }
             return null;
         }
+        #endregion
 
+        #region Save
         public void SaveObservableCollectionToXml<T>(string path,ObservableCollection<T> objects) where T : class
         {        
             System.Xml.Serialization.XmlSerializer writer = new System.Xml.Serialization.XmlSerializer(typeof(ObservableCollection<T>));
@@ -166,5 +173,15 @@ namespace Beursfuif.Server.DataAccess
                 formatter.Serialize(stream, toSaveObject);
             }
         }
+
+        public void SaveObservableCollectionToBinary<T>(string path, ObservableCollection<T> objects) where T : class
+        {
+            var formatter = new BinaryFormatter();
+            using (var stream = File.Create(path))
+            {
+                formatter.Serialize(stream, objects);
+            }
+        }
+        #endregion
     }
 }

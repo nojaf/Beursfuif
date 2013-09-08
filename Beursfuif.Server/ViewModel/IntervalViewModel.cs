@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace Beursfuif.Server.ViewModel
 {
@@ -244,9 +245,12 @@ namespace Beursfuif.Server.ViewModel
             }
         }
 
-        private void SaveIntervals()
+        public void SaveIntervals()
         {
-            _iomanager.SaveArrayToBinary<Interval>(PathManager.INTERVAL_BINARY_PATH, Intervals);
+            ThreadPool.QueueUserWorkItem(new WaitCallback(new Action<object>((object state) => {
+                _iomanager.SaveArrayToBinary<Interval>(PathManager.INTERVAL_BINARY_PATH, Intervals);
+            })));
+            MessengerInstance.Send<ToastMessage>(new ToastMessage("Intervallen saved"));
         }
 
     }

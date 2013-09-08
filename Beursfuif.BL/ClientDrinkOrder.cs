@@ -6,6 +6,7 @@ using System.Text;
 
 namespace Beursfuif.BL
 {
+    [Serializable]
     public class ClientDrinkOrder
     {
         public int DrinkId { get; set; }

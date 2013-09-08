@@ -43,11 +43,8 @@ namespace Beursfuif.Server.ViewModel
 
             set
             {
-                if (_beursfuifBusy == value)
-                {
-                    return;
-                }
-
+                if (_beursfuifBusy == value) return;
+                
                 RaisePropertyChanging(BeursfuifBusyPropertyName);
                 RaisePropertyChanging("NotBeursfuifBusy");
                 _beursfuifBusy = value;
