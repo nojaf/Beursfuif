@@ -192,6 +192,8 @@ namespace Beursfuif.Server.ViewModel
         public RelayCommand ChooseLocalImageCommand { get; set; }
 
         public RelayCommand SaveDrinkCommand { get; set; }
+
+        public RelayCommand<int> AvailableChangedCommand {get;set;}               
         #endregion
 
         public DrinkViewModel(IOManager iomanager)
@@ -231,6 +233,7 @@ namespace Beursfuif.Server.ViewModel
             CancelCommand = new RelayCommand(ResetValues);
             ChooseLocalImageCommand = new RelayCommand(ChooseLocalImage);
             SaveDrinkCommand = new RelayCommand(SaveDrink);
+            AvailableChangedCommand = new RelayCommand<int>(UpdateDrinkAvailability);
         }
 
         private bool ValidateDrink()
@@ -295,7 +298,7 @@ namespace Beursfuif.Server.ViewModel
                 previousDrinkSaved = true;
                 NewEditDrink = null;
                 DownloadUrl = string.Empty;
-
+               
             }
         }
 
@@ -422,5 +425,36 @@ namespace Beursfuif.Server.ViewModel
                 }
             }
         }
+
+        private void UpdateDrinkAvailability(int id)
+        {
+            var locator = base.GetLocator();
+            Drink changed = Drinks.FirstOrDefault(x => x.Id == id);
+            Interval currentInterval = locator.Settings.CurrentInterval;
+
+            var intervals = locator.Interval.Intervals;
+            int length = intervals.Length;
+            int index = Array.IndexOf(intervals, currentInterval);
+            for (int i = index; i < length; i++)
+            {
+                Drink drink = intervals[i].Drinks.FirstOrDefault(x => x.Id == id);
+                if (drink != null) drink.Available = changed.Available;
+            }
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback(delegate(object state)
+            {
+                _ioManager.SaveObservableCollectionToXml<Drink>(PathManager.DRINK_XML_PATH, Drinks);
+            }), null);
+
+            if (BeursfuifBusy)
+            {
+                //send message to SettingsViewmodel to update the clients that a drink is no longer available
+                MessengerInstance.Send<DrinkAvailableMessage>(new DrinkAvailableMessage() { Available = changed.Available, DrinkId = changed.Id });
+            }
+
+            MessengerInstance.Send<ToastMessage>(new ToastMessage(changed.Name + " is "+(changed.Available ? "weer" : "niet meer")+" beschikbaar"));
+   
+        }
+
     }
 }

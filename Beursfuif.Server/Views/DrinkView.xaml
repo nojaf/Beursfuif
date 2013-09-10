@@ -62,7 +62,8 @@
                     <GridViewColumn Header="Beschikbaar">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <CheckBox IsChecked="{Binding Path=Available, Mode=TwoWay}"></CheckBox>
+                                <CheckBox IsChecked="{Binding Path=Available, Mode=TwoWay}"
+                                          Command="{Binding ElementName=drinkView, Path=DataContext.AvailableChangedCommand}" CommandParameter="{Binding Id}"></CheckBox>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>

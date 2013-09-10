@@ -126,6 +126,9 @@ function webSocketMessageHandler(e) {
         case PROTOCOLKIND.UPDATE_CLIENT_INTERVAL:
             updateClientInterval(pack);
             break;
+        case PROTOCOLKIND.DRINK_AVAILABLE_CHANGED:
+            updateDrinkAvailable(pack);
+            break;
     }
 }
 
@@ -226,6 +229,7 @@ function displayDrinks(pack) {
 
     app.drinksVM.drinks.removeAll();
     var length = pack.CurrentInterval.ClientDrinks.length;
+    console.log(pack.CurrentInterval.ClientDrinks);
     for (var i = 0; i < length; i++) {
         app.drinksVM.drinks.push(pack.CurrentInterval.ClientDrinks[i]);
     }
@@ -238,6 +242,39 @@ function displayDrinks(pack) {
         $("#drinks").fadeIn(250);
         $("#order").fadeIn(250);
     }, 500);
+}
+
+function updateDrinkAvailable(pack) {
+    console.log(pack);
+    console.log("Drink available changed");
+    console.log(pack.DrinkId);
+    console.log(pack.Drink);
+
+    if (pack.Drink !== null && pack.Drink !== undefined) {
+        //add drink
+        var dr = new ClientDrink(pack.Drink);
+        console.log(dr);
+        app.drinksVM.drinks.push(dr);
+        resizeImages(app.drinksVM.drinks().length);
+        return;
+    }//else
+
+
+    var length = app.drinksVM.drinks().length;
+    for (var i = 0; i < length; i++) {
+        if (app.drinksVM.drinks()[i].DrinkId === pack.DrinkId) {
+            //remove drink from existing order
+            var orderLength = app.orderVM.items().length;
+            for (var j = 0; j < orderLength; j++) {
+                if (app.orderVM.items()[j].DrinkId === pack.DrinkId) {
+                    app.orderVM.removeItem(app.orderVM.items()[j]);
+                }
+            }
+
+            //remove drink
+            app.drinksVM.drinks.remove(app.drinksVM.drinks()[i]);
+        }
+    }
 }
 //#endregion
 

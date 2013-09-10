@@ -23,20 +23,26 @@ namespace Beursfuif.BL.Extensions
 
         public static ClientDrink[] ToClientDrinkArray(this Drink[] drinks, int intervalId)
         {
-            int length = drinks.Length;
-            ClientDrink[] clDrinks = new ClientDrink[length];
-            for (int i = 0; i < length; i++)
+            var availableDrinks = drinks.Where(x => x.Available);
+            List<ClientDrink> clDrinks = new List<ClientDrink>();
+            foreach (Drink item in availableDrinks)
             {
-                clDrinks[i] = new ClientDrink()
-                {
-                    DrinkId = drinks[i].Id,
-                    IntervalId = intervalId,
-                    Price = drinks[i].CurrentPrice,
-                    Name = drinks[i].Name,
-                    Base64Image = CreateBase64Image(drinks[i].ImageString)
-                };
+                clDrinks.Add(item.ToClientDrink(intervalId));
             }
-            return clDrinks;
+            return clDrinks.ToArray();
+        }
+
+        public static ClientDrink ToClientDrink(this Drink drink, int intervalId)
+        {
+            ClientDrink clientDrink = new ClientDrink()
+            {
+                DrinkId = drink.Id,
+                IntervalId = intervalId,
+                Name = drink.Name,
+               Price = drink.CurrentPrice,
+               Base64Image = CreateBase64Image(drink.ImageString)
+            };
+            return clientDrink;
         }
 
         private static string CreateBase64Image(string file)

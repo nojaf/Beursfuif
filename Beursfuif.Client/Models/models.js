@@ -148,6 +148,8 @@ function Package(json) {
     this.AuthenticationCode;
     this.ClientId;
     this.ClientName;
+    this.DrinkId;
+    this.Drink;
 
 
     for (var prop in json) {
@@ -156,6 +158,9 @@ function Package(json) {
         }
         else if (prop === "CurrentInterval") {
             this[prop] = new ClientInterval(json[prop]);
+        }
+        else if (prop === "Drink") {
+            this[prop] = new ClientDrink(json[prop]);
         }
         else {
             if (json[prop] !== undefined && json[prop] !== null) {
@@ -184,5 +189,7 @@ var PROTOCOLKIND = {
     ACK_UPDATE_CLIENT_INTERVAL: 8,
     RETRANSMIT_CLIENT_INTERVAL: 9,
     KICK_CLIENT: 10,
-    CLIENT_LEAVES_SERVER: 11
+    CLIENT_LEAVES_SERVER: 11,
+    DRINK_AVAILABLE_CHANGED:12,
+    ACK_DRINK_AVAILABLE_CHANGED:13
 };

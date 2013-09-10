@@ -23,9 +23,14 @@ namespace Beursfuif.BL
 
         public string ClientName { get; set; }
 
+        public int DrinkId { get; set; }
+        public ClientDrink Drink { get; set; }
+
         public string ToJSON()
         {
             return JsonConvert.SerializeObject(this);
         }
+
+    
     }
 }

@@ -145,6 +145,7 @@ namespace Beursfuif.Server.ViewModel
 
         public RelayCommand ForceAutoSaveAllOrders { get; set; }
 
+        public RelayCommand AvailableChangedCommand { get; set; }
         #endregion
 
         public SettingsViewModel(IOManager ioManager, BeursfuifServer server)
@@ -178,9 +179,12 @@ namespace Beursfuif.Server.ViewModel
 
             InitCommands();
             InitServer();
+            InitMessages();
 
-            MessengerInstance.Send<BeursfuifBusyMessage>(new BeursfuifBusyMessage() { Value = this.BeursfuifBusy });
+           
         }
+
+
 
         private Interval LoadCurrentInterval()
         {
@@ -355,6 +359,25 @@ namespace Beursfuif.Server.ViewModel
             _tmrMain.Change(1000, 1000);
         }
 
+        #region Messages
+        private void InitMessages()
+        {
+            MessengerInstance.Send<BeursfuifBusyMessage>(new BeursfuifBusyMessage() { Value = this.BeursfuifBusy });
+            MessengerInstance.Register<DrinkAvailableMessage>(this, DrinkAvailableMessageReceived);
+        }
+
+        private void DrinkAvailableMessageReceived(DrinkAvailableMessage msg)
+        {
+            Drink changed = CurrentInterval.Drinks.FirstOrDefault(x => x.Id == msg.DrinkId);
+            if (changed != null)
+            {
+                changed.Available = msg.Available;
+                _server.SendDrinkAvailableChanged(msg.DrinkId, (msg.Available ? changed : null), CurrentInterval.Id);
+            }
+            ThreadPool.QueueUserWorkItem(SaveSettings);
+        }
+        #endregion
+
         #region Price Updates
         private Interval CalculatePriceUpdates(Interval[] intervals,List<ClientDrinkOrder>  allOrdersItems, int currentIntervalId)
         {
@@ -368,7 +391,9 @@ namespace Beursfuif.Server.ViewModel
             //In this scenario the change of prices will only trigger after the second interval
             Interval previousInterval = intervals[indexCurrentInterval - 1];
 
-            foreach (Drink dr in nextInterval.Drinks)
+            var availableDrinks = nextInterval.Drinks.Where(x => x.Available);
+
+            foreach (Drink dr in availableDrinks)
             {
                 int currentPrice = currentInterval.Drinks.First(x => x.Id == dr.Id).CurrentPrice;
 
@@ -376,6 +401,8 @@ namespace Beursfuif.Server.ViewModel
                     x.DrinkId == dr.Id).Sum(x => x.Count);
                 int currentCount = allOrdersItems.Where(x => x.IntervalId == currentIntervalId &&
                     x.DrinkId == dr.Id).Sum(x => x.Count);
+
+                if (previousCount == 0) previousCount = 1;
 
                 dr.CurrentPrice = (byte)Math.Round(currentPrice * ((double)currentCount / (double)previousCount));
 

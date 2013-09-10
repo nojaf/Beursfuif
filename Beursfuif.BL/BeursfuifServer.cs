@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using System.Text;
+using Beursfuif.BL.Extensions;
 
 namespace Beursfuif.BL
 {
@@ -189,6 +190,23 @@ namespace Beursfuif.BL
 
         }
 
+        public void SendDrinkAvailableChanged(int drinkId, Drink drink, int intervalId)
+        {
+            Package pack = new Package()
+            {
+                MessageId = ProtocolKind.DRINK_AVAILABLE_CHANGED,
+                DrinkId = drinkId
+            };
+
+            if (drink != null)
+            {
+                //drink is back available
+                pack.Drink = drink.ToClientDrink(intervalId);
+            }
+
+            Broadcast(pack);
+        }
+
         private void Broadcast(Package package)
         {
             foreach (var client in Clients)
@@ -222,7 +240,6 @@ namespace Beursfuif.BL
             //TODO: stop the timer that checks for the clients response 
         }
         #endregion
-
 
     }
 }

@@ -18,5 +18,7 @@ namespace Beursfuif.BL
         public const int RETRANSMIT_CLIENT_INTERVAL = 9;
         public const int KICK_CLIENT = 10;
         public const int CLIENT_LEAVES_SERVER = 11;
+        public const int DRINK_AVAILABLE_CHANGED = 12;
+        public const int ACK_DRINK_AVAILABLE_CHANGED = 13;
     }
 }
