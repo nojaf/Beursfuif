@@ -218,7 +218,11 @@ namespace Beursfuif.Server.ViewModel
             _ioManager = ioManager;
             InitServer();
             InitMessages();
-            InitData();
+            var locator = base.GetLocator();
+            if (locator.Interval.Intervals != null && locator.Drink.Drinks != null)
+            {
+                InitData();
+            }
         }
 
         #region Messages

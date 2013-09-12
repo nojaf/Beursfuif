@@ -5,9 +5,11 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Beursfuif.Server.ViewModel
 {
@@ -215,8 +217,7 @@ namespace Beursfuif.Server.ViewModel
             int numberOfIntervals = 0;
             if(int.TryParse(""+(period.TotalMinutes / ChosenInterval.TotalMinutes),out numberOfIntervals))
             {
-                CreateIntervals(numberOfIntervals);
-                SaveIntervals();
+                Task.Factory.StartNew(CreateIntervals, numberOfIntervals);
                 return;
             }
 
@@ -231,8 +232,9 @@ namespace Beursfuif.Server.ViewModel
         }
 
 
-        private void CreateIntervals(int numberOfIntervals)
+        private void CreateIntervals(object state)
         {
+            int numberOfIntervals = Convert.ToInt32(state);
             Intervals = new Interval[numberOfIntervals];
             for (int i = 0; i < numberOfIntervals; i++)
             {
@@ -243,6 +245,7 @@ namespace Beursfuif.Server.ViewModel
                     Id = i + 1
                 };
             }
+            SaveIntervals();
         }
 
         public void SaveIntervals()
