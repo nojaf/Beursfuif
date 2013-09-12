@@ -43,7 +43,7 @@ namespace Beursfuif.Server.Converters
         {
             string path = value as string;
 
-            if (!string.IsNullOrEmpty(path))
+            if (!string.IsNullOrEmpty(path) && File.Exists(path))
             {
                 //create new stream and create bitmap frame
                 BitmapImage bitmapImage = new BitmapImage();

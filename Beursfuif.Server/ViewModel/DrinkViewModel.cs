@@ -227,7 +227,7 @@ namespace Beursfuif.Server.ViewModel
         {
             //It shouldn't be posible to remove a drink when the party is busy
             RemoveDrinkCommand = new RelayCommand<int>(DeleteDrink, (int id) => { return (!BeursfuifBusy && Drinks.Any(x => x.Id == id)); });
-            AddNewDrinkCommand = new RelayCommand(delegate() { NewEditDrink = new Drink() { Id = Drinks.Max(x => x.Id) + 1 }; },
+            AddNewDrinkCommand = new RelayCommand(delegate() { NewEditDrink = new Drink() { Id = (Drinks.Count > 0 ? Drinks.Max(x => x.Id) + 1 : 1)}; },
                 () => { return (!BeursfuifBusy && NewEditDrink == null); });
             DownloadImageCommand = new RelayCommand(DownloadImage, () => { return (!string.IsNullOrEmpty(DownloadUrl) && !Downloading); });
             CancelCommand = new RelayCommand(ResetValues);
