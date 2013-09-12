@@ -184,8 +184,6 @@ namespace Beursfuif.Server.ViewModel
            
         }
 
-
-
         private Interval LoadCurrentInterval()
         {
             return _ioManager.LoadObjectFromXml<Interval>(PathManager.CURRENT_INTERVAL_XML_PATH);
@@ -276,6 +274,9 @@ namespace Beursfuif.Server.ViewModel
 
         public void InitParty(object state)
         {
+            //initial save triggers the views (Interval & Drink) to disable controls
+            SaveSettings(state);
+
             BeursfuifBusy = true;
             RaisePropertyChanged(BeursfuifBusyVisibilityPropertyName);
 
@@ -364,6 +365,19 @@ namespace Beursfuif.Server.ViewModel
         {
             MessengerInstance.Send<BeursfuifBusyMessage>(new BeursfuifBusyMessage() { Value = this.BeursfuifBusy });
             MessengerInstance.Register<DrinkAvailableMessage>(this, DrinkAvailableMessageReceived);
+            MessengerInstance.Register<DrinkModifiedMessage>(this, DrinkModifiedHandler);
+        }
+
+        private void DrinkModifiedHandler(DrinkModifiedMessage msg)
+        {
+            var intervals = base.GetLocator().Interval.Intervals;
+            if (intervals != null && intervals.Length > 0)
+            {
+                foreach (Interval interval in intervals)
+                {
+                    interval.UpdateDrink(msg.Drink);
+                }              
+            }
         }
 
         private void DrinkAvailableMessageReceived(DrinkAvailableMessage msg)
@@ -465,8 +479,6 @@ namespace Beursfuif.Server.ViewModel
             }
         }
         #endregion
-
-
 
     }
 }

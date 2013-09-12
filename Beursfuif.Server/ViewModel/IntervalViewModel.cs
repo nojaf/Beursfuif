@@ -6,6 +6,7 @@ using GalaSoft.MvvmLight.Command;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -155,6 +156,37 @@ namespace Beursfuif.Server.ViewModel
             }
         }
 
+        /// <summary>
+        /// The <see cref="CanModify" /> property's name.
+        /// </summary>
+        public const string CantModifyPropertyName = "CanModify";
+
+        private bool _canModify = true;
+
+        /// <summary>
+        /// Sets and gets the CantModify property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool CanModify
+        {
+            get
+            {
+                return _canModify;
+            }
+
+            set
+            {
+                if (_canModify == value)
+                {
+                    return;
+                }
+
+                RaisePropertyChanging(CantModifyPropertyName);
+                _canModify = value;
+                RaisePropertyChanged(CantModifyPropertyName);
+            }
+        }
+
         public RelayCommand GenerateIntervalsCommand
         {
             get;
@@ -254,6 +286,15 @@ namespace Beursfuif.Server.ViewModel
                 _iomanager.SaveArrayToBinary<Interval>(PathManager.INTERVAL_BINARY_PATH, Intervals);
             })));
             MessengerInstance.Send<ToastMessage>(new ToastMessage("Intervallen saved"));
+        }
+
+        protected override void ChangePartyBusy(BeursfuifBusyMessage obj)
+        {
+            base.ChangePartyBusy(obj);
+            if (File.Exists(PathManager.BUSY_AND_TIME_PATH))
+            {
+                CanModify = false;
+            }
         }
 
     }

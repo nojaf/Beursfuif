@@ -185,6 +185,37 @@ namespace Beursfuif.Server.ViewModel
             }
         }
 
+        /// <summary>
+        /// The <see cref="CanModify" /> property's name.
+        /// </summary>
+        public const string CantModifyPropertyName = "CanModify";
+
+        private bool _canModify = true;
+
+        /// <summary>
+        /// Sets and gets the CantModify property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool CanModify
+        {
+            get
+            {
+                return _canModify;
+            }
+
+            set
+            {
+                if (_canModify == value)
+                {
+                    return;
+                }
+
+                RaisePropertyChanging(CantModifyPropertyName);
+                _canModify = value;
+                RaisePropertyChanged(CantModifyPropertyName);
+            }
+        }
+
         public RelayCommand DownloadImageCommand { get; set; }
 
         public RelayCommand CancelCommand { get; set; }
@@ -193,7 +224,7 @@ namespace Beursfuif.Server.ViewModel
 
         public RelayCommand SaveDrinkCommand { get; set; }
 
-        public RelayCommand<int> AvailableChangedCommand {get;set;}               
+        public RelayCommand<int> AvailableChangedCommand { get; set; }
         #endregion
 
         public DrinkViewModel(IOManager iomanager)
@@ -201,7 +232,7 @@ namespace Beursfuif.Server.ViewModel
             _ioManager = iomanager;
             Drinks = iomanager.LoadObservableCollectionFromXml<Drink>(PathManager.DRINK_XML_PATH);
             ThreadPool.QueueUserWorkItem(CleanUpImages);
-            
+
             InitCommands();
         }
 
@@ -227,7 +258,7 @@ namespace Beursfuif.Server.ViewModel
         {
             //It shouldn't be posible to remove a drink when the party is busy
             RemoveDrinkCommand = new RelayCommand<int>(DeleteDrink, (int id) => { return (!BeursfuifBusy && Drinks.Any(x => x.Id == id)); });
-            AddNewDrinkCommand = new RelayCommand(delegate() { NewEditDrink = new Drink() { Id = (Drinks.Count > 0 ? Drinks.Max(x => x.Id) + 1 : 1)}; },
+            AddNewDrinkCommand = new RelayCommand(delegate() { NewEditDrink = new Drink() { Id = (Drinks.Count > 0 ? Drinks.Max(x => x.Id) + 1 : 1) }; },
                 () => { return (!BeursfuifBusy && NewEditDrink == null); });
             DownloadImageCommand = new RelayCommand(DownloadImage, () => { return (!string.IsNullOrEmpty(DownloadUrl) && !Downloading); });
             CancelCommand = new RelayCommand(ResetValues);
@@ -289,6 +320,19 @@ namespace Beursfuif.Server.ViewModel
                 if (!Drinks.Any(x => x.Id == NewEditDrink.Id))
                 {
                     Drinks.Add(NewEditDrink);
+                    MessengerInstance.Send<DrinkModifiedMessage>(new DrinkModifiedMessage()
+                    {
+                        Added = true,
+                        Drink = NewEditDrink
+                    });
+                }
+                else
+                {
+                    MessengerInstance.Send<DrinkModifiedMessage>(new DrinkModifiedMessage()
+                    {
+                        Changed = true,
+                        Drink = NewEditDrink
+                    });
                 }
                 ThreadPool.QueueUserWorkItem(new WaitCallback((object target) =>
                 {
@@ -298,7 +342,7 @@ namespace Beursfuif.Server.ViewModel
                 previousDrinkSaved = true;
                 NewEditDrink = null;
                 DownloadUrl = string.Empty;
-               
+
             }
         }
 
@@ -385,6 +429,10 @@ namespace Beursfuif.Server.ViewModel
             Drink drink = Drinks.FirstOrDefault(x => x.Id == id);
             if (drink != null)
             {
+                MessengerInstance.Send<DrinkModifiedMessage>(new DrinkModifiedMessage()
+                {
+                    Drink = drink
+                });
                 Drinks.Remove(drink);
                 ThreadPool.QueueUserWorkItem(new WaitCallback(delegate(object state)
                 {
@@ -452,9 +500,18 @@ namespace Beursfuif.Server.ViewModel
                 MessengerInstance.Send<DrinkAvailableMessage>(new DrinkAvailableMessage() { Available = changed.Available, DrinkId = changed.Id });
             }
 
-            MessengerInstance.Send<ToastMessage>(new ToastMessage(changed.Name + " is "+(changed.Available ? "weer" : "niet meer")+" beschikbaar"));
-   
+            MessengerInstance.Send<ToastMessage>(new ToastMessage(changed.Name + " is " + (changed.Available ? "weer" : "niet meer") + " beschikbaar"));
+
         }
 
+
+        protected override void ChangePartyBusy(BeursfuifBusyMessage obj)
+        {
+            base.ChangePartyBusy(obj);
+            if (File.Exists(PathManager.BUSY_AND_TIME_PATH))
+            {
+                CanModify = false;
+            }
+        }
     }
 }

@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -55,19 +56,20 @@ namespace Beursfuif.Server.UserControls
         public int IntervalId
         {
             get { return (int)GetValue(IntervalIdProperty); }
-            set { 
+            set
+            {
                 SetValue(IntervalIdProperty, value);
             }
         }
         // Using a DependencyProperty as the backing store for IntervalId.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IntervalIdProperty =
-            DependencyProperty.Register("IntervalId", typeof(int), typeof(UCStats), new PropertyMetadata(0,IntervalChanged));
+            DependencyProperty.Register("IntervalId", typeof(int), typeof(UCStats), new PropertyMetadata(0, IntervalChanged));
 
         private static void IntervalChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             UCStats source = d as UCStats;
-            if (source != null)
-            {
+            if (source != null){
+            
                 source.CheckForCreation();
             }
         }
@@ -76,13 +78,15 @@ namespace Beursfuif.Server.UserControls
         public ObservableCollection<ShowOrder> AllOrders
         {
             get { return (ObservableCollection<ShowOrder>)GetValue(AllOrdersProperty); }
-            set { SetValue(AllOrdersProperty, value);
+            set
+            {
+                SetValue(AllOrdersProperty, value);
             }
         }
 
         // Using a DependencyProperty as the backing store for AllOrders.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty AllOrdersProperty =
-            DependencyProperty.Register("AllOrders", typeof(ObservableCollection<ShowOrder>), typeof(UCStats), new PropertyMetadata(null,AllOrdersChanged));
+            DependencyProperty.Register("AllOrders", typeof(ObservableCollection<ShowOrder>), typeof(UCStats), new PropertyMetadata(null, AllOrdersChanged));
 
         private static void AllOrdersChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -108,7 +112,7 @@ namespace Beursfuif.Server.UserControls
 
         // Using a DependencyProperty as the backing store for Drinks.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty DrinksProperty =
-            DependencyProperty.Register("Drinks", typeof(ReducedDrink[]), typeof(UCStats), new PropertyMetadata(null,DrinksChanged));
+            DependencyProperty.Register("Drinks", typeof(ReducedDrink[]), typeof(UCStats), new PropertyMetadata(null, DrinksChanged));
 
         private static void DrinksChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -127,7 +131,7 @@ namespace Beursfuif.Server.UserControls
                 SetValue(DrinksProperty, value);
             }
         }
-        
+
         #endregion
 
         public void CreateGraph(object state = null)
@@ -142,7 +146,7 @@ namespace Beursfuif.Server.UserControls
                 allOrderItems.AddRange(item);
             }
 
-            int total = (IntervalId != int.MaxValue ? 
+            int total = (IntervalId != int.MaxValue ?
                 allOrderItems.Where(x => x.IntervalId == IntervalId).Sum(x => x.Count) :
                   allOrderItems.Sum(x => x.Count));
 
@@ -165,49 +169,19 @@ namespace Beursfuif.Server.UserControls
                     percentages[i] = (double)sum / (double)total;
                 }
             }
+
             ShowGraph(percentages);
         }
 
         private void ShowGraph(double[] percentages)
         {
             int length = Drinks.Length;
-            if (graphGrid.Children.Count == 0)
-            {
-                for (int i = 0; i < length; i++)
-                {
-                    graphGrid.ColumnDefinitions.Add(new ColumnDefinition()
-                    {
-                        Width  =  new GridLength(1, GridUnitType.Star)
-                    });
-                    Grid grid = new Grid()
-                    {
-                        Margin = new Thickness(5,0,5,0),
-                        Background = new SolidColorBrush(_colors[i % _colors.Length]),
-                        Height = 0,
-                        Name = "rect"+i,
-                        VerticalAlignment = System.Windows.VerticalAlignment.Bottom,
-                        Tag = Drinks[i].Id
-                    };
+        
+            CreateTitles();
 
-                    TextBlock text = new TextBlock()
-                    {
-                        Text = Math.Round(percentages[i] * 100, 2) + "%",
-                        VerticalAlignment = System.Windows.VerticalAlignment.Center,
-                        HorizontalAlignment = System.Windows.HorizontalAlignment.Center,
-                        FontFamily = new FontFamily(new Uri("pack://application:/Styles/"), "Coolvetica Rg"),
-                        Foreground = new SolidColorBrush(Colors.White),
-                        
-                    };
+          
+            CreateGraphUI(percentages, length);
 
-                    grid.Children.Add(text);
-
-                    grid.MouseUp += GraphColumn_MouseUp;
-
-                    grid.SetValue(Grid.ColumnProperty, i);
-                    graphGrid.Children.Add(grid);
-                    
-                }
-            }
 
             double maxHeight = graphGrid.ActualHeight;
             for (int j = 0; j < length; j++)
@@ -238,26 +212,44 @@ namespace Beursfuif.Server.UserControls
             }
         }
 
-        void GraphColumn_MouseUp(object sender, MouseButtonEventArgs e)
+        private void CreateGraphUI(double[] percentages, int length)
         {
-            Grid rect = sender as Grid;
-            if (rect == null) return;
-            int id = (int)rect.Tag;
-
-            ShowOrder show = new ShowOrder()
+            graphGrid.Children.Clear();
+            graphGrid.ColumnDefinitions.Clear();
+            for (int i = 0; i < length; i++)
             {
-                IntervalId = 1,
-                Orders = new ClientDrinkOrder[]{
-                    new ClientDrinkOrder(){
-                       Count = 255,
-                       IntervalId = 1,
-                       DrinkId = id
-                    }
-                }
-            };
-            AllOrders.Add(show);
-            CreateGraph();
+                graphGrid.ColumnDefinitions.Add(new ColumnDefinition()
+                {
+                    Width = new GridLength(1, GridUnitType.Star)
+                });
+                Grid grid = new Grid()
+                {
+                    Margin = new Thickness(5, 0, 5, 0),
+                    Background = new SolidColorBrush(_colors[i % _colors.Length]),
+                    Height = 0,
+                    Name = "rect" + i,
+                    VerticalAlignment = System.Windows.VerticalAlignment.Bottom,
+                    Tag = Drinks[i].Id
+                };
+
+                TextBlock text = new TextBlock()
+                {
+                    Text = Math.Round(percentages[i] * 100, 2) + "%",
+                    VerticalAlignment = System.Windows.VerticalAlignment.Center,
+                    HorizontalAlignment = System.Windows.HorizontalAlignment.Center,
+                    FontFamily = new FontFamily(new Uri("pack://application:/Styles/"), "Coolvetica Rg"),
+                    Foreground = new SolidColorBrush(Colors.White),
+
+                };
+
+                grid.Children.Add(text);
+
+                grid.SetValue(Grid.ColumnProperty, i);
+                graphGrid.Children.Add(grid);
+
+            }
         }
+
 
         private void OnAllOrdersCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
@@ -268,18 +260,15 @@ namespace Beursfuif.Server.UserControls
         {
             if (Drinks != null && AllOrders != null && IntervalId != 0)
             {
-                if (titleGrid.Children.Count == 0 && graphGrid.Children.Count == 0)
-                {
-                    CreateTitles();
-                    
-                }
-                CreateGraph();            
+               CreateGraph();
             }
         }
 
         private void CreateTitles()
         {
             titleGrid.Children.Clear();
+            titleGrid.ColumnDefinitions.Clear();
+
             int length = Drinks.Length;
             for (int i = 0; i < length; i++)
             {
@@ -289,18 +278,18 @@ namespace Beursfuif.Server.UserControls
                 });
 
                 Viewbox view = new Viewbox();
-                TextBlock text = new TextBlock() {
-                    Text = Drinks[i].Name, 
+                TextBlock text = new TextBlock()
+                {
+                    Text = Drinks[i].Name,
                     TextAlignment = TextAlignment.Center,
-                    FontFamily = new FontFamily(new Uri("pack://application:/Styles/"),"Coolvetica Rg"),
+                    FontFamily = new FontFamily(new Uri("pack://application:/Styles/"), "Coolvetica Rg"),
                     Margin = new Thickness(5)
-                    
-                        };
+
+                };
                 view.SetValue(Grid.ColumnProperty, i);
                 view.Child = text;
                 titleGrid.Children.Add(view);
             }
-            CreateGraph();
         }
     }
 }

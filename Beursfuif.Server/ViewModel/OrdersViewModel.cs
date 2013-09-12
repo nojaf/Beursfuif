@@ -8,6 +8,8 @@ using System.Collections.ObjectModel;
 using Beursfuif.Server.Messages;
 using System.Threading;
 using Beursfuif.Server.DataAccess;
+using System.Threading.Tasks;
+using System.IO;
 
 namespace Beursfuif.Server.ViewModel
 {
@@ -218,8 +220,8 @@ namespace Beursfuif.Server.ViewModel
             _ioManager = ioManager;
             InitServer();
             InitMessages();
-            var locator = base.GetLocator();
-            if (locator.Interval.Intervals != null && locator.Drink.Drinks != null)
+
+            if (File.Exists(PathManager.BUSY_AND_TIME_PATH))
             {
                 InitData();
             }
@@ -244,8 +246,6 @@ namespace Beursfuif.Server.ViewModel
         #endregion
 
         #region Data
-
-
         private void InitData()
         {
             AllOrders = _ioManager.LoadObservableCollectionFromBinary<ShowOrder>(PathManager.AUTO_SAVE_ALL_ORDERS);
@@ -284,7 +284,7 @@ namespace Beursfuif.Server.ViewModel
         {
             App.Current.Dispatcher.BeginInvoke(new Action(() =>
             {
-                if (ShowOrderList != null && SelectedInterval != null)
+                if (ShowOrderList != null && SelectedInterval != null && AllOrders.Count > 0)
                 {
                     ShowOrderList.Clear();
                     var query = from allOrder in AllOrders
@@ -297,6 +297,15 @@ namespace Beursfuif.Server.ViewModel
 
                 }
             }));
+        }
+
+        protected override void ChangePartyBusy(BeursfuifBusyMessage obj)
+        {
+            base.ChangePartyBusy(obj);
+            if (BeursfuifBusy && AllOrders == null)
+            {
+                InitData();
+            }
         }
         #endregion
 
@@ -331,6 +340,8 @@ namespace Beursfuif.Server.ViewModel
 
                 AllOrders.Add(newOrder);
                 RaisePropertyChanged(AllOrdersPropertyName);
+                if (SelectedInterval == null) SelectedInterval = ReducedIntervals[0];
+
                 if (SelectedInterval.Id == currentInterval.Id || SelectedInterval.Id == int.MaxValue)
                 {
                     ShowOrderList.Add(newOrder);

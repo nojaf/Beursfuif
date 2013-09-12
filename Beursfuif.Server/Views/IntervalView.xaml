@@ -37,12 +37,12 @@
                        Style="{DynamicResource LargeText}"></TextBlock>
             <t:DateTimePicker Width="280"
                               Value="{Binding BeginTime}"
-                              IsEnabled="{Binding NotBeursfuifBusy}"></t:DateTimePicker>
+                              IsEnabled="{Binding CanModify}"></t:DateTimePicker>
             <TextBlock Text="tot"
                        Style="{DynamicResource LargeText}"></TextBlock>
             <t:DateTimePicker Width="280"
                           Value="{Binding EndTime}"
-                              IsEnabled="{Binding NotBeursfuifBusy}"></t:DateTimePicker>
+                              IsEnabled="{Binding CanModify}"></t:DateTimePicker>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Margin="0,50,0,0"
                     Height="50"
@@ -52,7 +52,7 @@
             <ComboBox SelectedValue="{Binding ChosenInterval,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                       Margin="5"
                       MinWidth="110"
-                      IsEnabled="{Binding NotBeursfuifBusy}"
+                      IsEnabled="{Binding CanModify}"
                       ItemsSource="{Binding IntervalChoices}">
                 <ComboBox.ItemTemplate>
                     <DataTemplate DataType="TimeSpan">
@@ -68,7 +68,7 @@
                 </ComboBox.ItemTemplate>
             </ComboBox>
             <Button Style="{DynamicResource IconButton}" Height="30"
-                    IsEnabled="{Binding NotBeursfuifBusy}"
+                    IsEnabled="{Binding CanModify}"
                     Command="{Binding GenerateIntervalsCommand}"
                     Content=""></Button>
         </StackPanel>

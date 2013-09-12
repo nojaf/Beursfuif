@@ -3,11 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Beursfuif.BL
 {
     [Serializable]
-    public class Interval:BFObservableObject
+    public class Interval : BFObservableObject
     {
         #region properties
         /// <summary>
@@ -141,7 +142,7 @@ namespace Beursfuif.BL
                 RaisePropertyChanged(DrinksPropertyName);
             }
         }
-   
+
 
         /// <summary>
         /// The <see cref="AuthenticationString" /> property's name.
@@ -178,6 +179,40 @@ namespace Beursfuif.BL
         public Interval()
         {
 
+        }
+
+        public void AddDrink(Drink drink)
+        {
+            if (Drinks == null) return;
+            Task.Factory.StartNew(() =>
+            {
+                List<Drink> currentDrinks = Drinks.ToList();
+                currentDrinks.Add(drink);
+                Drinks = currentDrinks.ToArray();
+            });
+
+        }
+
+        public void UpdateDrink(Drink drink)
+        {
+            if (Drinks == null) return;
+            Task.Factory.StartNew(() =>
+            {
+                Drink dr = Drinks.FirstOrDefault(x => x.Id == drink.Id);
+                int index = Array.IndexOf(Drinks, dr);
+                Drinks[index] = drink;
+            });
+        }
+
+        public void RemoveDrink(Drink drink)
+        {
+            if (Drinks == null) return;
+            Task.Factory.StartNew(() =>
+            {
+                List<Drink> currentDrinks = Drinks.ToList();
+                currentDrinks.Remove(currentDrinks.FirstOrDefault(x => x.Id == drink.Id));
+                Drinks = currentDrinks.ToArray();
+            });
         }
 
         public override string ToString()
