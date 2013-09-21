@@ -5,7 +5,7 @@ Beursfuif program, written in C#/XAML.
 
 made by Nojaf
 
-*Note that the program **isn't** finished yet.*
+*Note that the program *isn't* finished yet.*
 
 > Splashscreen
 ![alt-text](http://nojaf.com/BeursfuifImages/server-splash.jpg "Splashscreen")
