@@ -124,7 +124,7 @@ namespace Beursfuif.Server.ViewModel
             Client c = Clients.FirstOrDefault(x => x.Id == e.ClientId);
             if (c != null)
             {
-                MessengerInstance.Send<ToastMessage>(new ToastMessage("Client left", c.Name + " heeft de server verlaten."));
+                SendToastMessage("Client left", c.Name + " heeft de server verlaten.");
                 App.Current.Dispatcher.BeginInvoke(new Action(() =>
                 {
                     Clients.Remove(c);
@@ -137,8 +137,8 @@ namespace Beursfuif.Server.ViewModel
             Client c = Clients.FirstOrDefault(x => x.Id == e.ClientId);
             if (c != null)
             {
-                MessengerInstance.Send<ToastMessage>(new ToastMessage("Nieuwe bestelling ontvangen",
-                c.Name + ": " + e.Order.TotalPrice(GetCurrentInterval()) + " bongs."));
+                SendToastMessage("Nieuwe bestelling ontvangen",
+                c.Name + ": " + e.Order.TotalPrice(GetCurrentInterval()) + " bongs.");
                 c.LastActivity = base.GetLocator().Settings.BeursfuifCurrentTime;
                 c.OrderCount++;
             }
@@ -160,7 +160,8 @@ namespace Beursfuif.Server.ViewModel
             };
 
             App.Current.Dispatcher.BeginInvoke(action, System.Windows.Threading.DispatcherPriority.Normal);
-            MessengerInstance.Send<ToastMessage>(new ToastMessage("New client connected", e.Name + " heeft zich aangemeld."));
+            SendToastMessage("New client connected", e.Name + " heeft zich aangemeld.");
+            SendLogMessage("New client connected: "+e.Name + " heeft zich aangemeld.", LogType.CLIENT_VM);
         }
 
         private Interval GetCurrentInterval()

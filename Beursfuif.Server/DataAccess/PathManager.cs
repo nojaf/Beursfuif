@@ -18,5 +18,7 @@ namespace Beursfuif.Server.DataAccess
         public static string BUSY_AND_TIME_PATH = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Beursfuif\\Data\\" + "time_and_busy.xml";
 
         public static string AUTO_SAVE_ALL_ORDERS = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Beursfuif\\Data\\" + "auto_saved_all_orders.bin";
+
+        public static string LOG_FOLDER = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Beursfuif\\Log\\";
     }
 }

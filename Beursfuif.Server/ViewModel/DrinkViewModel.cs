@@ -252,6 +252,7 @@ namespace Beursfuif.Server.ViewModel
                     File.Delete(path);
                 }
             }
+            SendLogMessage("Unused images removed", LogType.DRINK_VM);
         }
 
         private void InitCommands()
@@ -301,6 +302,7 @@ namespace Beursfuif.Server.ViewModel
             {
                 _dm.AnswerChanged += ErrorMessage_AnswerChanged;
                 MessengerInstance.Send<DialogMessage>(_dm);
+                MessengerInstance.Send<LogMessage>(new LogMessage("Drink not valid, " + string.Join(";", _dm.Errors.ToArray()), LogType.USER_ERROR));
             }
 
             return valid;
@@ -325,6 +327,7 @@ namespace Beursfuif.Server.ViewModel
                         Added = true,
                         Drink = NewEditDrink
                     });
+                    SendLogMessage("Drink added", LogType.DRINK_VM);
                 }
                 else
                 {
@@ -333,12 +336,13 @@ namespace Beursfuif.Server.ViewModel
                         Changed = true,
                         Drink = NewEditDrink
                     });
+                   SendLogMessage("Drink modified", LogType.DRINK_VM);
                 }
                 ThreadPool.QueueUserWorkItem(new WaitCallback((object target) =>
                 {
                     _ioManager.SaveObservableCollectionToXml(PathManager.DRINK_XML_PATH, Drinks);
                 }));
-                MessengerInstance.Send<ToastMessage>(new ToastMessage("Dranken saved"));
+                SendToastMessage("Dranken saved");
                 previousDrinkSaved = true;
                 NewEditDrink = null;
                 DownloadUrl = string.Empty;
@@ -433,6 +437,11 @@ namespace Beursfuif.Server.ViewModel
                 {
                     Drink = drink
                 });
+
+                SendToastMessage(drink.Name + " verwijderd");
+                SendLogMessage("Drink " + drink.Name + "[" + drink.Id + "] removed", LogType.DRINK_VM);
+
+
                 Drinks.Remove(drink);
                 ThreadPool.QueueUserWorkItem(new WaitCallback(delegate(object state)
                 {
@@ -500,10 +509,9 @@ namespace Beursfuif.Server.ViewModel
                 MessengerInstance.Send<DrinkAvailableMessage>(new DrinkAvailableMessage() { Available = changed.Available, DrinkId = changed.Id });
             }
 
-            MessengerInstance.Send<ToastMessage>(new ToastMessage(changed.Name + " is " + (changed.Available ? "weer" : "niet meer") + " beschikbaar"));
+            SendToastMessage(changed.Name + " is " + (changed.Available ? "weer" : "niet meer") + " beschikbaar");
 
         }
-
 
         protected override void ChangePartyBusy(BeursfuifBusyMessage obj)
         {

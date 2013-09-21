@@ -181,7 +181,7 @@ namespace Beursfuif.Server.ViewModel
             InitServer();
             InitMessages();
 
-           
+
         }
 
         private Interval LoadCurrentInterval()
@@ -247,7 +247,7 @@ namespace Beursfuif.Server.ViewModel
             MainActionButtonContent = RESUME_PARTY;
 
             ThreadPool.QueueUserWorkItem(SaveSettings);
-            MessengerInstance.Send<ToastMessage>(new ToastMessage("Server paused"));
+            SendToastMessage("Server paused");
         }
 
         private void ResumeParty()
@@ -268,7 +268,7 @@ namespace Beursfuif.Server.ViewModel
 
             MainActionButtonContent = PAUSE_PARTY;
 
-            base.MessengerInstance.Send<ToastMessage>(new ToastMessage("Server restarted"));
+            SendToastMessage("Server restarted");
             ThreadPool.QueueUserWorkItem(SaveSettings);
         }
 
@@ -303,7 +303,7 @@ namespace Beursfuif.Server.ViewModel
 
             _server.StartServer();
             MainActionButtonContent = PAUSE_PARTY;
-            base.MessengerInstance.Send<ToastMessage>(new ToastMessage("Server started"));
+            SendToastMessage("Server started");
 
             SaveSettings(state);
         }
@@ -345,13 +345,14 @@ namespace Beursfuif.Server.ViewModel
                     ThreadPool.QueueUserWorkItem(new WaitCallback((object target) =>
                     {
                         Interval next = CalculatePriceUpdates(locator.Interval.Intervals, locator.Orders.AllOrderItems, CurrentInterval.Id);
-                        App.Current.Dispatcher.BeginInvoke(new Action(() => {
-                              CurrentInterval = next;
-                              locator.Interval.SaveIntervals();
-                              _server.UpdateInterval(next.ToClientInterval(BeursfuifCurrentTime), BeursfuifCurrentTime);
-                              _tmrMain.Change(1000, 1000);
+                        App.Current.Dispatcher.BeginInvoke(new Action(() =>
+                        {
+                            CurrentInterval = next;
+                            locator.Interval.SaveIntervals();
+                            _server.UpdateInterval(next.ToClientInterval(BeursfuifCurrentTime), BeursfuifCurrentTime);
+                            _tmrMain.Change(1000, 1000);
                         }));
-                        
+
                     }));
                     return;
                 }
@@ -376,7 +377,7 @@ namespace Beursfuif.Server.ViewModel
                 foreach (Interval interval in intervals)
                 {
                     interval.UpdateDrink(msg.Drink);
-                }              
+                }
             }
         }
 
@@ -393,7 +394,7 @@ namespace Beursfuif.Server.ViewModel
         #endregion
 
         #region Price Updates
-        private Interval CalculatePriceUpdates(Interval[] intervals,List<ClientDrinkOrder>  allOrdersItems, int currentIntervalId)
+        private Interval CalculatePriceUpdates(Interval[] intervals, List<ClientDrinkOrder> allOrdersItems, int currentIntervalId)
         {
             Interval currentInterval = intervals.FirstOrDefault(x => x.Id == currentIntervalId);
             int indexCurrentInterval = Array.IndexOf(intervals, currentInterval);

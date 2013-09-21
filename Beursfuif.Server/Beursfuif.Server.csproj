@@ -122,6 +122,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Converters\BitmapFrameConverter.cs" />
+    <Compile Include="Converters\EnumDescriptionConverter.cs" />
     <Compile Include="DataAccess\IOManager.cs" />
     <Compile Include="DataAccess\LogManager.cs" />
     <Compile Include="DataAccess\PathManager.cs" />
@@ -151,6 +152,7 @@
     <Compile Include="ViewModel\IntervalViewModel.cs" />
     <Compile Include="ViewModel\IStateChange.cs" />
     <Compile Include="ViewModel\IToastManager.cs" />
+    <Compile Include="ViewModel\LogViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\OrdersViewModel.cs" />
     <Compile Include="ViewModel\SettingsViewModel.cs" />
@@ -163,6 +165,9 @@
     </Compile>
     <Compile Include="Views\IntervalView.xaml.cs">
       <DependentUpon>IntervalView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\LogView.xaml.cs">
+      <DependentUpon>LogView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\OrdersView.xaml.cs">
       <DependentUpon>OrdersView.xaml</DependentUpon>
@@ -214,6 +219,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\IntervalView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\LogView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

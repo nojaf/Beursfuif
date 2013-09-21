@@ -239,7 +239,7 @@ namespace Beursfuif.Server.ViewModel
             {
                 _ioManager.SaveObservableCollectionToBinary<ShowOrder>(PathManager.AUTO_SAVE_ALL_ORDERS, AllOrders);
             }));
-            MessengerInstance.Send<ToastMessage>(new ToastMessage("Autosaved", "Alle bestellingen werden bewaard."));
+            SendToastMessage("Autosaved", "Alle bestellingen werden bewaard.");
 
         }
 

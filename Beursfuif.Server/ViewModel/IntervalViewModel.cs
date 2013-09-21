@@ -285,7 +285,7 @@ namespace Beursfuif.Server.ViewModel
             ThreadPool.QueueUserWorkItem(new WaitCallback(new Action<object>((object state) => {
                 _iomanager.SaveArrayToBinary<Interval>(PathManager.INTERVAL_BINARY_PATH, Intervals);
             })));
-            MessengerInstance.Send<ToastMessage>(new ToastMessage("Intervallen saved"));
+            SendToastMessage("Intervallen saved");
         }
 
         protected override void ChangePartyBusy(BeursfuifBusyMessage obj)

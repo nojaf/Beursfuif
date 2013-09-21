@@ -1,4 +1,5 @@
-﻿using Beursfuif.Server.Messages;
+﻿using Beursfuif.BL;
+using Beursfuif.Server.Messages;
 using GalaSoft.MvvmLight;
 using System;
 using System.Collections.Generic;
@@ -101,6 +102,15 @@ namespace Beursfuif.Server.ViewModel
         protected ViewModelLocator GetLocator()
         {
             return Application.Current.Resources["Locator"] as ViewModelLocator;
+        }
+
+        protected virtual void SendLogMessage(string msg, LogType type){
+            MessengerInstance.Send<LogMessage>(new LogMessage(msg,type));
+        }
+
+        protected virtual void SendToastMessage(string title, string message = null)
+        {
+            MessengerInstance.Send<ToastMessage>(new ToastMessage(title, message));
         }
     }
 }
