@@ -47,6 +47,7 @@ namespace Beursfuif.BL.Extensions
 
         private static string CreateBase64Image(string file)
         {
+            if (string.IsNullOrEmpty(file)) return "";
             Stream fs = File.Open(file, FileMode.Open);
             string baseEncodedImage = Convert.ToBase64String(ReadFully(fs));
             fs.Close();
