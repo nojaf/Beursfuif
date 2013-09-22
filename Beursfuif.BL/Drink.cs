@@ -295,13 +295,13 @@ namespace Beursfuif.BL
         /// </summary>
         public const string NextPriceAdditionPropertyName = "NextPriceAddition";
 
-        private byte _nextPriceAddiction = 0;
+        private sbyte _nextPriceAddiction = 0;
 
         /// <summary>
         /// Sets and gets the NextPriceAddition property.
         /// Changes to that property's value raise the PropertyChanged event. 
         /// </summary>
-        public byte NextPriceAddition
+        public sbyte NextPriceAddition
         {
             get
             {

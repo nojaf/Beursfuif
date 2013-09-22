@@ -110,9 +110,12 @@ namespace Beursfuif.Server.ViewModel
 
         public LogViewModel(IOManager ioManager)
         {
-            _ioManager = ioManager;
+            if (!IsInDesignMode)
+            {
+                _ioManager = ioManager;
 
-            MessengerInstance.Register<LogMessage>(this, LogMessageReceived);
+                MessengerInstance.Register<LogMessage>(this, LogMessageReceived);
+            }
         }
 
         private void LogMessageReceived(LogMessage lm)

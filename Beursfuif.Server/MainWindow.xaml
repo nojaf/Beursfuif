@@ -85,6 +85,8 @@
 				</interact:Interaction.Triggers>
 			</uc:UCMenuItem>
 		</StackPanel>
+        <view:PredictionView Grid.Column="2"
+                             Grid.Row="1" />
         <view:LogView Grid.Column="2"
                       Grid.Row="1" />
         <view:OrdersView Grid.Column="2"

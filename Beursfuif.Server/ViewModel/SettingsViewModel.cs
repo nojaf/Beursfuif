@@ -150,42 +150,44 @@ namespace Beursfuif.Server.ViewModel
 
         public SettingsViewModel(IOManager ioManager, BeursfuifServer server)
         {
-            _ioManager = ioManager;
-            _server = server;
-
-            if (System.IO.File.Exists(PathManager.BUSY_AND_TIME_PATH))
+            if (!IsInDesignMode)
             {
-                SendLogMessage("Beursfuif has already started", LogType.SETTINGS_VM);
-                SaveSettings settings = _ioManager.LoadObjectFromXml<SaveSettings>(PathManager.BUSY_AND_TIME_PATH);
-                BeursfuifBusy = settings.Busy;
-                BeursfuifCurrentTime = settings.CurrentTime;
-                CurrentInterval = LoadCurrentInterval();
+                _ioManager = ioManager;
+                _server = server;
 
-                if (BeursfuifBusy)
+                if (System.IO.File.Exists(PathManager.BUSY_AND_TIME_PATH))
                 {
-                    SendLogMessage("Resuming Beursfuif", LogType.SETTINGS_VM);
-                    MainActionButtonContent = PAUSE_PARTY;
-                    ResumeParty();
+                    SendLogMessage("Beursfuif has already started", LogType.SETTINGS_VM);
+                    SaveSettings settings = _ioManager.LoadObjectFromXml<SaveSettings>(PathManager.BUSY_AND_TIME_PATH);
+                    BeursfuifBusy = settings.Busy;
+                    BeursfuifCurrentTime = settings.CurrentTime;
+                    CurrentInterval = LoadCurrentInterval();
+
+                    if (BeursfuifBusy)
+                    {
+                        SendLogMessage("Resuming Beursfuif", LogType.SETTINGS_VM);
+                        MainActionButtonContent = PAUSE_PARTY;
+                        ResumeParty();
+                    }
+                    else
+                    {
+                        SendLogMessage("Beursfuif paused", LogType.SETTINGS_VM);
+                        MainActionButtonContent = RESUME_PARTY;
+                    }
+
+
                 }
                 else
                 {
-                    SendLogMessage("Beursfuif paused", LogType.SETTINGS_VM);
-                    MainActionButtonContent = RESUME_PARTY;
+                    MainActionButtonContent = PARTY_NEVER_STARTED;
+                    SendLogMessage("Beursfuif has never started", LogType.SETTINGS_VM);
                 }
 
+                InitCommands();
+                InitServer();
+                InitMessages();
 
             }
-            else
-            {
-                MainActionButtonContent = PARTY_NEVER_STARTED;
-                SendLogMessage("Beursfuif has never started", LogType.SETTINGS_VM);
-            }
-
-            InitCommands();
-            InitServer();
-            InitMessages();
-
-
         }
 
         private Interval LoadCurrentInterval()
@@ -210,13 +212,13 @@ namespace Beursfuif.Server.ViewModel
 
                     if (locator.Drink.Drinks.Count > 0 && locator.Interval.Intervals.Length > 0)
                     {
-                        SendLogMessage("PartyConditions are valid", LogType.SETTINGS_VM);
+                        //SendLogMessage("PartyConditions are valid", LogType.SETTINGS_VM);
                         return true;
                     }
                 }
                 catch(Exception ex)
                 {
-                    SendLogMessage("ValidatePartyConditions threw ex = " + ex.Message, LogType.ERROR | LogType.SETTINGS_VM);
+                    //SendLogMessage("ValidatePartyConditions threw ex = " + ex.Message, LogType.ERROR | LogType.SETTINGS_VM);
                     return false;
                 }
             }
@@ -356,7 +358,7 @@ namespace Beursfuif.Server.ViewModel
 
                     ThreadPool.QueueUserWorkItem(new WaitCallback((object target) =>
                     {
-                        Interval next = CalculatePriceUpdates(locator.Interval.Intervals, locator.Orders.AllOrderItems, CurrentInterval.Id);
+                        Interval next = CalculatePriceUpdates(locator.Interval.Intervals, locator.Orders.AllOrderItems, CurrentInterval.Id, true);
                         App.Current.Dispatcher.BeginInvoke(new Action(() =>
                         {
                             CurrentInterval = next;
@@ -406,14 +408,23 @@ namespace Beursfuif.Server.ViewModel
         #endregion
 
         #region Price Updates
-        private Interval CalculatePriceUpdates(Interval[] intervals, List<ClientDrinkOrder> allOrdersItems, int currentIntervalId)
+        public Interval CalculatePriceUpdates(Interval[] intervals, List<ClientDrinkOrder> allOrdersItems, int currentIntervalId, bool addAddition)
         {
             Interval currentInterval = intervals.FirstOrDefault(x => x.Id == currentIntervalId);
             int indexCurrentInterval = Array.IndexOf(intervals, currentInterval);
             if (indexCurrentInterval == intervals.Length - 1) return null;
 
-            Interval nextInterval = intervals[indexCurrentInterval + 1];
+            Interval nextInterval = (addAddition ? intervals[indexCurrentInterval + 1] : new Interval());
+
+
             if (indexCurrentInterval == 0) return nextInterval;
+
+            //create a copy of the interval object, because we don't want to affect the real values
+            if(!addAddition){
+                Interval realNextInterval = intervals[indexCurrentInterval + 1];
+                nextInterval.Id = realNextInterval.Id;
+                nextInterval.Drinks = realNextInterval.Drinks;
+            }
 
             //In this scenario the change of prices will only trigger after the second interval
             Interval previousInterval = intervals[indexCurrentInterval - 1];
@@ -434,13 +445,15 @@ namespace Beursfuif.Server.ViewModel
 
                 if (previousCount == 0) previousCount = 1;
 
-                dr.CurrentPrice = (byte)Math.Round(currentPrice * ((double)currentCount / (double)previousCount));
+                sbyte addition = (addAddition ? currentInterval.Drinks.First(x => x.Id == dr.Id).NextPriceAddition : (sbyte)0);
+
+                dr.CurrentPrice = (byte)(Math.Round(currentPrice * ((double)currentCount / (double)previousCount)) + addition);
 
                 if (dr.CurrentPrice > dr.MaximumPrice) dr.CurrentPrice = dr.MaximumPrice;
                 if (dr.CurrentPrice < dr.MiniumPrice) dr.CurrentPrice = dr.MiniumPrice;
 
                 SendLogMessage(string.Format("{0}: current price: {1}, previous count: {2}, current count: {3}, new price: {4}",
-                    dr.Name, previousCount, currentCount, dr.CurrentPrice), LogType.SETTINGS_VM);
+                    dr.Name,currentPrice, previousCount, currentCount, dr.CurrentPrice), LogType.SETTINGS_VM);
             }
 
 

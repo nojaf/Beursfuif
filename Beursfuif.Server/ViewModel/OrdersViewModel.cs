@@ -216,14 +216,17 @@ namespace Beursfuif.Server.ViewModel
 
         public OrdersViewModel(BeursfuifServer server, IOManager ioManager)
         {
-            _server = server;
-            _ioManager = ioManager;
-            InitServer();
-            InitMessages();
-
-            if (File.Exists(PathManager.BUSY_AND_TIME_PATH))
+            if (!IsInDesignMode)
             {
-                InitData();
+                _server = server;
+                _ioManager = ioManager;
+                InitServer();
+                InitMessages();
+
+                if (File.Exists(PathManager.BUSY_AND_TIME_PATH))
+                {
+                    InitData();
+                }
             }
         }
 

@@ -229,11 +229,14 @@ namespace Beursfuif.Server.ViewModel
 
         public DrinkViewModel(IOManager iomanager)
         {
-            _ioManager = iomanager;
-            Drinks = iomanager.LoadObservableCollectionFromXml<Drink>(PathManager.DRINK_XML_PATH);
-            ThreadPool.QueueUserWorkItem(CleanUpImages);
+            if (!IsInDesignMode)
+            {
+                _ioManager = iomanager;
+                Drinks = iomanager.LoadObservableCollectionFromXml<Drink>(PathManager.DRINK_XML_PATH);
+                ThreadPool.QueueUserWorkItem(CleanUpImages);
 
-            InitCommands();
+                InitCommands();
+            }
         }
 
         private void CleanUpImages(object state)

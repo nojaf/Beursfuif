@@ -3,7 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Beursfuif.Server.DataAccess
@@ -11,7 +13,7 @@ namespace Beursfuif.Server.DataAccess
     public static class LogManager
     {
         private static string _logFile;
-        
+
         public static void CreateNewLogFile()
         {
             Task.Factory.StartNew(() =>
@@ -26,9 +28,18 @@ namespace Beursfuif.Server.DataAccess
         {
             Task.Factory.StartNew(() =>
             {
-                using (StreamWriter sw = File.AppendText(_logFile))
+                try
                 {
-                    sw.WriteLine(line);
+
+                    using (StreamWriter sw = File.AppendText(_logFile))
+                    {
+                        sw.WriteLine(line);
+                    }
+                }
+                catch
+                {
+                    Thread.Sleep(200);
+                    AppendToLog(line);
                 }
             });
         }

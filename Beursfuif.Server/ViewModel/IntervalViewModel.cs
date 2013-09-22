@@ -198,7 +198,6 @@ namespace Beursfuif.Server.ViewModel
         public IntervalViewModel(IOManager iomanager)
             : base()
         {
-            _iomanager = iomanager;
             if (IsInDesignMode)
             {
                 Intervals = new Interval[]{
@@ -224,18 +223,22 @@ namespace Beursfuif.Server.ViewModel
                     }
                 };
             }
-
-            Intervals = _iomanager.LoadArrayFromBinary<Interval>(PathManager.INTERVAL_BINARY_PATH);
-            if (Intervals != null)
+            else
             {
-                BeginTime = Intervals[0].StartTime;
-                EndTime = Intervals[Intervals.Length - 1].EndTime;
-                ChosenInterval = IntervalChoices.FirstOrDefault(x => x.TotalMinutes == Intervals[0].Duration.TotalMinutes);
-                SendLogMessage("Intervals found in data folder", LogType.INTERVAL_VM);
+                _iomanager = iomanager;
+
+                Intervals = _iomanager.LoadArrayFromBinary<Interval>(PathManager.INTERVAL_BINARY_PATH);
+                if (Intervals != null)
+                {
+                    BeginTime = Intervals[0].StartTime;
+                    EndTime = Intervals[Intervals.Length - 1].EndTime;
+                    ChosenInterval = IntervalChoices.FirstOrDefault(x => x.TotalMinutes == Intervals[0].Duration.TotalMinutes);
+                    SendLogMessage("Intervals found in data folder", LogType.INTERVAL_VM);
+                }
+
+
+                InitCommands();
             }
-
-
-            InitCommands();
         }
 
         private void InitCommands()

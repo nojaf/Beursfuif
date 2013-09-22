@@ -199,8 +199,11 @@ namespace Beursfuif.BL
             Task.Factory.StartNew(() =>
             {
                 Drink dr = Drinks.FirstOrDefault(x => x.Id == drink.Id);
-                int index = Array.IndexOf(Drinks, dr);
-                Drinks[index] = drink;
+                if (dr != null)
+                {
+                    int index = Array.IndexOf(Drinks, dr);
+                    Drinks[index] = drink;
+                }
             });
         }
 

@@ -49,7 +49,7 @@ namespace Beursfuif.Server.ViewModel
 
         public ClientsViewModel(BeursfuifServer server)
         {
-            _server = server;
+
 
             if (IsInDesignMode)
             {
@@ -92,10 +92,11 @@ namespace Beursfuif.Server.ViewModel
             else
             {
                 Clients = new ObservableCollection<Client>();
+                _server = server;
+                InitServer();
+                InitCommands();
             }
 
-            InitServer();
-            InitCommands();
         }
 
         private void InitCommands()
