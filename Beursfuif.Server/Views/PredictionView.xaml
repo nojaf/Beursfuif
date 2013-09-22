@@ -71,7 +71,7 @@
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                                     <TextBlock Text="{Binding NextPrice}" Style="{DynamicResource Label}"></TextBlock>
                                     <TextBlock Text="+" Style="{DynamicResource Label}" />
-                                    <TextBlock Text="{Binding NextPriceAddition}"
+                                        <TextBlock Text="{Binding Addition}"
                                                Style="{DynamicResource Label}"
                                                Foreground="#09cf41"></TextBlock>
                                     </StackPanel>

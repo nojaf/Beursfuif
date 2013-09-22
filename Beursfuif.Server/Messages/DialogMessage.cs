@@ -33,7 +33,7 @@ namespace Beursfuif.Server.Messages
 
         public DialogMessage()
         {
-
+            Errors = new List<string>();
         }
 
         public DialogMessage(string title)

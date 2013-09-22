@@ -151,36 +151,6 @@ namespace Beursfuif.Server.ViewModel
             }
         }
 
-        /// <summary>
-        /// The <see cref="DrinkCount" /> property's name.
-        /// </summary>
-        public const string DrinkCountPropertyName = "DrinkCount";
-
-        private Tuple<string,int>[] _drinkCount = null;
-
-        /// <summary>
-        /// Sets and gets the DrinkCount property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public Tuple<string,int>[] DrinkCount
-        {
-            get
-            {
-                return _drinkCount;
-            }
-
-            set
-            {
-                if (_drinkCount == value)
-                {
-                    return;
-                }
-
-                RaisePropertyChanging(DrinkCountPropertyName);
-                _drinkCount = value;
-                RaisePropertyChanged(DrinkCountPropertyName);
-            }
-        }
 
         /// <summary>
         /// The <see cref="ReducedDrinks" /> property's name.

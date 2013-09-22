@@ -13,6 +13,8 @@ using System.Windows;
 using Beursfuif.BL.Extensions;
 using Beursfuif.Server.Messages;
 using System.Collections.ObjectModel;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Beursfuif.Server.ViewModel
 {
@@ -146,6 +148,10 @@ namespace Beursfuif.Server.ViewModel
         public RelayCommand ForceAutoSaveAllOrders { get; set; }
 
         public RelayCommand AvailableChangedCommand { get; set; }
+
+        public RelayCommand ResetFuifCommand { get; set; }
+
+        public RelayCommand ResetAllCommand { get; set; }
         #endregion
 
         public SettingsViewModel(IOManager ioManager, BeursfuifServer server)
@@ -200,6 +206,8 @@ namespace Beursfuif.Server.ViewModel
             MainActionButtonCommand = new RelayCommand(MainActionCommand, ValidatePartyConditions);
             AddOneMinute = new RelayCommand(() => { BeursfuifCurrentTime = BeursfuifCurrentTime.AddMinutes(1); });
             ForceAutoSaveAllOrders = new RelayCommand(() => { MessengerInstance.Send<AutoSaveAllOrdersMessage>(new AutoSaveAllOrdersMessage()); });
+            ResetFuifCommand = new RelayCommand(ResetFuifData);
+            ResetAllCommand = new RelayCommand(ResetAll);
         }
 
         private bool ValidatePartyConditions()
@@ -216,7 +224,7 @@ namespace Beursfuif.Server.ViewModel
                         return true;
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     //SendLogMessage("ValidatePartyConditions threw ex = " + ex.Message, LogType.ERROR | LogType.SETTINGS_VM);
                     return false;
@@ -330,6 +338,130 @@ namespace Beursfuif.Server.ViewModel
             SendLogMessage("Beursfuifsettings and currentInterval have been saved", LogType.SETTINGS_VM);
         }
 
+        private void ResetAll()
+        {
+            _dm = new DialogMessage();
+
+            if (BeursfuifBusy)
+            {
+                _dm.Title = "Fuif is nog bezig";
+                _dm.Errors.Add("Je kan geen reset uitvoeren zolang de fuif nog bezig is.");
+                _dm.Nay = Visibility.Hidden;
+                MessengerInstance.Send<DialogMessage>(_dm);
+                return;
+            }
+            else
+            {
+                _dm.Title = "Ben je zeker?";
+                _dm.Errors.Add("Alles zal verwijderd worden.");
+                _dm.Errors.Add("De data is permanent weg.");
+                _dm.Errors.Add("Doorgaan?");
+                         _dm.Nay = Visibility.Visible;
+                _dm.AnswerChanged += (s, b) =>
+                {
+                    if (b.Value)
+                    {
+                        ResetFuifData();
+
+                        var drinkVM = base.GetLocator().Drink;
+
+                        //drink vm
+                        drinkVM.Drinks.Clear();
+                        drinkVM.NewEditDrink = null;
+                        drinkVM.DownloadUrl = "";
+                        drinkVM.Downloading = false;
+                        drinkVM.CanModify = true;
+
+                        Task.Factory.StartNew(() =>
+                        {
+                            File.Delete(PathManager.DRINK_XML_PATH);
+                        });
+                    }
+                };
+
+                MessengerInstance.Send<DialogMessage>(_dm);
+                SendLogMessage("All data removed", LogType.SETTINGS_VM);
+            }
+        }
+
+        private void ResetFuifData()
+        {
+            _dm = new DialogMessage();
+
+            if (BeursfuifBusy)
+            {
+                _dm.Title = "Fuif is nog bezig";
+                _dm.Errors.Add("Je kan geen reset uitvoeren zolang de fuif nog bezig is.");
+                _dm.Nay = Visibility.Hidden;
+                MessengerInstance.Send<DialogMessage>(_dm);
+                return;
+            }
+            else
+            {
+                _dm.Title = "Ben je zeker?";
+                _dm.Errors.Add("Alles behalve de dranken zal verwijderd worden.");
+                _dm.Errors.Add("De data is permanent weg.");
+                _dm.Errors.Add("Doorgaan?");
+                _dm.Nay = Visibility.Visible;
+                _dm.AnswerChanged += (s, b) =>
+                {
+                    if (b.Value)
+                    {
+                        var locator = base.GetLocator();
+                        //drink vm
+                        locator.Drink.CanModify = true;
+
+                        //interval vm
+                        locator.Interval.Intervals = null;
+                        locator.Interval.BeginTime = DateTime.MinValue;
+                        locator.Interval.EndTime = DateTime.MinValue;
+                        locator.Interval.CanModify = true;
+                        locator.Interval.ChosenInterval = TimeSpan.Zero;
+
+                        //clients vm
+                        locator.Clients.Clients.Clear();
+
+                        //settings vm
+                        this.CurrentInterval = null;
+                        this.BeursfuifCurrentTime = DateTime.MinValue;
+                        this.MainActionButtonContent = PARTY_NEVER_STARTED;
+
+                        //orders vm
+                        locator.Orders.AllOrderItems.Clear();
+                        locator.Orders.ShowOrderList = null;
+                        locator.Orders.AllOrders = null;
+                        locator.Orders.SelectedInterval = null;
+                        locator.Orders.ReducedDrinks = null;
+                        locator.Orders.ReducedIntervals = null;
+
+                        //log vm
+                        locator.Log.AllLogMessages.Clear();
+                        locator.Log.SelectedLogMessages.Clear();
+                        locator.Log.SelectedLogType = LogType.ALL;
+
+                        //prediction vm
+                        locator.Prediction.PredictDrinks = null;
+                        locator.Prediction.IsDirty = false;
+
+
+
+
+                        Task.Factory.StartNew(() =>
+                        {
+                            File.Delete(PathManager.BUSY_AND_TIME_PATH);
+                            File.Delete(PathManager.CURRENT_INTERVAL_XML_PATH);
+                            File.Delete(PathManager.INTERVAL_BINARY_PATH);
+                            File.Delete(PathManager.AUTO_SAVE_ALL_ORDERS);
+                        });
+
+                        SendLogMessage("Fuifdata removed", LogType.SETTINGS_VM);
+                    }
+                };
+
+                MessengerInstance.Send<DialogMessage>(_dm);
+            }           
+        }
+
         public void MainTimer_Tick(object state)
         {
             _tmrMain.Change(int.MaxValue, int.MaxValue);
@@ -420,7 +552,8 @@ namespace Beursfuif.Server.ViewModel
             if (indexCurrentInterval == 0) return nextInterval;
 
             //create a copy of the interval object, because we don't want to affect the real values
-            if(!addAddition){
+            if (!addAddition)
+            {
                 Interval realNextInterval = intervals[indexCurrentInterval + 1];
                 nextInterval.Id = realNextInterval.Id;
                 nextInterval.Drinks = realNextInterval.Drinks;
@@ -453,7 +586,7 @@ namespace Beursfuif.Server.ViewModel
                 if (dr.CurrentPrice < dr.MiniumPrice) dr.CurrentPrice = dr.MiniumPrice;
 
                 SendLogMessage(string.Format("{0}: current price: {1}, previous count: {2}, current count: {3}, new price: {4}",
-                    dr.Name,currentPrice, previousCount, currentCount, dr.CurrentPrice), LogType.SETTINGS_VM);
+                    dr.Name, currentPrice, previousCount, currentCount, dr.CurrentPrice), LogType.SETTINGS_VM);
             }
 
 

@@ -50,12 +50,14 @@
                 <TextBlock Style="{DynamicResource Label}">Fuifdata resetten</TextBlock>
                 <Button Style="{DynamicResource IconButton}"
                         Height="30"
+                        Command="{Binding ResetFuifCommand}"
                         Content=""></Button>
             </StackPanel>
             <StackPanel Orientation="Horizontal"
                         Margin="0,0,0,10">
                 <TextBlock Style="{DynamicResource Label}">Alle data resetten</TextBlock>
                 <Button Style="{StaticResource IconButton}"
+                        Command="{Binding ResetAllCommand}"
                         Height="30"
                         Content=""></Button>
             </StackPanel>
