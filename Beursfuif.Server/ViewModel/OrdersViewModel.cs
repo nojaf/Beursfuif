@@ -240,7 +240,7 @@ namespace Beursfuif.Server.ViewModel
                 _ioManager.SaveObservableCollectionToBinary<ShowOrder>(PathManager.AUTO_SAVE_ALL_ORDERS, AllOrders);
             }));
             SendToastMessage("Autosaved", "Alle bestellingen werden bewaard.");
-
+            SendLogMessage("Autosave all orders", LogType.ORDER_VM);
         }
 
         #endregion
@@ -249,7 +249,11 @@ namespace Beursfuif.Server.ViewModel
         private void InitData()
         {
             AllOrders = _ioManager.LoadObservableCollectionFromBinary<ShowOrder>(PathManager.AUTO_SAVE_ALL_ORDERS);
-            if (AllOrders == null) AllOrders = new ObservableCollection<ShowOrder>();
+            if (AllOrders == null)
+            {
+                SendLogMessage("No orders where found in data folder", LogType.ORDER_VM);
+                AllOrders = new ObservableCollection<ShowOrder>();
+            }
 
             foreach (ShowOrder sh in AllOrders)
             {

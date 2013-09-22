@@ -109,6 +109,7 @@ namespace Beursfuif.Server.ViewModel
             if (client != null)
             {
                 _server.KickClient(id);
+                SendLogMessage("Client kicked: " + client.Name, LogType.CLIENT_VM);
             }
         }
 
@@ -125,6 +126,7 @@ namespace Beursfuif.Server.ViewModel
             if (c != null)
             {
                 SendToastMessage("Client left", c.Name + " heeft de server verlaten.");
+                SendLogMessage("Client left: "+ c.Name, LogType.FROM_CLIENT | LogType.CLIENT_VM);
                 App.Current.Dispatcher.BeginInvoke(new Action(() =>
                 {
                     Clients.Remove(c);
@@ -137,8 +139,9 @@ namespace Beursfuif.Server.ViewModel
             Client c = Clients.FirstOrDefault(x => x.Id == e.ClientId);
             if (c != null)
             {
-                SendToastMessage("Nieuwe bestelling ontvangen",
-                c.Name + ": " + e.Order.TotalPrice(GetCurrentInterval()) + " bongs.");
+                string msg = c.Name + ": " + e.Order.TotalPrice(GetCurrentInterval()) + " bongs.";
+                SendToastMessage("Nieuwe bestelling ontvangen",msg);
+                SendLogMessage("New order: " + msg, LogType.FROM_CLIENT | LogType.CLIENT_VM);
                 c.LastActivity = base.GetLocator().Settings.BeursfuifCurrentTime;
                 c.OrderCount++;
             }
@@ -161,7 +164,7 @@ namespace Beursfuif.Server.ViewModel
 
             App.Current.Dispatcher.BeginInvoke(action, System.Windows.Threading.DispatcherPriority.Normal);
             SendToastMessage("New client connected", e.Name + " heeft zich aangemeld.");
-            SendLogMessage("New client connected: "+e.Name + " heeft zich aangemeld.", LogType.CLIENT_VM);
+            SendLogMessage("New client connected: "+e.Name + " heeft zich aangemeld.", LogType.CLIENT_VM | LogType.FROM_CLIENT);
         }
 
         private Interval GetCurrentInterval()

@@ -302,7 +302,7 @@ namespace Beursfuif.Server.ViewModel
             {
                 _dm.AnswerChanged += ErrorMessage_AnswerChanged;
                 MessengerInstance.Send<DialogMessage>(_dm);
-                MessengerInstance.Send<LogMessage>(new LogMessage("Drink not valid, " + string.Join(";", _dm.Errors.ToArray()), LogType.USER_ERROR));
+                SendLogMessage("Drink not valid, " + string.Join(";", _dm.Errors.ToArray()), LogType.USER_ERROR | LogType.DRINK_VM);
             }
 
             return valid;
@@ -375,6 +375,7 @@ namespace Beursfuif.Server.ViewModel
                     File.Copy(filename, originalPath, true);
                     ResizeImage(originalPath, destinationPath);
                     NewEditDrink.ImageString = destinationPath;
+                    SendLogMessage("Image for drink from file added", LogType.DRINK_VM);
                 }));
             }
 
@@ -405,6 +406,7 @@ namespace Beursfuif.Server.ViewModel
                     //Download image
                     DownloadRemoteImageFile(this.DownloadUrl, originalPath);
                     ResizeImage(originalPath, destinationPath);
+                    SendLogMessage("Image from internet downloaded and used for drink", LogType.DRINK_VM);
                 }
                 catch (Exception ex)
                 {
@@ -413,6 +415,7 @@ namespace Beursfuif.Server.ViewModel
                     _dm.Nay = Visibility.Collapsed;
                     _dm.Errors.Add("Geen geldige url of geen internettoegang");
                     MessengerInstance.Send<DialogMessage>(_dm);
+                    SendLogMessage("Image download failed, ex = " + ex.Message, LogType.ERROR | LogType.DRINK_VM);
                 }
             }));
             Downloading = false;
@@ -510,6 +513,7 @@ namespace Beursfuif.Server.ViewModel
             }
 
             SendToastMessage(changed.Name + " is " + (changed.Available ? "weer" : "niet meer") + " beschikbaar");
+            SendLogMessage("Drink (" + changed.Name + ") available (" + changed.Available + ") changed", LogType.DRINK_VM);
 
         }
 

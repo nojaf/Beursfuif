@@ -59,7 +59,7 @@
                     VerticalAlignment="Top"
                     Margin="0,0,0.2,0">
             <TextBlock Style="{DynamicResource LargeText}">Filter:</TextBlock>
-            <ComboBox Width="150"
+            <ComboBox Width="200"
                       Height="40"
                       ItemsSource="{Binding Source={StaticResource LogTypeDataProvider}}"
                       SelectedValue="{Binding SelectedLogType}"
@@ -77,9 +77,14 @@
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Boodschap"
-                                    DisplayMemberBinding="{Binding Message}"></GridViewColumn>
-                    <GridViewColumn Header="Tijdstip"
-                                    DisplayMemberBinding="{Binding Time}"></GridViewColumn>
+                                    Width="600"
+                                    DisplayMemberBinding="{Binding Message}"
+                                    HeaderContainerStyle="{StaticResource LogHeader}">
+                    </GridViewColumn>
+                    <GridViewColumn Header="Tijdstip" Width="100"
+                                    HeaderContainerStyle="{StaticResource LogHeader}"
+                                    DisplayMemberBinding="{Binding Time, StringFormat='{}{0:HH:mm:ss}'}">
+                    </GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>

@@ -58,18 +58,10 @@ namespace Beursfuif.Server.DataAccess
         {
             if (File.Exists(path))
             {
-                try
+                var formatter = new BinaryFormatter();
+                using (var stream = File.OpenRead(path))
                 {
-                    var formatter = new BinaryFormatter();
-                    using (var stream = File.OpenRead(path))
-                    {
-                        return (T[])formatter.Deserialize(stream);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Could read intervalstream, " + ex.Message);
-                    return null;
+                    return (T[])formatter.Deserialize(stream);
                 }
             }
             return null;
@@ -79,18 +71,10 @@ namespace Beursfuif.Server.DataAccess
         {
             if (File.Exists(path))
             {
-                try
+                var formatter = new BinaryFormatter();
+                using (var stream = File.OpenRead(path))
                 {
-                    var formatter = new BinaryFormatter();
-                    using (var stream = File.OpenRead(path))
-                    {
-                        return (ObservableCollection<T>)formatter.Deserialize(stream);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Could read stream, " + ex.Message);
-                    return null;
+                    return (ObservableCollection<T>)formatter.Deserialize(stream);
                 }
             }
             return null;
@@ -100,18 +84,10 @@ namespace Beursfuif.Server.DataAccess
         {
             if (File.Exists(path))
             {
-                try
+                var formatter = new BinaryFormatter();
+                using (var stream = File.OpenRead(path))
                 {
-                    var formatter = new BinaryFormatter();
-                    using (var stream = File.OpenRead(path))
-                    {
-                        return (T)formatter.Deserialize(stream);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Could read stream, " + ex.Message);
-                    return null;
+                    return (T)formatter.Deserialize(stream);
                 }
             }
             return null;
@@ -121,19 +97,12 @@ namespace Beursfuif.Server.DataAccess
         {
             if (File.Exists(path))
             {
-                try
-                {
-                    System.Xml.Serialization.XmlSerializer reader = new System.Xml.Serialization.XmlSerializer(typeof(T));
-                    System.IO.StreamReader fileRead = new System.IO.StreamReader(path);
-                    var readedObject = reader.Deserialize(fileRead);
-                    fileRead.Close();
-                    return readedObject as T;
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Could read stream, " + ex.Message);
-                    return null;
-                }
+
+                System.Xml.Serialization.XmlSerializer reader = new System.Xml.Serialization.XmlSerializer(typeof(T));
+                System.IO.StreamReader fileRead = new System.IO.StreamReader(path);
+                var readedObject = reader.Deserialize(fileRead);
+                fileRead.Close();
+                return readedObject as T;
             }
             return null;
         }

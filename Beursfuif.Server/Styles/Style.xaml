@@ -42,8 +42,51 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
-
-	<Style x:Key="ButtonFocusVisual">
+    
+    <Style TargetType="{x:Type GridViewColumnHeader}"
+           x:Key="LogHeader">
+        <Setter Property="Foreground"
+                Value="#316e42" />
+        <Setter Property="FontSize"
+                Value="24" />
+        <Setter Property="Margin">
+            <Setter.Value>
+                <Thickness Left="1"
+                           Right="1" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="FontFamily"
+                Value="/Beursfuif.Server;component/Styles/#Coolvetica Rg" />
+        <Setter Property="FontWeight"
+                Value="ExtraLight" />
+        <Setter Property="IsEnabled"
+                Value="False" />
+        <Setter Property="ToolBarTray.Background"
+                Value="#d4e6d9" />
+        <Setter Property="Background"
+                Value="Transparent" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type GridViewColumnHeader}">
+                    <Grid Margin="5"
+                          Width="{TemplateBinding Width}">
+                        <TextBlock Text="{TemplateBinding Content}"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Center"
+                                   Foreground="#316e42"
+                                   TextAlignment="Center"
+                                   Background="Transparent" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <Style TargetType="ScrollBar">
+        <Setter Property="Background"
+                Value="#316e42" />
+    </Style>
+    <Style x:Key="ButtonFocusVisual">
 		<Setter Property="Control.Template">
 			<Setter.Value>
 				<ControlTemplate>
@@ -93,8 +136,9 @@
 			</MultiTrigger>
 		</Style.Triggers>
 	</Style>
-
-	<Style x:Key="Label" TargetType="{x:Type TextBlock}">
+    
+    
+    <Style x:Key="Label" TargetType="{x:Type TextBlock}">
 		<Setter Property="TextWrapping" Value="Wrap"/>
 		<Setter Property="TextTrimming" Value="None"/>
 		<Setter Property="Margin" Value="5,5"/>

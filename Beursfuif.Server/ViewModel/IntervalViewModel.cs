@@ -231,6 +231,7 @@ namespace Beursfuif.Server.ViewModel
                 BeginTime = Intervals[0].StartTime;
                 EndTime = Intervals[Intervals.Length - 1].EndTime;
                 ChosenInterval = IntervalChoices.FirstOrDefault(x => x.TotalMinutes == Intervals[0].Duration.TotalMinutes);
+                SendLogMessage("Intervals found in data folder", LogType.INTERVAL_VM);
             }
 
 
@@ -261,6 +262,7 @@ namespace Beursfuif.Server.ViewModel
                 + ChosenInterval.TotalMinutes + " min aan te maken tussen "+
                 BeginTime.ToShortTimeString() + " en " + EndTime.ToShortTimeString() + ".");
             MessengerInstance.Send<DialogMessage>(_dm);
+            SendLogMessage("Error creating Intervals, " + string.Join(";", _dm.Errors.ToArray()), LogType.INTERVAL_VM | LogType.USER_ERROR);
         }
 
 
@@ -277,6 +279,9 @@ namespace Beursfuif.Server.ViewModel
                     Id = i + 1
                 };
             }
+
+            SendLogMessage("New intervals created", LogType.INTERVAL_VM);
+
             SaveIntervals();
         }
 
@@ -286,6 +291,7 @@ namespace Beursfuif.Server.ViewModel
                 _iomanager.SaveArrayToBinary<Interval>(PathManager.INTERVAL_BINARY_PATH, Intervals);
             })));
             SendToastMessage("Intervallen saved");
+            SendLogMessage("Intervallen saved", LogType.INTERVAL_VM);
         }
 
         protected override void ChangePartyBusy(BeursfuifBusyMessage obj)

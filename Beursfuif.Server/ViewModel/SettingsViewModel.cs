@@ -155,6 +155,7 @@ namespace Beursfuif.Server.ViewModel
 
             if (System.IO.File.Exists(PathManager.BUSY_AND_TIME_PATH))
             {
+                SendLogMessage("Beursfuif has already started", LogType.SETTINGS_VM);
                 SaveSettings settings = _ioManager.LoadObjectFromXml<SaveSettings>(PathManager.BUSY_AND_TIME_PATH);
                 BeursfuifBusy = settings.Busy;
                 BeursfuifCurrentTime = settings.CurrentTime;
@@ -162,11 +163,13 @@ namespace Beursfuif.Server.ViewModel
 
                 if (BeursfuifBusy)
                 {
+                    SendLogMessage("Resuming Beursfuif", LogType.SETTINGS_VM);
                     MainActionButtonContent = PAUSE_PARTY;
                     ResumeParty();
                 }
                 else
                 {
+                    SendLogMessage("Beursfuif paused", LogType.SETTINGS_VM);
                     MainActionButtonContent = RESUME_PARTY;
                 }
 
@@ -175,6 +178,7 @@ namespace Beursfuif.Server.ViewModel
             else
             {
                 MainActionButtonContent = PARTY_NEVER_STARTED;
+                SendLogMessage("Beursfuif has never started", LogType.SETTINGS_VM);
             }
 
             InitCommands();
@@ -206,12 +210,14 @@ namespace Beursfuif.Server.ViewModel
 
                     if (locator.Drink.Drinks.Count > 0 && locator.Interval.Intervals.Length > 0)
                     {
+                        SendLogMessage("PartyConditions are valid", LogType.SETTINGS_VM);
                         return true;
                     }
                 }
-                catch
+                catch(Exception ex)
                 {
-                    return true;
+                    SendLogMessage("ValidatePartyConditions threw ex = " + ex.Message, LogType.ERROR | LogType.SETTINGS_VM);
+                    return false;
                 }
             }
             return false;
@@ -235,6 +241,7 @@ namespace Beursfuif.Server.ViewModel
 
         private void PauseParty()
         {
+            SendLogMessage("Party paused method", LogType.SETTINGS_VM);
             BeursfuifBusy = false;
             RaisePropertyChanged(BeursfuifBusyVisibilityPropertyName);
 
@@ -252,6 +259,7 @@ namespace Beursfuif.Server.ViewModel
 
         private void ResumeParty()
         {
+            SendLogMessage("Resuming party method", LogType.SETTINGS_VM);
             BeursfuifBusy = true;
             RaisePropertyChanged(BeursfuifBusyVisibilityPropertyName);
             _server.RestartServer();
@@ -305,17 +313,19 @@ namespace Beursfuif.Server.ViewModel
             MainActionButtonContent = PAUSE_PARTY;
             SendToastMessage("Server started");
 
+            SendLogMessage("Beursfuif has been initialized and started", LogType.SETTINGS_VM);
+
             SaveSettings(state);
         }
 
         private void SaveSettings(object state)
         {
-            //Busy? bool    }
-            //CurrentTime   } => Tuple<bool,DateTime>
             _ioManager.SaveObjectToXml<SaveSettings>(PathManager.BUSY_AND_TIME_PATH, new SaveSettings(BeursfuifBusy, BeursfuifCurrentTime));
 
             //CurrentInterval
             _ioManager.SaveObjectToXml<Interval>(PathManager.CURRENT_INTERVAL_XML_PATH, CurrentInterval);
+
+            SendLogMessage("Beursfuifsettings and currentInterval have been saved", LogType.SETTINGS_VM);
         }
 
         public void MainTimer_Tick(object state)
@@ -331,15 +341,17 @@ namespace Beursfuif.Server.ViewModel
                     ThreadPool.QueueUserWorkItem(SaveSettings);
                     //TODO save all orders (bin)
                     MessengerInstance.Send<AutoSaveAllOrdersMessage>(new AutoSaveAllOrdersMessage());
+                    SendLogMessage("Auto saved has been completed", LogType.SETTINGS_VM);
 
                     //sync time with clients
                     _server.UpdateTime(BeursfuifCurrentTime);
+                    SendLogMessage("Server send update current time to clients", LogType.SETTINGS_VM);
                 }
 
                 if (BeursfuifCurrentTime > CurrentInterval.EndTime)
                 {
                     //TODO Update time
-                    Console.WriteLine("Update");
+                    SendLogMessage("Server will commence calculating new prices", LogType.SETTINGS_VM);
                     var locator = base.GetLocator();
 
                     ThreadPool.QueueUserWorkItem(new WaitCallback((object target) =>
@@ -407,6 +419,9 @@ namespace Beursfuif.Server.ViewModel
             Interval previousInterval = intervals[indexCurrentInterval - 1];
 
             var availableDrinks = nextInterval.Drinks.Where(x => x.Available);
+            SendLogMessage("Prices update stats\n------------------------", LogType.SETTINGS_VM);
+
+
 
             foreach (Drink dr in availableDrinks)
             {
@@ -423,6 +438,9 @@ namespace Beursfuif.Server.ViewModel
 
                 if (dr.CurrentPrice > dr.MaximumPrice) dr.CurrentPrice = dr.MaximumPrice;
                 if (dr.CurrentPrice < dr.MiniumPrice) dr.CurrentPrice = dr.MiniumPrice;
+
+                SendLogMessage(string.Format("{0}: current price: {1}, previous count: {2}, current count: {3}, new price: {4}",
+                    dr.Name, previousCount, currentCount, dr.CurrentPrice), LogType.SETTINGS_VM);
             }
 
 
@@ -438,12 +456,14 @@ namespace Beursfuif.Server.ViewModel
             App.Current.MainWindow.Closing += (a, b) =>
             {
                 _server.StopServer();
+                SendLogMessage("Window is closing, shutdown server", LogType.SETTINGS_VM);
             };
         }
 
         void Server_NewClientEvent(object sender, BL.Event.NewClientEventArgs e)
         {
             _server.SendAckInitialClientConnect(CurrentInterval.ToClientInterval(BeursfuifCurrentTime), e.Id, BeursfuifCurrentTime);
+            SendLogMessage("Repley on " + e.Name + "'s connection request", LogType.SETTINGS_VM);
         }
 
 

@@ -84,6 +84,7 @@ namespace Beursfuif.Server.ViewModel
             {
                 _stateChanger.GoToState(FADE_IN);
                 _visible = true;
+                SendLogMessage("Changed view to " + currentClassName, LogType.INFO);
             }
             else if (_visible && message.ClassName != currentClassName)
             {
