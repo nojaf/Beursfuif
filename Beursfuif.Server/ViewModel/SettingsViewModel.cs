@@ -478,7 +478,7 @@ namespace Beursfuif.Server.ViewModel
                     SendLogMessage("Auto saved has been completed", LogType.SETTINGS_VM);
 
                     //sync time with clients
-                    _server.UpdateTime(BeursfuifCurrentTime);
+                    _server.UpdateTime(BeursfuifCurrentTime, CurrentInterval.AuthenticationString());
                     SendLogMessage("Server send update current time to clients", LogType.SETTINGS_VM);
                 }
 

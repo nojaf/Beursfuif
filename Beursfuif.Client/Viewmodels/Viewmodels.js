@@ -70,7 +70,14 @@ function DrinkViewModel() {
     };
 
     this.getAuthenticationCode = function () {
-        return "zeikt in je eigen kulten";
+        var sortedDrinks = Enumerable.From(this.drinks()).OrderBy(function (x) { return x.Name; }).ToArray();
+        var length = sortedDrinks.length;
+        var auth = "" + this.drinks()[0].IntervalId+"::";
+        for (var i = 0; i < length; i++) {
+            auth += sortedDrinks[i].DrinkId + "#" + sortedDrinks[i].Name + "#" + sortedDrinks[i].Price + ";";
+        }
+        console.log(auth);
+        return auth;
     };
 }
 //#endregion

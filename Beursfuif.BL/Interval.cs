@@ -143,36 +143,14 @@ namespace Beursfuif.BL
             }
         }
 
-
-        /// <summary>
-        /// The <see cref="AuthenticationString" /> property's name.
-        /// </summary>
-        public const string AuthenticationStringPropertyName = "AuthenticationString";
-
-        private string _authenticationString = string.Empty;
-
-        /// <summary>
-        /// Sets and gets the AuthenticationString property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public string AuthenticationString
+        public string AuthenticationString()
         {
-            get
-            {
-                return _authenticationString;
-            }
-
-            set
-            {
-                if (_authenticationString == value)
-                {
-                    return;
-                }
-
-                RaisePropertyChanging(AuthenticationStringPropertyName);
-                _authenticationString = value;
-                RaisePropertyChanged(AuthenticationStringPropertyName);
-            }
+            //always sort the drink alphabetical by name
+            string auth =  string.Join("", (from drink in Drinks
+                                    orderby drink.Name
+                                    select drink.Id + "#" + drink.Name + "#" + drink.CurrentPrice+";"
+                        ));
+            return Id + "::"+auth;
         }
         #endregion
 
@@ -220,7 +198,7 @@ namespace Beursfuif.BL
 
         public override string ToString()
         {
-            return string.Format("[Interval]:[id = {0},{1}-{2},code = {3}]", Id, StartTime, EndTime, AuthenticationString);
+            return string.Format("[Interval]:[id = {0},{1}-{2},code = {3}]", Id, StartTime, EndTime, AuthenticationString());
         }
 
         public override bool Equals(object obj)

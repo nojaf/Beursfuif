@@ -167,12 +167,13 @@ namespace Beursfuif.BL
             }
         }
 
-        public void UpdateTime(DateTime currentTime)
+        public void UpdateTime(DateTime currentTime, string authenticationCode)
         {
             Package package = new Package()
             {
                 MessageId = ProtocolKind.TIME_UPDATE,
-                CurrentBeursfuifTime = currentTime
+                CurrentBeursfuifTime = currentTime,
+                AuthenticationCode = authenticationCode
             };
 
             Broadcast(package);
