@@ -59,6 +59,8 @@ namespace Beursfuif.BL
         [Description("Voorspellingen")]
         PREDICT_VM = 1024,
         [Description("Gebruikersfout")]
-        USER_ERROR = 2048
+        USER_ERROR = 2048,
+        [Description("Client-Server fout")]
+        CLIENT_SERVER_ERROR = 4096
     }
 }

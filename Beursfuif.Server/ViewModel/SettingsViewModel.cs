@@ -308,7 +308,7 @@ namespace Beursfuif.Server.ViewModel
 
             for (int i = 0; i < intervalCount; i++)
             {
-                locator.Interval.Intervals[i].Drinks = drinks;
+               FillInDrinks(locator.Interval.Intervals[i], drinks);
             }
             locator.Interval.SaveIntervals();
 
@@ -326,6 +326,27 @@ namespace Beursfuif.Server.ViewModel
             SendLogMessage("Beursfuif has been initialized and started", LogType.SETTINGS_VM);
 
             SaveSettings(state);
+        }
+
+        //Because c# is always byRef on objects, that's why
+        private void FillInDrinks(Interval interval, Drink[] drinks)
+        {
+            int length = drinks.Length;
+            interval.Drinks = new Drink[length];
+            for (int i = 0; i < length; i++)
+            {
+                interval.Drinks[i] = new Drink();
+                interval.Drinks[i].Id = drinks[i].Id;
+                interval.Drinks[i].ImageString = drinks[i].ImageString;
+                interval.Drinks[i].Available = drinks[i].Available;
+                interval.Drinks[i].CurrentPrice = drinks[i].CurrentPrice;
+                interval.Drinks[i].InitialPrice = drinks[i].InitialPrice;
+                interval.Drinks[i].MaximumPrice = drinks[i].MaximumPrice;
+                interval.Drinks[i].MiniumPrice = drinks[i].MiniumPrice;
+                interval.Drinks[i].Name = drinks[i].Name;
+                interval.Drinks[i].NextPrice = drinks[i].NextPrice;
+                interval.Drinks[i].NextPriceAddition = drinks[i].NextPriceAddition;
+            }
         }
 
         private void SaveSettings(object state)
@@ -413,8 +434,8 @@ namespace Beursfuif.Server.ViewModel
 
                         //interval vm
                         locator.Interval.Intervals = null;
-                        locator.Interval.BeginTime = DateTime.MinValue;
-                        locator.Interval.EndTime = DateTime.MinValue;
+                        locator.Interval.BeginTime = new DateTime(1970, 1, 1, 21, 0, 0);
+                        locator.Interval.EndTime = new DateTime(1970, 1, 1, 22, 0, 0);
                         locator.Interval.CanModify = true;
                         locator.Interval.ChosenInterval = TimeSpan.Zero;
 
@@ -466,7 +487,7 @@ namespace Beursfuif.Server.ViewModel
         {
             _tmrMain.Change(int.MaxValue, int.MaxValue);
             //BEGIN CODE
-            if (BeursfuifBusy)
+            if (BeursfuifBusy  && CurrentInterval != null)
             {
                 BeursfuifCurrentTime = BeursfuifCurrentTime.AddSeconds(1);
 
@@ -480,9 +501,7 @@ namespace Beursfuif.Server.ViewModel
                     //sync time with clients
                     _server.UpdateTime(BeursfuifCurrentTime, CurrentInterval.AuthenticationString());
                     SendLogMessage("Server send update current time to clients", LogType.SETTINGS_VM);
-                }
-
-                if (BeursfuifCurrentTime > CurrentInterval.EndTime)
+                }else if (BeursfuifCurrentTime > CurrentInterval.EndTime)
                 {
                     //TODO Update time
                     SendLogMessage("Server will commence calculating new prices", LogType.SETTINGS_VM);
@@ -491,14 +510,28 @@ namespace Beursfuif.Server.ViewModel
                     ThreadPool.QueueUserWorkItem(new WaitCallback((object target) =>
                     {
                         Interval next = CalculatePriceUpdates(locator.Interval.Intervals, locator.Orders.AllOrderItems, CurrentInterval.Id, true);
-                        App.Current.Dispatcher.BeginInvoke(new Action(() =>
+                        if (next != null)
                         {
-                            CurrentInterval = next;
-                            locator.Interval.SaveIntervals();
-                            _server.UpdateInterval(next.ToClientInterval(BeursfuifCurrentTime), BeursfuifCurrentTime);
-                            _tmrMain.Change(1000, 1000);
-                        }));
-
+                            App.Current.Dispatcher.BeginInvoke(new Action(() =>
+                            {
+                                CurrentInterval = next;
+                                locator.Interval.SaveIntervals();
+                                _server.UpdateInterval(next.ToClientInterval(BeursfuifCurrentTime), BeursfuifCurrentTime);
+                                _tmrMain.Change(1000, 1000);
+                            }));
+                            ThreadPool.QueueUserWorkItem(SaveSettings);
+                            SendToastMessage("Update verstuurd");
+                            SendLogMessage("Interval update sent to all clients", LogType.SETTINGS_VM);
+                        }
+                        else
+                        {
+                            //end of fuif
+                            MainActionCommand();
+                            locator.Clients.KickAll(KickWasKickedReason.END_OF_FUIF);
+                            SendLogMessage("Beursfuif has ended", LogType.SETTINGS_VM | LogType.GOOD_NEWS);
+                            SendToastMessage("Beursfuif completed", "De fuif is gedaan");
+                            
+                        }
                     }));
                     return;
                 }
@@ -540,30 +573,51 @@ namespace Beursfuif.Server.ViewModel
         #endregion
 
         #region Price Updates
-        public Interval CalculatePriceUpdates(Interval[] intervals, List<ClientDrinkOrder> allOrdersItems, int currentIntervalId, bool addAddition)
+        public Interval CalculatePriceUpdates(Interval[] intervals, List<ClientDrinkOrder> allOrdersItems, int currentIntervalId, bool dontPredict)
         {
             Interval currentInterval = intervals.FirstOrDefault(x => x.Id == currentIntervalId);
             int indexCurrentInterval = Array.IndexOf(intervals, currentInterval);
             if (indexCurrentInterval == intervals.Length - 1) return null;
 
-            Interval nextInterval = (addAddition ? intervals[indexCurrentInterval + 1] : new Interval());
+            Interval nextInterval = (dontPredict ? intervals[indexCurrentInterval + 1] : new Interval());
 
 
             if (indexCurrentInterval == 0) return nextInterval;
 
             //create a copy of the interval object, because we don't want to affect the real values
-            if (!addAddition)
+            if (!dontPredict)
             {
                 Interval realNextInterval = intervals[indexCurrentInterval + 1];
                 nextInterval.Id = realNextInterval.Id;
-                nextInterval.Drinks = realNextInterval.Drinks;
+                foreach (var item in realNextInterval.Drinks)
+                {
+                    nextInterval.AddDrink(new Drink()
+                    {
+                        Id = item.Id,
+                        Available = item.Available,
+                        CurrentPrice = item.CurrentPrice,
+                        InitialPrice = item.InitialPrice,
+                        MaximumPrice = item.MaximumPrice,
+                        MiniumPrice = item.MiniumPrice,
+                        Name = item.Name,
+                        NextPriceAddition = item.NextPriceAddition,
+                        NextPrice = item.NextPrice,
+                    });
+                }
             }
 
             //In this scenario the change of prices will only trigger after the second interval
             Interval previousInterval = intervals[indexCurrentInterval - 1];
 
             var availableDrinks = nextInterval.Drinks.Where(x => x.Available);
-            SendLogMessage("Prices update stats\n------------------------", LogType.SETTINGS_VM);
+            if (dontPredict)
+            {
+                SendLogMessage("Prices update stats\n------------------------", LogType.SETTINGS_VM);
+            }
+            else
+            {
+                SendLogMessage("Predicting update stats \n-------------------", LogType.SETTINGS_VM);
+            }
 
 
 
@@ -578,15 +632,23 @@ namespace Beursfuif.Server.ViewModel
 
                 if (previousCount == 0) previousCount = 1;
 
-                sbyte addition = (addAddition ? currentInterval.Drinks.First(x => x.Id == dr.Id).NextPriceAddition : (sbyte)0);
+                sbyte addition = (dontPredict ? currentInterval.Drinks.First(x => x.Id == dr.Id).NextPriceAddition : (sbyte)0);
 
                 dr.CurrentPrice = (byte)(Math.Round(currentPrice * ((double)currentCount / (double)previousCount)) + addition);
 
-                if (dr.CurrentPrice > dr.MaximumPrice) dr.CurrentPrice = dr.MaximumPrice;
-                if (dr.CurrentPrice < dr.MiniumPrice) dr.CurrentPrice = dr.MiniumPrice;
+                if (dr.CurrentPrice > dr.MaximumPrice)
+                {
+                    SendLogMessage(string.Format("{0}'s new price ({1}) is over the maximum ({2})", dr.Name, dr.CurrentPrice, dr.MaximumPrice), LogType.SETTINGS_VM);
+                    dr.CurrentPrice = dr.MaximumPrice;
+                }
+                if (dr.CurrentPrice < dr.MiniumPrice)
+                {
+                    SendLogMessage(string.Format("{0}'s new price ({1}) is under the minimum ({2})", dr.Name, dr.CurrentPrice, dr.MiniumPrice), LogType.SETTINGS_VM);
+                    dr.CurrentPrice = dr.MiniumPrice;
+                }
 
-                SendLogMessage(string.Format("{0}: current price: {1}, previous count: {2}, current count: {3}, new price: {4}",
-                    dr.Name, currentPrice, previousCount, currentCount, dr.CurrentPrice), LogType.SETTINGS_VM);
+                SendLogMessage(string.Format("{0}: current price: {1}, previous count: {2}, current count: {3}, new price: {4}, addition: {5}",
+                    dr.Name, currentPrice, previousCount, currentCount, dr.CurrentPrice, addition), LogType.SETTINGS_VM);
             }
 
 
@@ -611,10 +673,6 @@ namespace Beursfuif.Server.ViewModel
             _server.SendAckInitialClientConnect(CurrentInterval.ToClientInterval(BeursfuifCurrentTime), e.Id, BeursfuifCurrentTime);
             SendLogMessage("Repley on " + e.Name + "'s connection request", LogType.SETTINGS_VM);
         }
-
-
-
-
 
         private IPAddress LocalIPAddress()
         {

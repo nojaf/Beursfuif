@@ -161,39 +161,38 @@ namespace Beursfuif.BL
 
         public void AddDrink(Drink drink)
         {
-            if (Drinks == null) return;
-            Task.Factory.StartNew(() =>
+            if (Drinks == null)
             {
-                List<Drink> currentDrinks = Drinks.ToList();
-                currentDrinks.Add(drink);
-                Drinks = currentDrinks.ToArray();
-            });
+                Drinks = new Drink[] { drink };
+                return;
+            }
+            
+            List<Drink> currentDrinks = Drinks.ToList();
+            currentDrinks.Add(drink);
+            Drinks = currentDrinks.ToArray();
 
         }
 
         public void UpdateDrink(Drink drink)
         {
             if (Drinks == null) return;
-            Task.Factory.StartNew(() =>
+
+            Drink dr = Drinks.FirstOrDefault(x => x.Id == drink.Id);
+            if (dr != null)
             {
-                Drink dr = Drinks.FirstOrDefault(x => x.Id == drink.Id);
-                if (dr != null)
-                {
-                    int index = Array.IndexOf(Drinks, dr);
-                    Drinks[index] = drink;
-                }
-            });
+                int index = Array.IndexOf(Drinks, dr);
+                Drinks[index] = drink;
+            }
         }
 
         public void RemoveDrink(Drink drink)
         {
             if (Drinks == null) return;
-            Task.Factory.StartNew(() =>
-            {
-                List<Drink> currentDrinks = Drinks.ToList();
-                currentDrinks.Remove(currentDrinks.FirstOrDefault(x => x.Id == drink.Id));
-                Drinks = currentDrinks.ToArray();
-            });
+
+            List<Drink> currentDrinks = Drinks.ToList();
+            currentDrinks.Remove(currentDrinks.FirstOrDefault(x => x.Id == drink.Id));
+            Drinks = currentDrinks.ToArray();
+
         }
 
         public override string ToString()

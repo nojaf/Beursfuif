@@ -22,7 +22,6 @@ function LoginViewModel() {
         //Adress
         if (this.serverAdress().trim().length === 0) return false;
       
-        console.log("validate  = " + validate_ip(this.serverAdress()));
         if (!validate_ip(this.serverAdress())) return false;
 
         //Port
@@ -153,6 +152,8 @@ this.ClientName;*/
 function StatusViewModel(){
     this.ClientId = ko.observable(0);
     this.CurrentTime = ko.observable("");
+    this.BeginTime = ko.observable("");
+    this.EndTime = ko.observable("");
 }
 //#endregion
 

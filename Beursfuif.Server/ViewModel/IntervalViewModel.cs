@@ -238,6 +238,7 @@ namespace Beursfuif.Server.ViewModel
 
 
                 InitCommands();
+                CheckCanEdit();
             }
         }
 
@@ -248,6 +249,17 @@ namespace Beursfuif.Server.ViewModel
 
         private void GenerateIntervals()
         {
+            if (BeginTime.CompareTo(EndTime) == 1)
+            {
+                _dm = new DialogMessage("Begin ligt na einde");
+                _dm.Nay = System.Windows.Visibility.Collapsed;
+                _dm.Errors.Add("De gewenste instelling is onmogelijk");
+                _dm.Errors.Add("Het begintijdstip moet plaats vinden voor het eindtijdstip");
+                MessengerInstance.Send<DialogMessage>(_dm);
+                SendLogMessage("Error creating Intervals, begin is greater than end", LogType.INTERVAL_VM | LogType.USER_ERROR);
+                return;
+            }
+
             //Validate if the hours and interval match
             TimeSpan period = EndTime.Subtract(BeginTime);
             int numberOfIntervals = 0;
@@ -267,7 +279,6 @@ namespace Beursfuif.Server.ViewModel
             MessengerInstance.Send<DialogMessage>(_dm);
             SendLogMessage("Error creating Intervals, " + string.Join(";", _dm.Errors.ToArray()), LogType.INTERVAL_VM | LogType.USER_ERROR);
         }
-
 
         private void CreateIntervals(object state)
         {
@@ -300,6 +311,11 @@ namespace Beursfuif.Server.ViewModel
         protected override void ChangePartyBusy(BeursfuifBusyMessage obj)
         {
             base.ChangePartyBusy(obj);
+            CheckCanEdit();
+        }
+
+        private void CheckCanEdit()
+        {
             if (File.Exists(PathManager.BUSY_AND_TIME_PATH))
             {
                 CanModify = false;

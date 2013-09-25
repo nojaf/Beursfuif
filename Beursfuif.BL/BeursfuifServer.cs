@@ -17,6 +17,8 @@ namespace Beursfuif.BL
         public event EventHandler<NewClientEventArgs> NewClientEvent;
         public event EventHandler<NewOrderEventArgs> NewOrderEvent;
         public event EventHandler<ClientLeftEventArgs> ClientLeftEvent;
+        public event EventHandler<BasicAuthAckEventArgs> CurrentTimeAckEvent;
+        public event EventHandler<BasicAuthAckEventArgs> IntervalUpdateAckEvent;
 
         //ID , UserContext
         public Dictionary<int,UserContext> Clients { get; set; }
@@ -76,10 +78,15 @@ namespace Beursfuif.BL
                     case ProtocolKind.NEW_ORDER:
                         OnNewOrderEvent(this, new NewOrderEventArgs(p.ClientId, p.AuthenticationCode, p.NewOrder));
                         break;
+                    case ProtocolKind.ACK_TIME_UPDATE:
+                        ReceivedTimeAck(context, p);
+                        break;
+                    case ProtocolKind.ACK_UPDATE_CLIENT_INTERVAL:
+                        ReceivedIntervalUpdateAck(context, p);
+                        break;
                 }
             }
         }
-
 
 
         public void StartServer()
@@ -119,6 +126,22 @@ namespace Beursfuif.BL
             if (ClientLeftEvent != null)
             {
                 ClientLeftEvent(sender, e);
+            }
+        }
+
+        public void OnCurrentTimeAckEvent(object sender, BasicAuthAckEventArgs e)
+        {
+            if (CurrentTimeAckEvent != null)
+            {
+                CurrentTimeAckEvent(sender, e);
+            }
+        }
+
+        public void OnIntervalUpdateAckEvent(object sender, BasicAuthAckEventArgs e)
+        {
+            if (IntervalUpdateAckEvent != null)
+            {
+                IntervalUpdateAckEvent(sender, e);
             }
         }
         #endregion
@@ -216,6 +239,19 @@ namespace Beursfuif.BL
                 client.Value.Send(package.ToJSON());
             }
         }
+
+        public void SendAckNewOrder(int clientId, string authCode, DateTime currentBeursfuifTime)
+        {
+            Package p = new Package()
+            {
+                MessageId = ProtocolKind.ACK_NEW_ORDER,
+                ClientId = clientId,
+                CurrentBeursfuifTime = currentBeursfuifTime
+            };
+
+            string data = p.ToJSON();
+            Clients.FirstOrDefault(x => x.Key == clientId).Value.Send(data);
+        }
         #endregion
 
         #region Received from client
@@ -230,15 +266,16 @@ namespace Beursfuif.BL
             //TODO: ack ID + currentInterval, methode here but called from VM after event
         }
 
-        //"zeikt in je eigen kulten"
         private void ReceivedTimeAck(Alchemy.Classes.UserContext context, Package p)
         {
-            if (p.AuthenticationCode != "zeikt in je eigen kulten")
-            {
-                Console.WriteLine("Foute auth code");
-            }
+            OnCurrentTimeAckEvent(this, new BasicAuthAckEventArgs(p.ClientId, p.AuthenticationCode));
 
             //TODO: stop the timer that checks for the clients response 
+        }
+
+        private void ReceivedIntervalUpdateAck(UserContext context, Package p)
+        {
+            OnIntervalUpdateAckEvent(this, new BasicAuthAckEventArgs(p.ClientId, p.AuthenticationCode));
         }
         #endregion
 

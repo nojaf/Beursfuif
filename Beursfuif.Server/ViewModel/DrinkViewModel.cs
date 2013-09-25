@@ -236,6 +236,7 @@ namespace Beursfuif.Server.ViewModel
                 ThreadPool.QueueUserWorkItem(CleanUpImages);
 
                 InitCommands();
+                CheckCanEdit();
             }
         }
 
@@ -523,6 +524,11 @@ namespace Beursfuif.Server.ViewModel
         protected override void ChangePartyBusy(BeursfuifBusyMessage obj)
         {
             base.ChangePartyBusy(obj);
+            CheckCanEdit();
+        }
+
+        private void CheckCanEdit()
+        {
             if (File.Exists(PathManager.BUSY_AND_TIME_PATH))
             {
                 CanModify = false;

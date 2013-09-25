@@ -24,7 +24,7 @@ function initApp(e) {
         webSocket: null,
         orderVM: new OrderViewModel(),
         statusVM: new StatusViewModel(),
-        errorModelVM:new ErrorModalViewModel()
+        errorModelVM: new ErrorModalViewModel(),
     };
 
     ko.applyBindings(app.loginVM, document.getElementById("login"));
@@ -32,11 +32,13 @@ function initApp(e) {
     ko.applyBindings(app.orderVM, document.getElementById("order"));
     ko.applyBindings(app.statusVM, document.getElementById("status"));
     ko.applyBindings(app.errorModelVM, document.getElementById("errorModal"));
-
     checkForCachedValues();
 
     initErrorModal();
+
 }
+
+
 
 function initLoginScreen() {
     var login = document.getElementById("login").children[0];
@@ -69,7 +71,13 @@ function initBackground() {
     $("html").css("background", "url('wallpapers/" + backGrounds[currentWallpaperIndex] + "') no-repeat center center fixed");
     currentWallpaperIndex++;
 
-    setInterval(changeBackground, 30*60*1000);
+    setInterval(changeBackground, 30 * 60 * 1000);
+
+    $(document).keyup(function (e) {
+        if (e.keyCode === 39) {
+            changeBackground();
+        }
+    });
 }
 
 function changeBackground() {
@@ -79,6 +87,7 @@ function changeBackground() {
         $("html").css("background", "url('wallpapers/" + backGrounds[currentWallpaperIndex] + "') no-repeat center center fixed");
         $("#mask").fadeOut(1000);
     });
+    console.log("background changed");
 }
 
 
@@ -93,6 +102,7 @@ function initWebsocketMethodes(url) {
     app.webSocket.onclose = webSocketCloseHandler;
     app.webSocket.onmessage = webSocketMessageHandler;
     app.webSocket.onerror = webSocketErrorHandler;
+    console.log("websocket initiliaed");
 }
 
 function webSocketOpenHandler(e) {
@@ -104,7 +114,7 @@ function webSocketOpenHandler(e) {
 }
 
 function webSocketCloseHandler(e) {
-    console.log(e);
+    console.log("Websokcet closed");
     app.errorModelVM.title("De verbinding met de server is weggevallen");
     app.errorModelVM.errorMessage("De connectie met de server is verloren. Controleer of het server programma nog actief is.");
     $("#errorModal").modal('show');
@@ -112,7 +122,8 @@ function webSocketCloseHandler(e) {
 
 function webSocketMessageHandler(e) {
     var pack = new Package(JSON.parse(e.data));
-    console.log("msgId = " + pack.MessageId);
+    console.log("new package received");
+    console.log(e.data);
     switch (pack.MessageId) {
         case PROTOCOLKIND.ACK_NEW_CLIENT_CONNECTS:
             ackNewClientConnects(pack);
@@ -129,11 +140,15 @@ function webSocketMessageHandler(e) {
         case PROTOCOLKIND.DRINK_AVAILABLE_CHANGED:
             updateDrinkAvailable(pack);
             break;
+        case PROTOCOLKIND.ACK_NEW_ORDER:
+            updateTimeValue(pack);
+            break;
     }
 }
 
 function webSocketErrorHandler(e) {
     console.log(e);
+    console.log("websocket error" + e);
     app.errorModelVM.title("Onverwacht probleem opgedoken");
     app.errorModelVM.errorMessage("Er is een iets vreemd gebeurt, om veiligheidsredenen wordt de verbinding met de server verbroken. \nControleer of alles nog in orde is aan de serverkant en connecteer opnieuw.");
     $("#errorModal").modal('show');
@@ -143,6 +158,8 @@ function webSocketErrorHandler(e) {
 //#region ReceivedWebSocketMessages
 function ackNewClientConnects(pack) {
     app.statusVM.ClientId(pack.ClientId);
+    app.statusVM.BeginTime(pack.CurrentInterval.Start.toString().split("T")[1].substr(0, 5));
+    app.statusVM.EndTime(pack.CurrentInterval.End.toString().split("T")[1].substr(0, 5));
     displayDrinks(pack);
 }
 
@@ -198,21 +215,40 @@ function clientGotKicked() {
 }
 
 function timeUpdate(pack) {
-
-    var time = pack.CurrentBeursfuifTime.toString().split("T")[1].substr(0, 5);
-    console.log(time);
-    app.statusVM.CurrentTime(time);
+    updateTimeValue(pack);
 
     var answerPack = new Package({
         MessageId: PROTOCOLKIND.ACK_TIME_UPDATE,
         ClientId: app.statusVM.ClientId(),
         AuthenticationCode: app.drinksVM.getAuthenticationCode()
     });
-    
+    app.webSocket.send(JSON.stringify(answerPack));
+}
+
+function updateTimeValue(pack) {
+    var time = pack.CurrentBeursfuifTime.toString().split("T")[1].substr(0, 5);
+    console.log(time);
+    app.statusVM.CurrentTime(time);
+
 }
 
 function updateClientInterval(pack) {
+	console.log("old auth = " + app.drinksVM.getAuthenticationCode());
+
     displayDrinks(pack);
+
+    console.log("new auth = " + app.drinksVM.getAuthenticationCode());
+
+    var responsePack = new Package({
+        MessageId: PROTOCOLKIND.ACK_UPDATE_CLIENT_INTERVAL,
+        ClientId: app.statusVM.ClientId(),
+        AuthenticationCode: app.drinksVM.getAuthenticationCode()
+    });
+
+    app.statusVM.BeginTime(pack.CurrentInterval.Start.toString().split("T")[1].substr(0, 5));
+    app.statusVM.EndTime(pack.CurrentInterval.End.toString().split("T")[1].substr(0, 5));
+
+    app.webSocket.send(JSON.stringify(responsePack));
 }
 
 function displayDrinks(pack) {

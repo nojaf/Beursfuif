@@ -296,36 +296,52 @@ namespace Beursfuif.Server.ViewModel
         {
             var locator = base.GetLocator();
             var currentInterval = locator.Settings.CurrentInterval;
-            App.Current.Dispatcher.BeginInvoke(new Action(() =>
+            if (currentInterval.AuthenticationString() == e.AuthenticationCode)
             {
-                //TODO: Check with auth code
-                ClientDrinkOrder[] items = e.Order;
-                foreach (var drinkItem in items)
+                App.Current.Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    drinkItem.IntervalId = currentInterval.Id;
-                }
+                    //TODO: Check with auth code
+                    ClientDrinkOrder[] items = e.Order;
+                    foreach (var drinkItem in items)
+                    {
+                        drinkItem.IntervalId = currentInterval.Id;
+                    }
 
-                ShowOrder newOrder = new ShowOrder()
-                {
-                    ClientName = locator.Clients.Clients.FirstOrDefault(x => x.Id == e.ClientId).Name,
-                    IntervalId = currentInterval.Id,
-                    OrderContent = e.Order.ToContentString(locator.Drink.Drinks),
-                    Time = locator.Settings.BeursfuifCurrentTime,
-                    TotalPrice = e.Order.TotalPrice(currentInterval),
-                    Orders = items
-                };
+                    ShowOrder newOrder = new ShowOrder()
+                    {
+                        ClientName = locator.Clients.Clients.FirstOrDefault(x => x.Id == e.ClientId).Name,
+                        IntervalId = currentInterval.Id,
+                        OrderContent = e.Order.ToContentString(locator.Drink.Drinks),
+                        Time = locator.Settings.BeursfuifCurrentTime,
+                        TotalPrice = e.Order.TotalPrice(currentInterval),
+                        Orders = items
+                    };
 
-                AllOrders.Add(newOrder);
-                RaisePropertyChanged(AllOrdersPropertyName);
-                if (SelectedInterval == null) SelectedInterval = ReducedIntervals[0];
+                    AllOrders.Add(newOrder);
+                    RaisePropertyChanged(AllOrdersPropertyName);
+                    if (SelectedInterval == null) SelectedInterval = ReducedIntervals[0];
 
-                if (SelectedInterval.Id == currentInterval.Id || SelectedInterval.Id == int.MaxValue)
-                {
-                    ShowOrderList.Add(newOrder);
-                }
+                    if (SelectedInterval.Id == currentInterval.Id || SelectedInterval.Id == int.MaxValue)
+                    {
+                        ShowOrderList.Add(newOrder);
+                    }
 
-                _allOrderItems.AddRange(e.Order);
-            }));
+                    _allOrderItems.AddRange(e.Order);
+                }));
+                return;
+            }
+            //else
+            //client doesn't have a valid code
+
+            SendLogMessage("Invalid authcode from client " + locator.Clients.Clients.FirstOrDefault(x => x.Id == e.ClientId).Name,
+                LogType.ORDER_VM | LogType.CLIENT_SERVER_ERROR);
+            MessengerInstance.Send<KickClientMessage>(new KickClientMessage()
+            {
+                ClientId = e.ClientId,
+                Reason = KickWasKickedReason.TIME_OUT_ERROR
+            });
+
+
         }
         #endregion
     }

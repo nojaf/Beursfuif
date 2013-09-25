@@ -106,6 +106,7 @@ namespace Beursfuif.Server.ViewModel
 
         private void Recalculate()
         {
+            IsDirty = false;
             if (!CanChangeAddition(0)) return;
 
             var locator = GetLocator();
@@ -151,21 +152,25 @@ namespace Beursfuif.Server.ViewModel
         private void RemoveAddition(int id)
         {
             PredictDrink dr = PredictDrinks.FirstOrDefault(x => x.DrinkId == id);
+            int index = Array.IndexOf(PredictDrinks, dr);
             if (dr != null)
             {
-                dr.Addition -= 1;
+                PredictDrinks[index].Addition -= 1;
             }
             IsDirty = true;
+            RaisePropertyChanged(PredictDrinksPropertyName);
         }
 
         private void AddAddition(int id)
         {
             PredictDrink dr = PredictDrinks.FirstOrDefault(x => x.DrinkId == id);
+            int index = Array.IndexOf(PredictDrinks, dr);
             if (dr != null)
             {
-                dr.Addition += 1;
+                PredictDrinks[index].Addition += 1;
             }
             IsDirty = true;
+            RaisePropertyChanged(PredictDrinksPropertyName);
         }
 
 

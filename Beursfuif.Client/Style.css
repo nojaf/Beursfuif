@@ -70,7 +70,7 @@ body {
 #order {
     background: white;
     border-radius: 15px;
-    display:none;
+    display: none;
 }
 
 tr td .glyphicon:hover {
@@ -195,8 +195,9 @@ td {
 #loading {
     font-size: larger;
     color: #428bca;
-    position:fixed;
-    height:100px;
-    width:100px;
-    display:none;
+    position: fixed;
+    height: 100px;
+    width: 100px;
+    display: none;
 }
+

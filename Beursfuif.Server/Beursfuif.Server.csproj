@@ -131,6 +131,7 @@
     <Compile Include="Messages\BeursfuifStartedMessage.cs" />
     <Compile Include="Messages\DrinkModifiedMessage.cs" />
     <Compile Include="Messages\DrinkAvailableMessage.cs" />
+    <Compile Include="Messages\KickClientMessage.cs" />
     <Compile Include="Messages\ToastMessage.cs" />
     <Compile Include="Test.xaml.cs">
       <DependentUpon>Test.xaml</DependentUpon>
