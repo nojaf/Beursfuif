@@ -308,7 +308,7 @@ namespace Beursfuif.Server.ViewModel
 
             for (int i = 0; i < intervalCount; i++)
             {
-               FillInDrinks(locator.Interval.Intervals[i], drinks);
+                FillInDrinks(locator.Interval.Intervals[i], drinks);
             }
             locator.Interval.SaveIntervals();
 
@@ -335,17 +335,7 @@ namespace Beursfuif.Server.ViewModel
             interval.Drinks = new Drink[length];
             for (int i = 0; i < length; i++)
             {
-                interval.Drinks[i] = new Drink();
-                interval.Drinks[i].Id = drinks[i].Id;
-                interval.Drinks[i].ImageString = drinks[i].ImageString;
-                interval.Drinks[i].Available = drinks[i].Available;
-                interval.Drinks[i].CurrentPrice = drinks[i].CurrentPrice;
-                interval.Drinks[i].InitialPrice = drinks[i].InitialPrice;
-                interval.Drinks[i].MaximumPrice = drinks[i].MaximumPrice;
-                interval.Drinks[i].MiniumPrice = drinks[i].MiniumPrice;
-                interval.Drinks[i].Name = drinks[i].Name;
-                interval.Drinks[i].NextPrice = drinks[i].NextPrice;
-                interval.Drinks[i].NextPriceAddition = drinks[i].NextPriceAddition;
+                interval.Drinks[i] = drinks[i].Clone();
             }
         }
 
@@ -377,7 +367,7 @@ namespace Beursfuif.Server.ViewModel
                 _dm.Errors.Add("Alles zal verwijderd worden.");
                 _dm.Errors.Add("De data is permanent weg.");
                 _dm.Errors.Add("Doorgaan?");
-                         _dm.Nay = Visibility.Visible;
+                _dm.Nay = Visibility.Visible;
                 _dm.AnswerChanged += (s, b) =>
                 {
                     if (b.Value)
@@ -480,14 +470,14 @@ namespace Beursfuif.Server.ViewModel
                 };
 
                 MessengerInstance.Send<DialogMessage>(_dm);
-            }           
+            }
         }
 
         public void MainTimer_Tick(object state)
         {
             _tmrMain.Change(int.MaxValue, int.MaxValue);
             //BEGIN CODE
-            if (BeursfuifBusy  && CurrentInterval != null)
+            if (BeursfuifBusy && CurrentInterval != null)
             {
                 BeursfuifCurrentTime = BeursfuifCurrentTime.AddSeconds(1);
 
@@ -501,7 +491,8 @@ namespace Beursfuif.Server.ViewModel
                     //sync time with clients
                     _server.UpdateTime(BeursfuifCurrentTime, CurrentInterval.AuthenticationString());
                     SendLogMessage("Server send update current time to clients", LogType.SETTINGS_VM);
-                }else if (BeursfuifCurrentTime > CurrentInterval.EndTime)
+                }
+                else if (BeursfuifCurrentTime > CurrentInterval.EndTime)
                 {
                     //TODO Update time
                     SendLogMessage("Server will commence calculating new prices", LogType.SETTINGS_VM);
@@ -509,7 +500,7 @@ namespace Beursfuif.Server.ViewModel
 
                     ThreadPool.QueueUserWorkItem(new WaitCallback((object target) =>
                     {
-                        Interval next = CalculatePriceUpdates(locator.Interval.Intervals, locator.Orders.AllOrderItems, CurrentInterval.Id, true);
+                        Interval next = CalculatePriceUpdates(locator.Interval.Intervals, locator.Orders.AllOrderItems, CurrentInterval.Id);
                         if (next != null)
                         {
                             App.Current.Dispatcher.BeginInvoke(new Action(() =>
@@ -530,7 +521,7 @@ namespace Beursfuif.Server.ViewModel
                             locator.Clients.KickAll(KickWasKickedReason.END_OF_FUIF);
                             SendLogMessage("Beursfuif has ended", LogType.SETTINGS_VM | LogType.GOOD_NEWS);
                             SendToastMessage("Beursfuif completed", "De fuif is gedaan");
-                            
+                            //TODO, disable restart fuif button
                         }
                     }));
                     return;
@@ -573,84 +564,139 @@ namespace Beursfuif.Server.ViewModel
         #endregion
 
         #region Price Updates
-        public Interval CalculatePriceUpdates(Interval[] intervals, List<ClientDrinkOrder> allOrdersItems, int currentIntervalId, bool dontPredict)
+        public Interval CalculatePriceUpdates(List<ClientDrinkOrder> allOrdersItems, Interval[] intervals, int idCurrentInterval, bool predict)
         {
-            Interval currentInterval = intervals.FirstOrDefault(x => x.Id == currentIntervalId);
-            int indexCurrentInterval = Array.IndexOf(intervals, currentInterval);
-            if (indexCurrentInterval == intervals.Length - 1) return null;
+            Interval currentInterval = intervals.FirstOrDefault(x => x.Id == idCurrentInterval);
+            if (currentInterval == null) throw new Exception("Current interval isn't part of the Interval array");
 
-            Interval nextInterval = (dontPredict ? intervals[indexCurrentInterval + 1] : new Interval());
+            int currentIntervalIndex = Array.IndexOf(intervals, currentInterval);
+            //the first to intervals don't trigger an update
+            if (currentIntervalIndex == 0) return intervals[1];
 
+            Interval previousInterval = intervals[currentIntervalIndex - 1];
+            //no new update possible, end of beursfuif
+            if (currentIntervalIndex == intervals.Length - 1) return null;
 
-            if (indexCurrentInterval == 0) return nextInterval;
+            Interval nextInterval = (predict ? intervals[currentIntervalIndex + 1].Clone() : intervals[currentIntervalIndex + 1]);
 
-            //create a copy of the interval object, because we don't want to affect the real values
-            if (!dontPredict)
+            int previousAllDrinkCount = allOrdersItems.Where(x => x.IntervalId == previousInterval.Id).Sum(x => x.Count);
+            SendLogMessage("Previous drink count: " + previousAllDrinkCount, LogType.SETTINGS_VM);
+            int currentAllDrinkCount = allOrdersItems.Where(x => x.IntervalId == currentInterval.Id).Sum(x => x.Count);
+            SendLogMessage("Current drink count: " + previousAllDrinkCount, LogType.SETTINGS_VM);
+
+            //2 in the excel file
+            int differenceAllDrinks = currentAllDrinkCount - previousAllDrinkCount;
+            SendLogMessage("Current all drinkcount - Previous all drinkcount", LogType.SETTINGS_VM);
+
+            Drink[] drinksForNextInterval = currentInterval.Drinks.Where(x => x.Available).ToArray();
+            int numberOfDrinks = drinksForNextInterval.Length;
+            for (int i = 0; i < numberOfDrinks; i++)
             {
-                Interval realNextInterval = intervals[indexCurrentInterval + 1];
-                nextInterval.Id = realNextInterval.Id;
-                foreach (var item in realNextInterval.Drinks)
+                Drink drink = drinksForNextInterval[i];
+
+                int previousDrinkCount = allOrdersItems.Where(x => x.DrinkId == drink.Id && x.IntervalId == previousInterval.Id).Sum(x => x.Count);
+                int currentDrinkCount = allOrdersItems.Where(x => x.DrinkId == drink.Id && x.IntervalId == currentInterval.Id).Sum(x => x.Count);
+                //1 in the excel
+                int differenceDrinkCount = currentDrinkCount - previousDrinkCount;
+
+                //3 in the excel
+                double differenceProcentage = ((double)currentDrinkCount / (double)currentAllDrinkCount)
+                                                                        -
+                                               ((double)previousDrinkCount / (double)previousAllDrinkCount);
+
+                if (differenceDrinkCount >= 0)
                 {
-                    nextInterval.AddDrink(new Drink()
+                    #region 1A
+                    //the drink has been drank more
+                    if (differenceAllDrinks >= 0)
                     {
-                        Id = item.Id,
-                        Available = item.Available,
-                        CurrentPrice = item.CurrentPrice,
-                        InitialPrice = item.InitialPrice,
-                        MaximumPrice = item.MaximumPrice,
-                        MiniumPrice = item.MiniumPrice,
-                        Name = item.Name,
-                        NextPriceAddition = item.NextPriceAddition,
-                        NextPrice = item.NextPrice,
-                    });
+                        #region 2AA
+                        //more drinks have been drunk in general
+                        if (differenceProcentage > 0)
+                        {
+                            //the drink has been drunk more procentually
+                            drink.PriceFactor = PriceFactor.BIG_RISE;
+                        }
+                        else
+                        {
+                            //the drink has been drunk less procentually
+                            drink.PriceFactor = PriceFactor.BIG_DECREASE;
+                        }
+                        #endregion
+                    }
+                    else
+                    {
+                        #region 2AB
+                        //less drinks have been drunk in general
+                        if (differenceProcentage > 0)
+                        {
+                            //the drink has been drunk more procentually
+                            drink.PriceFactor = PriceFactor.SMALL_RISE;
+                        }
+                        else
+                        {
+                            //the drink has been drunk less procentually
+                            drink.PriceFactor = PriceFactor.SMALL_DECREASE;
+                        }
+                        #endregion
+                    }
+                    #endregion
                 }
-            }
-
-            //In this scenario the change of prices will only trigger after the second interval
-            Interval previousInterval = intervals[indexCurrentInterval - 1];
-
-            var availableDrinks = nextInterval.Drinks.Where(x => x.Available);
-            if (dontPredict)
-            {
-                SendLogMessage("Prices update stats\n------------------------", LogType.SETTINGS_VM);
-            }
-            else
-            {
-                SendLogMessage("Predicting update stats \n-------------------", LogType.SETTINGS_VM);
-            }
-
-
-
-            foreach (Drink dr in availableDrinks)
-            {
-                int currentPrice = currentInterval.Drinks.First(x => x.Id == dr.Id).CurrentPrice;
-
-                int previousCount = allOrdersItems.Where(x => x.IntervalId == previousInterval.Id &&
-                    x.DrinkId == dr.Id).Sum(x => x.Count);
-                int currentCount = allOrdersItems.Where(x => x.IntervalId == currentIntervalId &&
-                    x.DrinkId == dr.Id).Sum(x => x.Count);
-
-                if (previousCount == 0) previousCount = 1;
-
-                sbyte addition = (dontPredict ? currentInterval.Drinks.First(x => x.Id == dr.Id).NextPriceAddition : (sbyte)0);
-
-                dr.CurrentPrice = (byte)(Math.Round(currentPrice * ((double)currentCount / (double)previousCount)) + addition);
-
-                if (dr.CurrentPrice > dr.MaximumPrice)
+                else
                 {
-                    SendLogMessage(string.Format("{0}'s new price ({1}) is over the maximum ({2})", dr.Name, dr.CurrentPrice, dr.MaximumPrice), LogType.SETTINGS_VM);
-                    dr.CurrentPrice = dr.MaximumPrice;
-                }
-                if (dr.CurrentPrice < dr.MiniumPrice)
-                {
-                    SendLogMessage(string.Format("{0}'s new price ({1}) is under the minimum ({2})", dr.Name, dr.CurrentPrice, dr.MiniumPrice), LogType.SETTINGS_VM);
-                    dr.CurrentPrice = dr.MiniumPrice;
+                    #region 1B
+                    //the drink has been drank less
+                    if (differenceAllDrinks > 0)
+                    {
+
+                        //more drinks have been drunk in general
+                        if (differenceProcentage > 0)
+                        {
+                            #region 2BA
+                            //less drinks have been drunk in general
+                            if (differenceProcentage > 0)
+                            {
+                                //the drink has been drunk more procentually
+                                drink.PriceFactor = PriceFactor.BIG_DECREASE;
+                            }
+                            else
+                            {
+                                //the drink has been drunk less procentually
+                                drink.PriceFactor = PriceFactor.BIG_RISE;
+                            }
+                            #endregion
+                        }
+                        else
+                        {
+                            #region 2BB
+                            //less drinks have been drunk in general
+                            if (differenceProcentage > 0)
+                            {
+                                //the drink has been drunk more procentually
+                                drink.PriceFactor = PriceFactor.SMALL_DECREASE;
+                            }
+                            else
+                            {
+                                //the drink has been drunk less procentually
+                                drink.PriceFactor = PriceFactor.SMALL_RISE;
+                            }
+                            #endregion
+                        }
+
+                    }
+                    #endregion
                 }
 
-                SendLogMessage(string.Format("{0}: current price: {1}, previous count: {2}, current count: {3}, new price: {4}, addition: {5}",
-                    dr.Name, currentPrice, previousCount, currentCount, dr.CurrentPrice, addition), LogType.SETTINGS_VM);
+                //check if we need to use the override factor
+                if (drink.OverrideFactor != 0) drink.PriceFactor = PriceFactor.OVERRIDE;
+
+                Drink nextDrink = nextInterval.Drinks.FirstOrDefault(x => x.Id == drink.Id);
+                byte nextPrice = (byte)Math.Round(drink.CurrentPrice * drink.GetPriceFactorValue());
+                if (nextPrice > nextDrink.MaximumPrice) nextPrice = nextDrink.MaximumPrice;
+                if (nextPrice < nextDrink.MiniumPrice) nextPrice = nextDrink.MiniumPrice;
+
+                nextDrink.CurrentPrice = nextPrice;
             }
-
 
             return nextInterval;
         }

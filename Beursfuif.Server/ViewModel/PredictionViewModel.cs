@@ -98,7 +98,8 @@ namespace Beursfuif.Server.ViewModel
             Interval current = locator.Interval.Intervals.FirstOrDefault(x => x.Id == locator.Settings.CurrentInterval.Id);
             foreach (Drink item in current.Drinks)
             {
-                item.NextPriceAddition = PredictDrinks.FirstOrDefault(x => x.DrinkId == item.Id).Addition;
+                //TODO: solve
+                //item.NextPriceAddition = PredictDrinks.FirstOrDefault(x => x.DrinkId == item.Id).Addition;
             }
 
             IsDirty = false;

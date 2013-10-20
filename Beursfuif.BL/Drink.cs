@@ -1,14 +1,16 @@
 ﻿using GalaSoft.MvvmLight;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
+using Beursfuif.BL.Extensions;
 
 namespace Beursfuif.BL
 {
     [Serializable]
-    public class Drink:BFObservableObject
+    public class Drink : BFObservableObject
     {
         #region properties
         /// <summary>
@@ -260,65 +262,223 @@ namespace Beursfuif.BL
         }
 
         /// <summary>
-        /// The <see cref="NextPrice" /> property's name.
+        /// The <see cref="BigRise" /> property's name.
         /// </summary>
-        public const string NextPricePropertyName = "NextPrice";
+        public const string BigRisePropertyName = "BigRise";
 
-        private byte _nextPrice = 0;
+        private double _bigRise = 1.12;
 
         /// <summary>
-        /// Sets and gets the NextPrice property.
+        /// Sets and gets the BigRise property.
         /// Changes to that property's value raise the PropertyChanged event. 
         /// </summary>
-        public byte NextPrice
+        public double BigRise
         {
             get
             {
-                return _nextPrice;
+                return _bigRise;
             }
 
             set
             {
-                if (_nextPrice == value)
+                if (_bigRise == value)
                 {
                     return;
                 }
 
-                RaisePropertyChanging(NextPricePropertyName);
-                _nextPrice = value;
-                RaisePropertyChanged(NextPricePropertyName);
+                RaisePropertyChanging(BigRisePropertyName);
+                _bigRise = value;
+                PriceFactor = BL.PriceFactor.BIG_RISE;
+                RaisePropertyChanged(BigRisePropertyName);
             }
         }
 
         /// <summary>
-        /// The <see cref="NextPriceAddition" /> property's name.
+        /// The <see cref="SmallRise" /> property's name.
         /// </summary>
-        public const string NextPriceAdditionPropertyName = "NextPriceAddition";
+        public const string SmallRisePropertyName = "SmallRise";
 
-        private sbyte _nextPriceAddiction = 0;
+        private double _smallRise = 1.08;
 
         /// <summary>
-        /// Sets and gets the NextPriceAddition property.
+        /// Sets and gets the SmallRise property.
         /// Changes to that property's value raise the PropertyChanged event. 
         /// </summary>
-        public sbyte NextPriceAddition
+        public double SmallRise
         {
             get
             {
-                return _nextPriceAddiction;
+                return _smallRise;
             }
 
             set
             {
-                if (_nextPriceAddiction == value)
+                if (_smallRise == value)
                 {
                     return;
                 }
 
-                RaisePropertyChanging(NextPriceAdditionPropertyName);
-                _nextPriceAddiction = value;
-                RaisePropertyChanged(NextPriceAdditionPropertyName);
+                RaisePropertyChanging(SmallRisePropertyName);
+                _smallRise = value;
+                PriceFactor = BL.PriceFactor.SMALL_RISE;
+                RaisePropertyChanged(SmallRisePropertyName);
             }
+        }
+
+        /// <summary>
+        /// The <see cref="BigDecrease" /> property's name.
+        /// </summary>
+        public const string BigDecreasePropertyName = "BigDecrease";
+
+        private double _bigDecrease = 0.88;
+
+        /// <summary>
+        /// Sets and gets the BigDecrease property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public double BigDecrease
+        {
+            get
+            {
+                return _bigDecrease;
+            }
+
+            set
+            {
+                if (_bigDecrease == value)
+                {
+                    return;
+                }
+
+                RaisePropertyChanging(BigDecreasePropertyName);
+                _bigDecrease = value;
+                PriceFactor = BL.PriceFactor.BIG_DECREASE;
+                RaisePropertyChanged(BigDecreasePropertyName);
+            }
+        }
+
+        /// <summary>
+        /// The <see cref="SmallDecrease" /> property's name.
+        /// </summary>
+        public const string SmallDecreasePropertyName = "SmallDecrease";
+
+        private double _smallDecrease = 0.92;
+
+        /// <summary>
+        /// Sets and gets the SmallDecrease property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public double SmallDecrease
+        {
+            get
+            {
+                return _smallDecrease;
+            }
+
+            set
+            {
+                if (_smallDecrease == value)
+                {
+                    return;
+                }
+
+                RaisePropertyChanging(SmallDecreasePropertyName);
+                _smallDecrease = value;
+                PriceFactor = BL.PriceFactor.SMALL_DECREASE;
+                RaisePropertyChanged(SmallDecreasePropertyName);
+            }
+        }
+
+        /// <summary>
+        /// The <see cref="OverrideFactor" /> property's name.
+        /// </summary>
+        public const string OverrideFactorPropertyName = "OverrideFactor";
+
+        private double _overrideFactor = 0.0;
+
+        /// <summary>
+        /// Sets and gets the OverrideFactor property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public double OverrideFactor
+        {
+            get
+            {
+                return _overrideFactor;
+            }
+
+            set
+            {
+                if (_overrideFactor == value)
+                {
+                    return;
+                }
+
+                RaisePropertyChanging(OverrideFactorPropertyName);
+                _overrideFactor = value;
+                PriceFactor = BL.PriceFactor.OVERRIDE;
+                RaisePropertyChanged(OverrideFactorPropertyName);
+            }
+        }
+
+        /// <summary>
+        /// The <see cref="ContainsAlcohol" /> property's name.
+        /// </summary>
+        public const string ContainsAlcoholPropertyName = "ContainsAlcohol";
+
+        private bool _containsAlcohol = false;
+
+        /// <summary>
+        /// Sets and gets the ContainsAlcohol property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool ContainsAlcohol
+        {
+            get
+            {
+                return _containsAlcohol;
+            }
+
+            set
+            {
+                if (_containsAlcohol == value)
+                {
+                    return;
+                }
+
+                RaisePropertyChanging(ContainsAlcoholPropertyName);
+                _containsAlcohol = value;
+                RaisePropertyChanged(ContainsAlcoholPropertyName);
+            }
+        }
+
+        public PriceFactor PriceFactor { get; set; }
+
+        public string GetProcentAndFactorType 
+        { 
+            get {
+                string value = this.PriceFactor.GetDescription()  + " (";
+                switch (PriceFactor)
+                {
+                    case BL.PriceFactor.BIG_DECREASE:
+                        value += BigDecrease;
+                        break;
+                    case BL.PriceFactor.SMALL_DECREASE:
+                        value += SmallDecrease;
+                        break;
+                    case BL.PriceFactor.BIG_RISE:
+                        value += BigRise;
+                        break;
+                    case BL.PriceFactor.SMALL_RISE:
+                        value += SmallRise;
+                        break;
+                    case BL.PriceFactor.OVERRIDE:
+                        value += OverrideFactor;
+                        break;
+                }
+                value += ")";
+                return value;
+            } 
         }
         #endregion
 
@@ -341,6 +501,45 @@ namespace Beursfuif.BL
             }
             return false;
         }
+
+        public Drink Clone()
+        {
+            Drink clone = this.MemberwiseClone() as Drink;
+            return clone;
+        }
+
+        public double GetPriceFactorValue()
+        {
+            switch (this.PriceFactor)
+            {
+                case BL.PriceFactor.BIG_DECREASE:
+                    return this.BigDecrease;
+                case BL.PriceFactor.BIG_RISE:
+                    return this.BigRise;
+                case BL.PriceFactor.OVERRIDE:
+                    return this.OverrideFactor;
+                case BL.PriceFactor.SMALL_DECREASE:
+                    return this.SmallDecrease;
+                case BL.PriceFactor.SMALL_RISE:
+                    return this.SmallRise;
+            }
+
+            return 1.0;
+        }
     }
-    
+
+    public enum PriceFactor
+    {
+        [Description("Grote stijging")]
+        BIG_DECREASE,
+        [Description("Kleine stijging")]
+        SMALL_DECREASE,
+        [Description("Grote daling")]
+        BIG_RISE,
+        [Description("Kleine daling")]
+        SMALL_RISE,
+        [Description("Overschrijven")]
+        OVERRIDE
+    }
+
 }

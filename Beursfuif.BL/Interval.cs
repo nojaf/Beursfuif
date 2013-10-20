@@ -209,5 +209,18 @@ namespace Beursfuif.BL
             }
             return false;
         }
+
+        public Interval Clone()
+        {
+            Interval clone = this.MemberwiseClone() as Interval;
+            int drinkLength = this.Drinks.Length;
+            Drink[] drinkClones = new Drink[drinkLength];
+            for (int i = 0; i < drinkLength; i++)
+            {
+                drinkClones[i] = this.Drinks[i].Clone();
+            }
+            clone.Drinks = drinkClones;
+            return clone;
+        }
     }
 }

@@ -11,7 +11,7 @@
         DataContext="{Binding Main, Source={StaticResource Locator}}">
 	<Grid x:Name="gdMain">
 		<Grid.RowDefinitions>
-			<RowDefinition Height="25"/>
+			<RowDefinition Height="5"/>
 			<RowDefinition Height="485*"/>
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>

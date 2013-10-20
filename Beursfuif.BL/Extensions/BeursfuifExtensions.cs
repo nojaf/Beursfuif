@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace Beursfuif.BL.Extensions
@@ -39,8 +41,8 @@ namespace Beursfuif.BL.Extensions
                 DrinkId = drink.Id,
                 IntervalId = intervalId,
                 Name = drink.Name,
-               Price = drink.CurrentPrice,
-               Base64Image = CreateBase64Image(drink.ImageString)
+                Price = drink.CurrentPrice,
+                Base64Image = CreateBase64Image(drink.ImageString)
             };
             return clientDrink;
         }
@@ -74,16 +76,42 @@ namespace Beursfuif.BL.Extensions
                         join drink in currentInterval.Drinks
                         on item.DrinkId equals drink.Id
                         select item.Count * drink.CurrentPrice;
-            return query.Sum();           
+            return query.Sum();
 
         }
 
         public static string ToContentString(this ClientDrinkOrder[] clientDrinkOrders, ObservableCollection<Drink> drinks)
         {
-            return  String.Join("\n\r", (from clientDrink in clientDrinkOrders
-                                          join drink in drinks
-                                          on clientDrink.DrinkId equals drink.Id
-                                          select clientDrink.Count + " X " + drink.Name).ToArray());
+            return String.Join("\n\r", (from clientDrink in clientDrinkOrders
+                                        join drink in drinks
+                                        on clientDrink.DrinkId equals drink.Id
+                                        select clientDrink.Count + " X " + drink.Name).ToArray());
         }
+
+        public static string GetDescription(this PriceFactor value)
+        {
+            Type type = value.GetType();
+            string name = Enum.GetName(type, value);
+            if (name != null)
+            {
+                FieldInfo field = type.GetField(name);
+                if (field != null)
+                {
+                    DescriptionAttribute attr = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) as DescriptionAttribute;
+                    if (attr == null)
+                    {
+                        return name;
+                    }
+                    else
+                    {
+                        return attr.Description;
+                    }
+                }
+            }
+            return null;
+        }
+
+
+
     }
 }

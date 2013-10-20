@@ -3,14 +3,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:m="clr-namespace:Beursfuif.BL;assembly=Beursfuif.BL"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:t="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:interact="http://schemas.microsoft.com/expression/2010/interactivity"
-             xmlns:mvvm= "clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WPF4"
+             xmlns:mvvm="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WPF4"
              xmlns:conv="clr-namespace:Beursfuif.Server.Converters"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              DataContext="{Binding Drink,Source={StaticResource Locator}}"
-             d:DesignHeight="715" MinHeight="715" d:DesignWidth="751" MinWidth="751"
+             d:DesignHeight="735"
+             MinHeight="735"
+             d:DesignWidth="751"
+             MinWidth="751"
              x:Name="drinkView">
     <UserControl.Resources>
         <conv:BitmapFrameConverter x:Key="imgConv"></conv:BitmapFrameConverter>
@@ -20,114 +23,164 @@
             <VisualStateGroup x:Name="HideShow">
                 <VisualState x:Name="FadeIn">
                     <Storyboard>
-                        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="drinkView">
-                            <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-                            <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="1"/>
+                        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)"
+                                                       Storyboard.TargetName="drinkView">
+                            <EasingDoubleKeyFrame KeyTime="0"
+                                                  Value="0" />
+                            <EasingDoubleKeyFrame KeyTime="0:0:0.5"
+                                                  Value="1" />
                         </DoubleAnimationUsingKeyFrames>
                     </Storyboard>
                 </VisualState>
                 <VisualState x:Name="FadeOut">
                     <Storyboard>
-                        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="drinkView">
-                            <EasingDoubleKeyFrame KeyTime="0" Value="1"/>
-                            <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0"/>
+                        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)"
+                                                       Storyboard.TargetName="drinkView">
+                            <EasingDoubleKeyFrame KeyTime="0"
+                                                  Value="1" />
+                            <EasingDoubleKeyFrame KeyTime="0:0:0.5"
+                                                  Value="0" />
                         </DoubleAnimationUsingKeyFrames>
                     </Storyboard>
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="79*" />
-            <ColumnDefinition Width="31*" />
+            <ColumnDefinition Width="80*" />
+            <ColumnDefinition Width="40*" />
         </Grid.ColumnDefinitions>
-        <ListView ItemsSource="{Binding Drinks}" 
-                  SelectedItem="{Binding NewEditDrink}" >
+        <ListView ItemsSource="{Binding Drinks}"
+                  SelectedItem="{Binding NewEditDrink}">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="Naam">
-                    </GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding Name}"
+                                    Header="Naam"></GridViewColumn>
                     <GridViewColumn Header="Image">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <Viewbox Height="50">
-                                    <Image   Source="{Binding ImageString,TargetNullValue={StaticResource EmptyImage},Converter={StaticResource imgConv}}" >
-                                    </Image>
+                                    <Image   Source="{Binding ImageString,TargetNullValue={StaticResource EmptyImage},Converter={StaticResource imgConv}}"></Image>
                                 </Viewbox>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn DisplayMemberBinding="{Binding InitialPrice,NotifyOnSourceUpdated=True}" Header="Startprijs"></GridViewColumn>
-                    <GridViewColumn DisplayMemberBinding="{Binding MiniumPrice,NotifyOnSourceUpdated=True}" Header="Minimumprijs"></GridViewColumn>
-                    <GridViewColumn DisplayMemberBinding="{Binding MaximumPrice,NotifyOnSourceUpdated=True}" Header="Maximumprijs"></GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding InitialPrice,NotifyOnSourceUpdated=True}"
+                                    Header="Startprijs"></GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding MiniumPrice,NotifyOnSourceUpdated=True}"
+                                    Header="Minimumprijs"></GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding MaximumPrice,NotifyOnSourceUpdated=True}"
+                                    Header="Maximumprijs"></GridViewColumn>
                     <GridViewColumn Header="Beschikbaar">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <CheckBox IsChecked="{Binding Path=Available, Mode=TwoWay}"
-                                          Command="{Binding ElementName=drinkView, Path=DataContext.AvailableChangedCommand}" CommandParameter="{Binding Id}"></CheckBox>
+                                          Command="{Binding ElementName=drinkView, Path=DataContext.AvailableChangedCommand}"
+                                          CommandParameter="{Binding Id}"></CheckBox>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
                     <GridViewColumn Header="Verwijderen">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <Button Style="{DynamicResource IconButton}" Content=""
+                                <Button Style="{DynamicResource IconButton}"
+                                        Content=""
                                         CommandParameter="{Binding Id}"
                                         IsEnabled="{Binding ElementName=drinkView,Path=DataContext.CanModify}"
-                                        Command="{Binding Path=DataContext.RemoveDrinkCommand,ElementName=drinkView}" Height="25" HorizontalAlignment="Center"></Button>
+                                        Command="{Binding Path=DataContext.RemoveDrinkCommand,ElementName=drinkView}"
+                                        Height="25"
+                                        HorizontalAlignment="Center"></Button>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>
-        <StackPanel HorizontalAlignment="Left" Height="715" VerticalAlignment="Top" Width="211.645" Grid.Column="1">
-            	<Button Height="30" Command="{Binding AddNewDrinkCommand}"
+        <StackPanel VerticalAlignment="Top"
+                    Grid.Column="1">
+            <Button Height="30"
+                    Command="{Binding AddNewDrinkCommand}"
                     IsEnabled="{Binding ElementName=drinkView,Path=DataContext.CanModify}"
-            		Margin="15,5,0,5" Style="{DynamicResource IconButton}" HorizontalAlignment="Left" Content="&#xE109;"/>
-            <StackPanel x:Name="stackPanel" Margin="5,0" Background="#FFEFEFEF"
+                    Margin="15,5,0,5"
+                    Style="{DynamicResource IconButton}"
+                    HorizontalAlignment="Left"
+                    Content="&#xE109;" />
+            <StackPanel x:Name="stackPanel"
                         Visibility="{Binding DataContext.AddOrEditMenuVisible, ElementName=drinkView}"
-                 DataContext="{Binding NewEditDrink}">
-                <TextBlock Style="{DynamicResource Label}"><Run Language="nl-be" Text="Naam:"/></TextBlock>
+                        Margin="5,0,0,0"
+                        Background="#FFEFEFEF"
+                        DataContext="{Binding NewEditDrink}"
+                        Height="695">
+                <TextBlock Style="{DynamicResource Label}"><Run Language="nl-be"
+                                                                Text="Naam:" /></TextBlock>
                 <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          IsEnabled="{Binding DataContext.CanModify, ElementName=drinkView}" />
-                <TextBlock TextWrapping="Wrap" FontFamily="/Beursfuif.Server;component/Styles/#Coolvetica Rg" Foreground="#FF7E9D87" FontSize="16" Style="{DynamicResource Label}"><Run Language="nl-be" Text="Startprijs:"/></TextBlock>
+                <CheckBox IsEnabled="{Binding ContainsAlcohol, Mode=TwoWay}" Content="Bevat alcohol?"></CheckBox>                           
+                <TextBlock Style="{DynamicResource Label}"><Run Language="nl-be"
+                                                                Text="Startprijs:" /></TextBlock>
                 <t:ByteUpDown Value="{Binding InitialPrice, Mode=TwoWay}"
                               Minimum="0"
                               IsEnabled="{Binding ElementName=drinkView,Path=DataContext.CanModify}" />
-                <TextBlock TextWrapping="Wrap" FontFamily="/Beursfuif.Server;component/Styles/#Coolvetica Rg" Foreground="#FF7E9D87" FontSize="16" Style="{DynamicResource Label}"><Run Language="nl-be" Text="Minimumprijs:"/></TextBlock>
-                <t:ByteUpDown Value="{Binding MiniumPrice, Mode=TwoWay}" Minimum="0"  />
-                <TextBlock TextWrapping="Wrap" FontFamily="/Beursfuif.Server;component/Styles/#Coolvetica Rg" Foreground="#FF7E9D87" FontSize="16" Style="{DynamicResource Label}"><Run Language="nl-be" Text="Maximumprijs:"/></TextBlock>
-                <t:ByteUpDown Value="{Binding MaximumPrice, Mode=TwoWay}" Minimum="0" />
-                <TextBlock TextWrapping="Wrap" FontFamily="/Beursfuif.Server;component/Styles/#Coolvetica Rg" Foreground="#FF7E9D87" FontSize="16" Style="{DynamicResource Label}"><Run Language="nl-be" Text="Afbeelding:"/></TextBlock>
-                <Image x:Name="image"
-                       Height="80"
-                       Width="80"
-                       Margin="0,5"
-                       Source="{Binding ImageString, TargetNullValue={StaticResource EmptyImage}, Converter={StaticResource imgConv}}"/>
+                <TextBlock Style="{DynamicResource Label}"><Run Language="nl-be"
+                                                                Text="Minimumprijs:" /></TextBlock>
+                <t:ByteUpDown Value="{Binding MiniumPrice, Mode=TwoWay}"
+                              Minimum="0" />
+                <TextBlock Style="{DynamicResource Label}"><Run Language="nl-be"
+                                                                Text="Maximumprijs:" /></TextBlock>
+                <t:ByteUpDown Value="{Binding MaximumPrice, Mode=TwoWay}"
+                              Minimum="0" />
+                <TextBlock Style="{StaticResource Label}">Grote stijgingsfactor:</TextBlock>
+                <t:DoubleUpDown Value="{Binding BigRise, Mode=TwoWay}"
+                                Minimum="0.1" />
+                <TextBlock Style="{StaticResource Label}">Kleine stijgingsfactor:</TextBlock>
+                <t:DoubleUpDown Value="{Binding SmallRise, Mode=TwoWay}"></t:DoubleUpDown>
+                <TextBlock Style="{StaticResource Label}">Grote dalingsfactor:</TextBlock>
+                <t:DoubleUpDown Value="{Binding BigDecrease, Mode=TwoWay}"></t:DoubleUpDown>
+                <TextBlock Style="{StaticResource Label}">Kleine dalingsfactor:</TextBlock>
+                <t:DoubleUpDown Value="{Binding SmallDecrease, Mode=TwoWay}"></t:DoubleUpDown>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Style="{DynamicResource Label}"><Run Language="nl-be"
+                                                                    Text="Afbeelding:" /></TextBlock>
+                    <Image x:Name="image"
+                           Height="60"
+                           Width="60"
+                           Margin="0,0"
+                           Source="{Binding ImageString, TargetNullValue={StaticResource EmptyImage}, Converter={StaticResource imgConv}}" />
+                </StackPanel>
                 <Button Content="Kies een bestand ..."
                         IsEnabled="{Binding DataContext.CanModify, ElementName=drinkView}"
                         Command="{Binding DataContext.ChooseLocalImageCommand, ElementName=drinkView}" />
                 <TextBlock TextWrapping="Wrap"
-                          Style="{DynamicResource Label}"><Run Language="nl-be" Text="of plaats een link:"/></TextBlock>
+                           Style="{DynamicResource Label}"><Run Language="nl-be"
+                                                                Text="of plaats een link:" /></TextBlock>
                 <Grid Height="40">
-                	<Grid.ColumnDefinitions>
-                		<ColumnDefinition Width="100*"/>
-                		<ColumnDefinition Width="90*"/>
-                	</Grid.ColumnDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100*" />
+                        <ColumnDefinition Width="90*" />
+                    </Grid.ColumnDefinitions>
                     <TextBox HorizontalContentAlignment="Right"
                              IsEnabled="{Binding DataContext.CanModify, ElementName=drinkView}"
-                             Text="{Binding DataContext.DownloadUrl, ElementName=drinkView, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                             Text="{Binding DataContext.DownloadUrl, ElementName=drinkView, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     <Button Content="Download"
                             IsEnabled="{Binding DataContext.CanModify, ElementName=drinkView}"
-                            Grid.Column="1" Command="{Binding DataContext.DownloadImageCommand, ElementName=drinkView}" Margin="0,5,5,5"/>
-				</Grid>
-                <Grid Height="22.455" Margin="0,5">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="*"/>
-						<ColumnDefinition Width="*"/>
-					</Grid.ColumnDefinitions>
-                    <Button Style="{DynamicResource IconButton}" Content="" HorizontalAlignment="Center" Command="{Binding DataContext.SaveDrinkCommand, ElementName=drinkView}"  />
-                    <Button Style="{DynamicResource IconButton}" Content=""  Grid.Column="1" HorizontalAlignment="Center" Command="{Binding DataContext.CancelCommand, ElementName=drinkView}"  />
+                            Grid.Column="1"
+                            Command="{Binding DataContext.DownloadImageCommand, ElementName=drinkView}"
+                            Margin="0,5,5,5" />
+                </Grid>
+                <Grid Height="20"
+                      Margin="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Button Style="{DynamicResource IconButton}"
+                            Content=""
+                            HorizontalAlignment="Center"
+                            Command="{Binding DataContext.SaveDrinkCommand, ElementName=drinkView}" />
+                    <Button Style="{DynamicResource IconButton}"
+                            Content=""
+                            Grid.Column="1"
+                            HorizontalAlignment="Center"
+                            Command="{Binding DataContext.CancelCommand, ElementName=drinkView}" />
                 </Grid>
             </StackPanel>
         </StackPanel>

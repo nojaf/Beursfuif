@@ -20,29 +20,21 @@ namespace Beursfuif.ConsoleApp
 
         static void Main(string[] args)
         {
-            JSONEncodeClientInterval();
-
-            _server = new BeursfuifServer();
-            _server.NewClientEvent += _server_NewClientEvent;
-            _server.StartServer();
-
-            string cmd = Console.ReadLine();
-            while (cmd != "exit")
+            Drink drink = new Drink()
             {
-                cmd = Console.ReadLine();
-
-                int msgId = 0;
-                if (int.TryParse(cmd, out msgId))
-                {
-                    switch (msgId)
-                    {
-                        case 1:
-                            //New client
-                            break;
-                    }
-                }
-            }
-            _server.StopServer();
+                Id = 1,
+                Name = "Cola",
+                MaximumPrice = 17,
+                MiniumPrice = 12,
+                CurrentPrice = 15,
+                InitialPrice = 15,
+                BigDecrease = 0.7,
+                ImageString = "~/images"
+            };
+            Drink copy = drink;//drink.Clone();
+            drink.Name = "Pepsi";
+            Console.WriteLine(copy.Name);
+            Console.ReadLine();
             
         }
 
