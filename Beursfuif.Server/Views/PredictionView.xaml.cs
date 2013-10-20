@@ -35,5 +35,10 @@ namespace Beursfuif.Server.Views
             }
             else this.IsHitTestVisible = true;
         }
+
+        private void DoubleUpDown_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            (this.DataContext as PredictionViewModel).IsDirty = true;
+        }
     }
 }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Beursfuif.BL
 {
-    public class PredictDrink:Beursfuif.BL.BFObservableObject
+    public class PredictDrink : Beursfuif.BL.BFObservableObject
     {
         /// <summary>
         /// The <see cref="DrinkId" /> property's name.
@@ -85,7 +85,14 @@ namespace Beursfuif.BL
         {
             get
             {
-                return _nextPrice;
+                if (OverrideFactor == 0.0)
+                {
+                    return _nextPrice;
+                }
+                byte nextPrice = (byte)(CurrentPrice * OverrideFactor);
+                if (nextPrice > Maximum) return Maximum;
+                if (nextPrice < Minimum) return Minimum;
+                return nextPrice;
             }
 
             set
@@ -132,38 +139,78 @@ namespace Beursfuif.BL
                 RaisePropertyChanged(NamePropertyName);
             }
         }
-       // public string Name { get; set; }
+        // public string Name { get; set; }
 
         /// <summary>
-        /// The <see cref="Addition" /> property's name.
+        /// The <see cref="Factor" /> property's name.
         /// </summary>
-        public const string AdditionPropertyName = "Addition";
+        public const string FactorPropertyName = "Factor";
 
-        private sbyte _addition = 0;
+        private string _factor = string.Empty;
 
         /// <summary>
-        /// Sets and gets the Addition property.
+        /// Sets and gets the Factor property.
         /// Changes to that property's value raise the PropertyChanged event. 
         /// </summary>
-        public sbyte Addition
+        public string Factor
         {
             get
             {
-                return _addition;
+                if (OverrideFactor == 0.0)
+                {
+                    return _factor;
+                }
+                string factor = "override (" + OverrideFactor + ")";
+                return factor;
             }
 
             set
             {
-                if (_addition == value)
+                if (_factor == value)
                 {
                     return;
                 }
 
-                RaisePropertyChanging(AdditionPropertyName);
-                _addition = value;
-                RaisePropertyChanged(AdditionPropertyName);
+                RaisePropertyChanging(FactorPropertyName);
+                _factor = value;
+                RaisePropertyChanged(FactorPropertyName);
             }
         }
-        //public sbyte Addition { get; set; }
+
+        /// <summary>
+        /// The <see cref="OverrideFactor" /> property's name.
+        /// </summary>
+        public const string OverrideFactorPropertyName = "OverrideFactor";
+
+        private double _overrideFactor = 0.0;
+
+        /// <summary>
+        /// Sets and gets the OverrideFactor property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public double OverrideFactor
+        {
+            get
+            {
+                return _overrideFactor;
+            }
+
+            set
+            {
+                if (_overrideFactor == value)
+                {
+                    return;
+                }
+
+                RaisePropertyChanging(OverrideFactorPropertyName);
+                _overrideFactor = value;
+                RaisePropertyChanged(OverrideFactorPropertyName);
+                RaisePropertyChanged(NextPricePropertyName);
+                RaisePropertyChanged(FactorPropertyName);
+            }
+        }
+
+        public byte Maximum { get; set; }
+        public byte Minimum { get; set; }
     }
 }

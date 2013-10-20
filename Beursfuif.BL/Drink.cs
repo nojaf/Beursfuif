@@ -142,7 +142,7 @@ namespace Beursfuif.BL
         /// </summary>
         public const string InitialPricePropertyName = "InitialPrice";
 
-        private byte _initialPrice = 10;
+        private byte _initialPrice = 14;
 
         /// <summary>
         /// Sets and gets the InitialPrice property.
@@ -173,7 +173,7 @@ namespace Beursfuif.BL
         /// </summary>
         public const string MiniumPricePropertyName = "MiniumPrice";
 
-        private byte _minimumPrice = 0;
+        private byte _minimumPrice = 10;
 
         /// <summary>
         /// Sets and gets the MiniumPrice property.
@@ -204,7 +204,7 @@ namespace Beursfuif.BL
         /// </summary>
         public const string MaximumPricePropertyName = "MaximumPrice";
 
-        private byte _maximumPrice = 20;
+        private byte _maximumPrice = 30;
 
         /// <summary>
         /// Sets and gets the MaximumPrice property.
@@ -418,37 +418,6 @@ namespace Beursfuif.BL
                 _overrideFactor = value;
                 PriceFactor = BL.PriceFactor.OVERRIDE;
                 RaisePropertyChanged(OverrideFactorPropertyName);
-            }
-        }
-
-        /// <summary>
-        /// The <see cref="ContainsAlcohol" /> property's name.
-        /// </summary>
-        public const string ContainsAlcoholPropertyName = "ContainsAlcohol";
-
-        private bool _containsAlcohol = false;
-
-        /// <summary>
-        /// Sets and gets the ContainsAlcohol property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public bool ContainsAlcohol
-        {
-            get
-            {
-                return _containsAlcohol;
-            }
-
-            set
-            {
-                if (_containsAlcohol == value)
-                {
-                    return;
-                }
-
-                RaisePropertyChanging(ContainsAlcoholPropertyName);
-                _containsAlcohol = value;
-                RaisePropertyChanged(ContainsAlcoholPropertyName);
             }
         }
 

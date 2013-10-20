@@ -46,8 +46,8 @@
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="80*" />
-            <ColumnDefinition Width="40*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="250" />
         </Grid.ColumnDefinitions>
         <ListView ItemsSource="{Binding Drinks}"
                   SelectedItem="{Binding NewEditDrink}">
@@ -113,8 +113,7 @@
                 <TextBlock Style="{DynamicResource Label}"><Run Language="nl-be"
                                                                 Text="Naam:" /></TextBlock>
                 <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                         IsEnabled="{Binding DataContext.CanModify, ElementName=drinkView}" />
-                <CheckBox IsEnabled="{Binding ContainsAlcohol, Mode=TwoWay}" Content="Bevat alcohol?"></CheckBox>                           
+                         IsEnabled="{Binding DataContext.CanModify, ElementName=drinkView}" />                     
                 <TextBlock Style="{DynamicResource Label}"><Run Language="nl-be"
                                                                 Text="Startprijs:" /></TextBlock>
                 <t:ByteUpDown Value="{Binding InitialPrice, Mode=TwoWay}"
@@ -140,10 +139,9 @@
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Style="{DynamicResource Label}"><Run Language="nl-be"
                                                                     Text="Afbeelding:" /></TextBlock>
-                    <Image x:Name="image"
-                           Height="60"
-                           Width="60"
-                           Margin="0,0"
+                    <Image x:Name="image" Margin="25,0,0,0"
+                           Height="80"
+                           Width="80"
                            Source="{Binding ImageString, TargetNullValue={StaticResource EmptyImage}, Converter={StaticResource imgConv}}" />
                 </StackPanel>
                 <Button Content="Kies een bestand ..."
@@ -164,10 +162,9 @@
                             IsEnabled="{Binding DataContext.CanModify, ElementName=drinkView}"
                             Grid.Column="1"
                             Command="{Binding DataContext.DownloadImageCommand, ElementName=drinkView}"
-                            Margin="0,5,5,5" />
+                            Margin="0,0,5,0" />
                 </Grid>
-                <Grid Height="20"
-                      Margin="0">
+                <Grid Height="25" Margin="0,5,0,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />

@@ -133,9 +133,6 @@
     <Compile Include="Messages\DrinkAvailableMessage.cs" />
     <Compile Include="Messages\KickClientMessage.cs" />
     <Compile Include="Messages\ToastMessage.cs" />
-    <Compile Include="Test.xaml.cs">
-      <DependentUpon>Test.xaml</DependentUpon>
-    </Compile>
     <Compile Include="UserControls\MessageGridControl.xaml.cs">
       <DependentUpon>MessageGridControl.xaml</DependentUpon>
     </Compile>
@@ -195,10 +192,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Test.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="UserControls\MessageGridControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

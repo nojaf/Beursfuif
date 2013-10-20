@@ -194,7 +194,7 @@ namespace Beursfuif.Server.ViewModel
             string authString = GetCurrentInterval().AuthenticationString();
             if (c != null && e.AuthenticationCode == authString)
             {
-                string msg = c.Name + ": " + e.Order.TotalPrice(GetCurrentInterval()) + " bongs.";
+                string msg = c.Name + ": " + e.Order.TotalPrice(GetCurrentInterval()) + " bons.";
                 SendToastMessage("Nieuwe bestelling ontvangen",msg);
                 SendLogMessage("New order: " + msg, LogType.FROM_CLIENT | LogType.CLIENT_VM);
                 DateTime currentBeursfuifTime = base.GetLocator().Settings.BeursfuifCurrentTime;

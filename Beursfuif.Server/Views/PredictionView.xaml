@@ -50,7 +50,7 @@
                     Height="50"
                     Content=""
                     Style="{DynamicResource IconButton}"
-                    Command="{Binding PersistAdditionsCommand}"></Button>
+                    Command="{Binding PersistOverrideFactorCommand}"></Button>
         </StackPanel>
         <ListView Grid.Row="1"
                   ItemsSource="{Binding PredictDrinks}">
@@ -63,13 +63,14 @@
                                     Width="110"
                                     DisplayMemberBinding="{Binding CurrentPrice}"
                                     HeaderContainerStyle="{StaticResource LogHeader}"></GridViewColumn>
-                    <GridViewColumn Header="Factor" Width="100"
-                                    DisplayMemberBinding="{Binding GetProcentAndFactorType}"
+                    <GridViewColumn Header="Factor" Width="135"
+                                    DisplayMemberBinding="{Binding Factor}"
                                     HeaderContainerStyle="{StaticResource LogHeader}">
                         
                     </GridViewColumn>
                     <GridViewColumn Header="Volgende prijs"
                                     Width="125"
+                                    DisplayMemberBinding="{Binding NextPrice}"
                                     HeaderContainerStyle="{StaticResource LogHeader}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
@@ -91,7 +92,8 @@
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <t:DoubleUpDown Minimum="0.1"
-                                                Value="{Binding OverrideFactor}"></t:DoubleUpDown>
+                                                ValueChanged="DoubleUpDown_ValueChanged"
+                                                Value="{Binding OverrideFactor, Mode=TwoWay}"></t:DoubleUpDown>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>

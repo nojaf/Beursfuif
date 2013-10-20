@@ -569,7 +569,7 @@ namespace Beursfuif.Server.ViewModel
             Interval currentInterval = intervals.FirstOrDefault(x => x.Id == idCurrentInterval);
             if (currentInterval == null) throw new Exception("Current interval isn't part of the Interval array");
 
-            int currentIntervalIndex = Array.IndexOf(intervals, currentInterval);
+            int currentIntervalIndex = Array.IndexOf(intervals, intervals.FirstOrDefault(x =>x.Id == idCurrentInterval));
             //the first to intervals don't trigger an update
             if (currentIntervalIndex == 0) return intervals[1];
 
@@ -682,7 +682,9 @@ namespace Beursfuif.Server.ViewModel
                 }
 
                 //check if we need to use the override factor
-                if (drink.OverrideFactor != 0) drink.PriceFactor = PriceFactor.OVERRIDE;
+                if (drink.OverrideFactor != 0 && !predict) drink.PriceFactor = PriceFactor.OVERRIDE;
+
+                
 
                 Drink nextDrink = nextInterval.Drinks.FirstOrDefault(x => x.Id == drink.Id);
                 double priceFactor = drink.GetPriceFactorValue();
@@ -692,6 +694,7 @@ namespace Beursfuif.Server.ViewModel
                 if (nextPrice < nextDrink.MiniumPrice) nextPrice = nextDrink.MiniumPrice;
 
                 nextDrink.CurrentPrice = nextPrice;
+                if (predict) nextDrink.PriceFactor = drink.PriceFactor;
             }
 
             return nextInterval;
