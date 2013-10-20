@@ -500,7 +500,7 @@ namespace Beursfuif.Server.ViewModel
 
                     ThreadPool.QueueUserWorkItem(new WaitCallback((object target) =>
                     {
-                        Interval next = CalculatePriceUpdates(locator.Interval.Intervals, locator.Orders.AllOrderItems, CurrentInterval.Id);
+                        Interval next = CalculatePriceUpdates(locator.Orders.AllOrderItems, locator.Interval.Intervals, CurrentInterval.Id, false, this);
                         if (next != null)
                         {
                             App.Current.Dispatcher.BeginInvoke(new Action(() =>
@@ -564,7 +564,7 @@ namespace Beursfuif.Server.ViewModel
         #endregion
 
         #region Price Updates
-        public Interval CalculatePriceUpdates(List<ClientDrinkOrder> allOrdersItems, Interval[] intervals, int idCurrentInterval, bool predict)
+        public static Interval CalculatePriceUpdates(List<ClientDrinkOrder> allOrdersItems, Interval[] intervals, int idCurrentInterval, bool predict, BeursfuifViewModelBase viewmodel)
         {
             Interval currentInterval = intervals.FirstOrDefault(x => x.Id == idCurrentInterval);
             if (currentInterval == null) throw new Exception("Current interval isn't part of the Interval array");
@@ -580,13 +580,13 @@ namespace Beursfuif.Server.ViewModel
             Interval nextInterval = (predict ? intervals[currentIntervalIndex + 1].Clone() : intervals[currentIntervalIndex + 1]);
 
             int previousAllDrinkCount = allOrdersItems.Where(x => x.IntervalId == previousInterval.Id).Sum(x => x.Count);
-            SendLogMessage("Previous drink count: " + previousAllDrinkCount, LogType.SETTINGS_VM);
+            viewmodel.SendLogMessage("Previous drink count: " + previousAllDrinkCount, LogType.SETTINGS_VM);
             int currentAllDrinkCount = allOrdersItems.Where(x => x.IntervalId == currentInterval.Id).Sum(x => x.Count);
-            SendLogMessage("Current drink count: " + previousAllDrinkCount, LogType.SETTINGS_VM);
+            viewmodel.SendLogMessage("Current drink count: " + previousAllDrinkCount, LogType.SETTINGS_VM);
 
             //2 in the excel file
             int differenceAllDrinks = currentAllDrinkCount - previousAllDrinkCount;
-            SendLogMessage("Current all drinkcount - Previous all drinkcount", LogType.SETTINGS_VM);
+            viewmodel.SendLogMessage("Current all drinkcount - Previous all drinkcount", LogType.SETTINGS_VM);
 
             Drink[] drinksForNextInterval = currentInterval.Drinks.Where(x => x.Available).ToArray();
             int numberOfDrinks = drinksForNextInterval.Length;
@@ -648,41 +648,35 @@ namespace Beursfuif.Server.ViewModel
                     //the drink has been drank less
                     if (differenceAllDrinks > 0)
                     {
-
+                        #region 2BA
                         //more drinks have been drunk in general
                         if (differenceProcentage > 0)
                         {
-                            #region 2BA
-                            //less drinks have been drunk in general
-                            if (differenceProcentage > 0)
-                            {
-                                //the drink has been drunk more procentually
-                                drink.PriceFactor = PriceFactor.BIG_DECREASE;
-                            }
-                            else
-                            {
-                                //the drink has been drunk less procentually
-                                drink.PriceFactor = PriceFactor.BIG_RISE;
-                            }
-                            #endregion
+                            //the drink has been drunk more procentually
+                            drink.PriceFactor = PriceFactor.BIG_DECREASE;
                         }
                         else
                         {
-                            #region 2BB
-                            //less drinks have been drunk in general
-                            if (differenceProcentage > 0)
-                            {
-                                //the drink has been drunk more procentually
-                                drink.PriceFactor = PriceFactor.SMALL_DECREASE;
-                            }
-                            else
-                            {
-                                //the drink has been drunk less procentually
-                                drink.PriceFactor = PriceFactor.SMALL_RISE;
-                            }
-                            #endregion
+                            //the drink has been drunk less procentually
+                            drink.PriceFactor = PriceFactor.BIG_RISE;
                         }
-
+                        #endregion
+                    }
+                    else
+                    {
+                        #region 2BB
+                        //more drinks have been drunk in general
+                        if (differenceProcentage > 0)
+                        {
+                            //the drink has been drunk more procentually
+                            drink.PriceFactor = PriceFactor.SMALL_DECREASE;
+                        }
+                        else
+                        {
+                            //the drink has been drunk less procentually
+                            drink.PriceFactor = PriceFactor.SMALL_RISE;
+                        }
+                        #endregion
                     }
                     #endregion
                 }
@@ -691,7 +685,9 @@ namespace Beursfuif.Server.ViewModel
                 if (drink.OverrideFactor != 0) drink.PriceFactor = PriceFactor.OVERRIDE;
 
                 Drink nextDrink = nextInterval.Drinks.FirstOrDefault(x => x.Id == drink.Id);
-                byte nextPrice = (byte)Math.Round(drink.CurrentPrice * drink.GetPriceFactorValue());
+                double priceFactor = drink.GetPriceFactorValue();
+                double priceWithoutRouding = drink.CurrentPrice * priceFactor;
+                byte nextPrice = (byte)Math.Round(priceWithoutRouding);
                 if (nextPrice > nextDrink.MaximumPrice) nextPrice = nextDrink.MaximumPrice;
                 if (nextPrice < nextDrink.MiniumPrice) nextPrice = nextDrink.MiniumPrice;
 
@@ -700,7 +696,7 @@ namespace Beursfuif.Server.ViewModel
 
             return nextInterval;
         }
-        #endregion
+                    #endregion
 
         #region Websocket
         private void InitServer()

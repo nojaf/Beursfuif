@@ -300,7 +300,6 @@ namespace Beursfuif.Server.ViewModel
             {
                 App.Current.Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    //TODO: Check with auth code
                     ClientDrinkOrder[] items = e.Order;
                     foreach (var drinkItem in items)
                     {

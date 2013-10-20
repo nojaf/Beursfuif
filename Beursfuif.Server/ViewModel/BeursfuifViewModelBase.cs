@@ -105,7 +105,7 @@ namespace Beursfuif.Server.ViewModel
             return Application.Current.Resources["Locator"] as ViewModelLocator;
         }
 
-        protected virtual void SendLogMessage(string msg, LogType type){
+        public virtual void SendLogMessage(string msg, LogType type){
             MessengerInstance.Send<LogMessage>(new LogMessage(msg,type));
         }
 

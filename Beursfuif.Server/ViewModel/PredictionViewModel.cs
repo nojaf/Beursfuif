@@ -128,8 +128,8 @@ namespace Beursfuif.Server.ViewModel
             }
 
             //these contain the prices that would be set if we didn't interfere with them.
-            Interval nextInterval = locator.Settings.CalculatePriceUpdates(locator.Interval.Intervals,
-                locator.Orders.AllOrderItems, locator.Settings.CurrentInterval.Id, false);
+            Interval nextInterval = SettingsViewModel.CalculatePriceUpdates(
+                locator.Orders.AllOrderItems, locator.Interval.Intervals, locator.Settings.CurrentInterval.Id, true, this);
 
             for (int i = 0; i < length; i++)
             {

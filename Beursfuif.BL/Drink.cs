@@ -530,13 +530,13 @@ namespace Beursfuif.BL
 
     public enum PriceFactor
     {
-        [Description("Grote stijging")]
-        BIG_DECREASE,
-        [Description("Kleine stijging")]
-        SMALL_DECREASE,
         [Description("Grote daling")]
-        BIG_RISE,
+        BIG_DECREASE,
         [Description("Kleine daling")]
+        SMALL_DECREASE,
+        [Description("Grote stijging")]
+        BIG_RISE,
+        [Description("Kleine stijging")]
         SMALL_RISE,
         [Description("Overschrijven")]
         OVERRIDE
