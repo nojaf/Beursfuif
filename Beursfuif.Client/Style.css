@@ -57,15 +57,61 @@ body {
     padding: 5px 10px;
 }
 
-    .drink .row img {
-        display: block;
-        margin: auto;
-        height: 50px;
-        overflow-x: hidden;
-        max-height: 100px;
-        max-width: 132px;
+
+
+    .drink .row p, div, img, strong {
+        margin-bottom: 2px;
     }
 
+
+
+@media (min-width: 768px) {
+    .drink {
+        max-height: 120px;
+    }
+
+        .drink .row div img {
+            height: 50px;
+            overflow: hidden;
+        }
+}
+
+@media (min-width: 992px) {
+    .drink {
+        max-height: 130px;
+    }
+
+        .drink .row div img {
+            height: 70px;
+            overflow: hidden;
+        }
+}
+
+@media (min-width:1024px){
+    .drink{
+        max-height:145px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .drink .row p, strong {
+        font-size: 10px;
+    }
+
+    .drink .row td {
+        font-size: 11px;
+    }
+}
+
+
+
+
+/* .drink .row img {
+        display: block;
+        margin: auto;
+        height: 40%;
+        overflow-x: hidden;
+    }*/
 
 #order {
     background: white;
@@ -93,13 +139,13 @@ td {
     margin-bottom: 10px;
 }
 
-.drink .row p {
-    font-size: 12px;
-}
+
 
 .badge {
     background-color: #428bca;
 }
+
+
 
 .rotating {
     -webkit-animation-name: spin;
@@ -193,11 +239,8 @@ td {
 }
 
 #loading {
-    font-size: larger;
+    font-size: xx-large;
     color: #428bca;
     position: fixed;
-    height: 100px;
-    width: 100px;
     display: none;
 }
-

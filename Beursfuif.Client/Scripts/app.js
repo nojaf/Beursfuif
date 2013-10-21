@@ -3,6 +3,7 @@
 /// <reference path="../Models/models.js" />
 /// <reference path="jquery-2.0.3.js" />
 /// <reference path="moment.min.js" />
+/// <reference path="infuser.js" />
 
 
 
@@ -164,7 +165,7 @@ function ackNewClientConnects(pack) {
 }
 
 function resizeImages(length) {
-    var mainHeight = document.getElementById("mainControls").clientHeight;
+  /*  var mainHeight = document.getElementById("mainControls").clientHeight;
     var spaceLeft = document.documentElement.clientHeight - document.getElementById("nav").clientHeight - mainHeight;
     console.log("spaceLeft  =" + spaceLeft);
     var rows = Math.ceil(length / 4);
@@ -197,12 +198,12 @@ function resizeImages(length) {
             $(".drink .row img").css("height", minHeight + "px");
             $(".drink .row img").css("width", "auto");
             $(".drink .row img").css("max-width", (maxWidth - 30) + "px");
-        }*/
+        }
     } else if (spaceLeft < 0) {
         var smallerHeight = currentHeight + ((spaceLeft - 20) / 4);
         $(".drink .row img").css("height", smallerHeight + "px");
     }
-
+    */
 }
 
 function clientGotKicked() {
