@@ -21,6 +21,7 @@ namespace Beursfuif.BL
         public event EventHandler<BasicAuthAckEventArgs> IntervalUpdateAckEvent;
 
         //ID , UserContext
+        private int nextClientId = 1;
         public Dictionary<int,UserContext> Clients { get; set; }
         private WebSocketServer _server;
         //TODO: make port dynamic
@@ -55,6 +56,11 @@ namespace Beursfuif.BL
         {
             Console.WriteLine("Client " + context.ClientAddress.ToString() + " connected");
             int nextId = GetNextId();
+            //just to be sure
+            while (Clients.ContainsKey(nextId))
+            {
+                nextId = GetNextId();
+            }
             Clients.Add(nextId, context);
         }
 
@@ -149,7 +155,8 @@ namespace Beursfuif.BL
         #region Send to client(s)
         public int GetNextId()
         {
-            return (Clients == null || Clients.Count == 0 ? 1 : Clients.Max(x => x.Key) + 1);
+            nextClientId++;
+            return nextClientId;
         }
 
         public void SendAckInitialClientConnect(ClientInterval currentInterval, int clientId, DateTime currentBeursfuifTime)

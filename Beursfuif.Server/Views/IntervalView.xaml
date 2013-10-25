@@ -68,7 +68,7 @@
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
-            <Button Style="{DynamicResource IconButton}" Height="30"
+            <Button Style="{StaticResource IconButton}" Height="30"
                     IsEnabled="{Binding CanModify}"
                     Command="{Binding GenerateIntervalsCommand}"
                     Content=""></Button>

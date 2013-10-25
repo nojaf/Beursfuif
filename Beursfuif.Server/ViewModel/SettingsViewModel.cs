@@ -15,6 +15,9 @@ using Beursfuif.Server.Messages;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
+using System.Net.NetworkInformation;
+using System.Windows.Forms;
+using Ionic.Zip;
 
 namespace Beursfuif.Server.ViewModel
 {
@@ -134,6 +137,37 @@ namespace Beursfuif.Server.ViewModel
         private System.Threading.Timer _tmrMain;
         private BeursfuifServer _server;
 
+        /// <summary>
+        /// The <see cref="BackupLocation" /> property's name.
+        /// </summary>
+        public const string BackupLocationPropertyName = "BackupLocation";
+
+        private string _backupLocation = string.Empty;
+
+        /// <summary>
+        /// Sets and gets the BackupLocation property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public string BackupLocation
+        {
+            get
+            {
+                return _backupLocation;
+            }
+
+            set
+            {
+                if (_backupLocation == value)
+                {
+                    return;
+                }
+
+                RaisePropertyChanging(BackupLocationPropertyName);
+                _backupLocation = value;
+                RaisePropertyChanged(BackupLocationPropertyName);
+            }
+        }
+
         public string IPAdress
         {
             get
@@ -152,6 +186,10 @@ namespace Beursfuif.Server.ViewModel
         public RelayCommand ResetFuifCommand { get; set; }
 
         public RelayCommand ResetAllCommand { get; set; }
+
+        public RelayCommand ChangeBackupLocationCommand { get; set; }
+
+        public RelayCommand RestoreBackupCommand { get; set; }
         #endregion
 
         public SettingsViewModel(IOManager ioManager, BeursfuifServer server)
@@ -208,6 +246,50 @@ namespace Beursfuif.Server.ViewModel
             ForceAutoSaveAllOrders = new RelayCommand(() => { MessengerInstance.Send<AutoSaveAllOrdersMessage>(new AutoSaveAllOrdersMessage()); });
             ResetFuifCommand = new RelayCommand(ResetFuifData);
             ResetAllCommand = new RelayCommand(ResetAll);
+            ChangeBackupLocationCommand = new RelayCommand(ChangeBackupLocation);
+            RestoreBackupCommand = new RelayCommand(RestoreBackup, () => { return !BeursfuifBusy; });
+        }
+
+        private void RestoreBackup()
+        {
+            FileDialog dialog = new OpenFileDialog()
+            {
+                Filter = "Zip Files|*.zip"
+            };
+
+            var result = dialog.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                if(dialog.CheckFileExists){
+                    string zipLocation = dialog.FileName;
+                    IEnumerable<string> folders = Directory.EnumerateDirectories(PathManager.BEURSFUIF_FOLDER);
+                    foreach (string folder in folders)
+                    {
+                        Directory.Delete(folder, true);
+                    }
+
+                    using (ZipFile zip = ZipFile.Read(zipLocation))
+                    {
+                        zip.ExtractAll(PathManager.BEURSFUIF_FOLDER);
+                    }
+
+
+                    System.Windows.Forms.Application.Restart();
+                    System.Windows.Application.Current.Shutdown();
+                }
+             
+            }
+
+        }
+
+        private void ChangeBackupLocation()
+        {
+            FolderBrowserDialog dialog = new FolderBrowserDialog();
+           var result = dialog.ShowDialog();
+           if (result == DialogResult.OK)
+           {
+               BackupLocation = dialog.SelectedPath;
+           }
         }
 
         private bool ValidatePartyConditions()
@@ -277,7 +359,7 @@ namespace Beursfuif.Server.ViewModel
             if (_tmrMain == null)
             {
                 //start timer
-                _tmrMain = new Timer(MainTimer_Tick, null, 1000, 1000);
+                _tmrMain = new System.Threading.Timer(MainTimer_Tick, null, 1000, 1000);
             }
             else
             {
@@ -317,7 +399,7 @@ namespace Beursfuif.Server.ViewModel
             BeursfuifCurrentTime = CurrentInterval.StartTime;
 
             //start timer
-            _tmrMain = new Timer(MainTimer_Tick, null, 1000, 1000);
+            _tmrMain = new System.Threading.Timer(MainTimer_Tick, null, 1000, 1000);
 
             _server.StartServer();
             MainActionButtonContent = PAUSE_PARTY;
@@ -491,6 +573,7 @@ namespace Beursfuif.Server.ViewModel
                     //sync time with clients
                     _server.UpdateTime(BeursfuifCurrentTime, CurrentInterval.AuthenticationString());
                     SendLogMessage("Server send update current time to clients", LogType.SETTINGS_VM);
+                    ThreadPool.QueueUserWorkItem(BackupData);
                 }
                 else if (BeursfuifCurrentTime > CurrentInterval.EndTime)
                 {
@@ -529,6 +612,30 @@ namespace Beursfuif.Server.ViewModel
             }
             //END CODE
             _tmrMain.Change(1000, 1000);
+        }
+
+        private void BackupData(object state)
+        {
+            if (string.IsNullOrEmpty(BackupLocation))
+            {
+                SendToastMessage("Can't back up", "De data kon niet worden opgeslaan. Heb je een map gekozen om te backuppen?");
+                return;
+            }
+
+            if (!Directory.Exists(BackupLocation))
+            {
+                SendToastMessage("Backup map bestaat niet.", "De backup map bestaat niet (meer)");
+                return;
+            }
+
+            using (ZipFile zip = new ZipFile())
+            {
+                // add this map file into the "images" directory in the zip archive
+                zip.AddDirectory(PathManager.BEURSFUIF_FOLDER);
+                zip.Save(BackupLocation + "\\beursfuif_back_up.zip");
+            }
+
+          
         }
 
         #region Messages
@@ -711,6 +818,14 @@ namespace Beursfuif.Server.ViewModel
                 _server.StopServer();
                 SendLogMessage("Window is closing, shutdown server", LogType.SETTINGS_VM);
             };
+
+            NetworkChange.NetworkAddressChanged += new
+            NetworkAddressChangedEventHandler(AddressChangedCallback);
+        }
+
+        private void AddressChangedCallback(object sender, EventArgs e)
+        {
+            RaisePropertyChanged("IPAdress");
         }
 
         void Server_NewClientEvent(object sender, BL.Event.NewClientEventArgs e)

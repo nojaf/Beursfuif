@@ -4,7 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 
 namespace Beursfuif.Server
@@ -15,7 +18,15 @@ namespace Beursfuif.Server
     public partial class App : Application
     {
         protected override void OnStartup(StartupEventArgs e)
-        {       
+        {
+            var beursfuifProcesses = Process.GetProcesses().Where(x => x.ProcessName == "Beursfuif.Server");
+
+            if (beursfuifProcesses.Count() > 1)
+            {
+               var result = MessageBox.Show("An instance of Beursfuif.Server is already running");
+               this.Shutdown();
+            }
+
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             App.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
             CheckIfBeursfuifFolderExists();
@@ -35,23 +46,29 @@ namespace Beursfuif.Server
 
         private void CheckIfBeursfuifFolderExists()
         {
-            bool directoriesPresent = System.IO.Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Beursfuif");
-
-            if (!directoriesPresent)
+            if(!System.IO.Directory.Exists(PathManager.BEURSFUIF_FOLDER))
             {
-                System.IO.Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Beursfuif");
-                System.IO.Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Beursfuif\\Assets");
-                System.IO.Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Beursfuif\\Data");
-                System.IO.Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Beursfuif\\AutoSavedData");
-                System.IO.Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Beursfuif\\Log");
+                Directory.CreateDirectory(PathManager.BEURSFUIF_FOLDER);
+               
+            }
+
+            if (!Directory.Exists(PathManager.ASSETS_PATH))
+            {
+                Directory.CreateDirectory(PathManager.ASSETS_PATH);
+            }
+
+            if(!Directory.Exists(PathManager.DATA_FOLDER))
+            {
+                Directory.CreateDirectory(PathManager.DATA_FOLDER);
+            }
+
+            if (!Directory.Exists(PathManager.LOG_FOLDER))
+            {
+                Directory.CreateDirectory(PathManager.LOG_FOLDER);
             }
 
             LogManager.CreateNewLogFile();
 
-            if (!directoriesPresent)
-            {
-                LogManager.AppendToLog(new LogMessage("Directories created",  LogType.INFO));
-            }
         }
     }
 }

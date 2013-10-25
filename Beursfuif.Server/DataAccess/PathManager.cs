@@ -7,6 +7,10 @@ namespace Beursfuif.Server.DataAccess
 {
     public static class PathManager
     {
+        public static string BEURSFUIF_FOLDER = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Beursfuif";
+
+        public static string DATA_FOLDER = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Beursfuif\\Data\\";
+
         public static string DRINK_XML_PATH = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Beursfuif\\Data\\" + "drinks.xml";
 
         public static string ASSETS_PATH = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Beursfuif\\Assets\\";

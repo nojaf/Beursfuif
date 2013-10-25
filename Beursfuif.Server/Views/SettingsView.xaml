@@ -40,6 +40,15 @@
         <StackPanel Orientation="Vertical"
                     Width="300"
                     HorizontalAlignment="Left">
+            <Button Content="Kies een back-up locatie" Command="{Binding ChangeBackupLocationCommand}"></Button>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Style="{StaticResource Label}" Text="Backup locatie:" />
+                <Viewbox Width="185">
+                    <TextBlock FontFamily="Century Gothic" TextWrapping="WrapWithOverflow"
+                               Text="{Binding BackupLocation}" VerticalAlignment="Center"></TextBlock>
+                </Viewbox>
+            </StackPanel>
+            <Button Content="Back-up importeren" Command="{Binding RestoreBackupCommand}"></Button>
             <TextBlock Style="{DynamicResource Label}"
                        Text="Fuif aan of uitzetten:"></TextBlock>
             <Button Content="{Binding MainActionButtonContent}"
