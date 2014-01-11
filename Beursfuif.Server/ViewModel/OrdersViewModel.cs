@@ -254,7 +254,7 @@ namespace Beursfuif.Server.ViewModel
             {
                 ReducedDrinks[j] = new ReducedDrink() { Id = drinks[j].Id, Name = drinks[j].Name };
             }
-            
+
         }
 
         private void UpdateShowOrderList()
@@ -294,52 +294,59 @@ namespace Beursfuif.Server.ViewModel
 
         void Server_NewOrderEvent(object sender, BL.Event.NewOrderEventArgs e)
         {
-            var locator = base.GetLocator();
-            var currentInterval = locator.Settings.CurrentInterval;
-            if (currentInterval.AuthenticationString() == e.AuthenticationCode)
+            try
             {
-                App.Current.Dispatcher.BeginInvoke(new Action(() =>
+
+                var locator = base.GetLocator();
+                var currentInterval = locator.Settings.CurrentInterval;
+                /*if (currentInterval.AuthenticationString() == e.AuthenticationCode)
+                {*/
+                    App.Current.Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        ClientDrinkOrder[] items = e.Order;
+                        foreach (var drinkItem in items)
+                        {
+                            drinkItem.IntervalId = currentInterval.Id;
+                        }
+
+                        ShowOrder newOrder = new ShowOrder()
+                        {
+                            ClientName = locator.Clients.Clients.FirstOrDefault(x => x.Id == e.ClientId).Name,
+                            IntervalId = currentInterval.Id,
+                            OrderContent = e.Order.ToContentString(locator.Drink.Drinks),
+                            Time = locator.Settings.BeursfuifCurrentTime,
+                            TotalPrice = e.Order.TotalPrice(currentInterval),
+                            Orders = items
+                        };
+
+                        AllOrders.Add(newOrder);
+                        RaisePropertyChanged(AllOrdersPropertyName);
+                        if (SelectedInterval == null) SelectedInterval = ReducedIntervals[0];
+
+                        if (SelectedInterval.Id == currentInterval.Id || SelectedInterval.Id == int.MaxValue)
+                        {
+                            ShowOrderList.Add(newOrder);
+                        }
+
+                        _allOrderItems.AddRange(e.Order);
+                    }));
+                    return;
+                /*}
+                //else
+                //client doesn't have a valid code
+
+                SendLogMessage("Invalid authcode from client " + locator.Clients.Clients.FirstOrDefault(x => x.Id == e.ClientId).Name,
+                    LogType.ORDER_VM | LogType.CLIENT_SERVER_ERROR);
+                MessengerInstance.Send<KickClientMessage>(new KickClientMessage()
                 {
-                    ClientDrinkOrder[] items = e.Order;
-                    foreach (var drinkItem in items)
-                    {
-                        drinkItem.IntervalId = currentInterval.Id;
-                    }
-
-                    ShowOrder newOrder = new ShowOrder()
-                    {
-                        ClientName = locator.Clients.Clients.FirstOrDefault(x => x.Id == e.ClientId).Name,
-                        IntervalId = currentInterval.Id,
-                        OrderContent = e.Order.ToContentString(locator.Drink.Drinks),
-                        Time = locator.Settings.BeursfuifCurrentTime,
-                        TotalPrice = e.Order.TotalPrice(currentInterval),
-                        Orders = items
-                    };
-
-                    AllOrders.Add(newOrder);
-                    RaisePropertyChanged(AllOrdersPropertyName);
-                    if (SelectedInterval == null) SelectedInterval = ReducedIntervals[0];
-
-                    if (SelectedInterval.Id == currentInterval.Id || SelectedInterval.Id == int.MaxValue)
-                    {
-                        ShowOrderList.Add(newOrder);
-                    }
-
-                    _allOrderItems.AddRange(e.Order);
-                }));
-                return;
+                    ClientId = e.ClientId,
+                    Reason = KickWasKickedReason.TIME_OUT_ERROR
+                });*/
             }
-            //else
-            //client doesn't have a valid code
-
-            SendLogMessage("Invalid authcode from client " + locator.Clients.Clients.FirstOrDefault(x => x.Id == e.ClientId).Name,
-                LogType.ORDER_VM | LogType.CLIENT_SERVER_ERROR);
-            MessengerInstance.Send<KickClientMessage>(new KickClientMessage()
+            catch (Exception ex)
             {
-                ClientId = e.ClientId,
-                Reason = KickWasKickedReason.TIME_OUT_ERROR
-            });
-
+                LogManager.AppendToLog(new LogMessage("New order didn't work, ex = "+ex.Message, LogType.ERROR));
+            }
 
         }
         #endregion

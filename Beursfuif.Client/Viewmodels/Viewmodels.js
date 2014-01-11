@@ -70,6 +70,9 @@ function DrinkViewModel() {
 
     this.getAuthenticationCode = function () {
         var sortedDrinks = Enumerable.From(this.drinks()).OrderBy(function (x) { return x.Name; }).ToArray();
+
+
+        console.log(sortedDrinks);
         var length = sortedDrinks.length;
         var auth = "" + this.drinks()[0].IntervalId+"::";
         for (var i = 0; i < length; i++) {

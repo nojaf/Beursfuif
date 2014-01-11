@@ -65,6 +65,10 @@
       <Project>{0bb30286-2a73-4955-95d2-cfa16b012fdc}</Project>
       <Name>Beursfuif.BL</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Beursfuif.Server\Beursfuif.Server.csproj">
+      <Project>{6a547268-e30a-40c1-8e3b-90c422f42e1d}</Project>
+      <Name>Beursfuif.Server</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

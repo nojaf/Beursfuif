@@ -423,12 +423,19 @@ namespace Beursfuif.Server.ViewModel
 
         private void SaveSettings(object state)
         {
-            _ioManager.SaveObjectToXml<SaveSettings>(PathManager.BUSY_AND_TIME_PATH, new SaveSettings(BeursfuifBusy, BeursfuifCurrentTime));
+            try
+            {
+                _ioManager.SaveObjectToXml<SaveSettings>(PathManager.BUSY_AND_TIME_PATH, new SaveSettings(BeursfuifBusy, BeursfuifCurrentTime));
 
-            //CurrentInterval
-            _ioManager.SaveObjectToXml<Interval>(PathManager.CURRENT_INTERVAL_XML_PATH, CurrentInterval);
+                //CurrentInterval
+                _ioManager.SaveObjectToXml<Interval>(PathManager.CURRENT_INTERVAL_XML_PATH, CurrentInterval);
 
-            SendLogMessage("Beursfuifsettings and currentInterval have been saved", LogType.SETTINGS_VM);
+                SendLogMessage("Beursfuifsettings and currentInterval have been saved", LogType.SETTINGS_VM);
+            }
+            catch (Exception ex)
+            {
+                LogManager.AppendToLog(new LogMessage("Couldn't save settings",LogType.ERROR));
+            }
         }
 
         private void ResetAll()
@@ -616,25 +623,32 @@ namespace Beursfuif.Server.ViewModel
 
         private void BackupData(object state)
         {
-            if (string.IsNullOrEmpty(BackupLocation))
+            try
             {
-                SendToastMessage("Can't back up", "De data kon niet worden opgeslaan. Heb je een map gekozen om te backuppen?");
-                return;
-            }
+                if (string.IsNullOrEmpty(BackupLocation))
+                {
+                    SendToastMessage("Can't back up", "De data kon niet worden opgeslaan. Heb je een map gekozen om te backuppen?");
+                    return;
+                }
 
-            if (!Directory.Exists(BackupLocation))
+                if (!Directory.Exists(BackupLocation))
+                {
+                    SendToastMessage("Backup map bestaat niet.", "De backup map bestaat niet (meer)");
+                    return;
+                }
+
+                Thread.Sleep(1000);
+                using (ZipFile zip = new ZipFile())
+                {
+                    // add this map file into the "images" directory in the zip archive
+                    zip.AddDirectory(PathManager.BEURSFUIF_FOLDER);
+                    zip.Save(BackupLocation + "\\beursfuif_back_up.zip");
+                }
+            }
+            catch (Exception ex)
             {
-                SendToastMessage("Backup map bestaat niet.", "De backup map bestaat niet (meer)");
-                return;
+                LogManager.AppendToLog(new LogMessage("Couldn't back up data, ex = " + ex.Message,LogType.ERROR));
             }
-
-            using (ZipFile zip = new ZipFile())
-            {
-                // add this map file into the "images" directory in the zip archive
-                zip.AddDirectory(PathManager.BEURSFUIF_FOLDER);
-                zip.Save(BackupLocation + "\\beursfuif_back_up.zip");
-            }
-
           
         }
 

@@ -25,7 +25,7 @@ namespace Beursfuif.BL
         public Dictionary<int,UserContext> Clients { get; set; }
         private WebSocketServer _server;
         //TODO: make port dynamic
-        public const int Port = 5678;
+        public const int Port = 9876;
 
         public BeursfuifServer()
         {
@@ -71,26 +71,33 @@ namespace Beursfuif.BL
 
         private void OnWebSocketMessageReceive(Alchemy.Classes.UserContext context)
         {
-            if (context.DataFrame != null)
+            try
             {
-                Console.WriteLine("Message received from " + context.ClientAddress.ToString() + ": " + context.DataFrame);
-
-                Package p = JsonConvert.DeserializeObject<Package>(context.DataFrame.ToString());
-                switch (p.MessageId)
+                if (context.DataFrame != null)
                 {
-                    case ProtocolKind.NEW_CLIENT_CONNECTS:
-                        ReceivedNewClientConnect(context, p);
-                        break;
-                    case ProtocolKind.NEW_ORDER:
-                        OnNewOrderEvent(this, new NewOrderEventArgs(p.ClientId, p.AuthenticationCode, p.NewOrder));
-                        break;
-                    case ProtocolKind.ACK_TIME_UPDATE:
-                        ReceivedTimeAck(context, p);
-                        break;
-                    case ProtocolKind.ACK_UPDATE_CLIENT_INTERVAL:
-                        ReceivedIntervalUpdateAck(context, p);
-                        break;
+                    Console.WriteLine("Message received from " + context.ClientAddress.ToString() + ": " + context.DataFrame);
+
+                    Package p = JsonConvert.DeserializeObject<Package>(context.DataFrame.ToString());
+                    switch (p.MessageId)
+                    {
+                        case ProtocolKind.NEW_CLIENT_CONNECTS:
+                            ReceivedNewClientConnect(context, p);
+                            break;
+                        case ProtocolKind.NEW_ORDER:
+                            OnNewOrderEvent(this, new NewOrderEventArgs(p.ClientId, p.AuthenticationCode, p.NewOrder));
+                            break;
+                        case ProtocolKind.ACK_TIME_UPDATE:
+                            ReceivedTimeAck(context, p);
+                            break;
+                        case ProtocolKind.ACK_UPDATE_CLIENT_INTERVAL:
+                            ReceivedIntervalUpdateAck(context, p);
+                            break;
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                
             }
         }
 
@@ -199,14 +206,14 @@ namespace Beursfuif.BL
 
         public void UpdateTime(DateTime currentTime, string authenticationCode)
         {
-            Package package = new Package()
-            {
-                MessageId = ProtocolKind.TIME_UPDATE,
-                CurrentBeursfuifTime = currentTime,
-                AuthenticationCode = authenticationCode
-            };
+                Package package = new Package()
+                {
+                    MessageId = ProtocolKind.TIME_UPDATE,
+                    CurrentBeursfuifTime = currentTime,
+                    AuthenticationCode = authenticationCode
+                };
 
-            Broadcast(package);
+                Broadcast(package);
         }
 
         public void UpdateInterval(ClientInterval clientInterval, DateTime currentBFTime)
@@ -242,8 +249,15 @@ namespace Beursfuif.BL
         {
             foreach (var client in Clients)
             {
-                //TODO: add some sort of timer to check if the connection is still healthy
-                client.Value.Send(package.ToJSON());
+                try
+                {
+                    //TODO: add some sort of timer to check if the connection is still healthy
+                    client.Value.Send(package.ToJSON());
+                }
+                catch (Exception)
+                {
+                    Clients.Remove(client.Key);
+                }
             }
         }
 

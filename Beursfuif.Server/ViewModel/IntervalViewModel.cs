@@ -282,21 +282,25 @@ namespace Beursfuif.Server.ViewModel
 
         private void CreateIntervals(object state)
         {
-            int numberOfIntervals = Convert.ToInt32(state);
-            Intervals = new Interval[numberOfIntervals];
-            for (int i = 0; i < numberOfIntervals; i++)
+            Action onGui = delegate()
             {
-                Intervals[i] = new Interval()
+                int numberOfIntervals = Convert.ToInt32(state);
+                Intervals = new Interval[numberOfIntervals];
+                for (int i = 0; i < numberOfIntervals; i++)
                 {
-                    StartTime = BeginTime.AddMinutes(i * ChosenInterval.TotalMinutes),
-                    EndTime = BeginTime.AddMinutes((i+1) * ChosenInterval.TotalMinutes),
-                    Id = i + 1
-                };
-            }
+                    Intervals[i] = new Interval()
+                    {
+                        StartTime = BeginTime.AddMinutes(i * ChosenInterval.TotalMinutes),
+                        EndTime = BeginTime.AddMinutes((i + 1) * ChosenInterval.TotalMinutes),
+                        Id = i + 1
+                    };
+                }
+                SendLogMessage("New intervals created", LogType.INTERVAL_VM);
+                SaveIntervals();
+            };
 
-            SendLogMessage("New intervals created", LogType.INTERVAL_VM);
+            App.Current.Dispatcher.BeginInvoke(onGui);
 
-            SaveIntervals();
         }
 
         public void SaveIntervals()

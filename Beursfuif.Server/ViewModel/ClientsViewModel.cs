@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using Beursfuif.BL.Extensions;
 using GalaSoft.MvvmLight.Command;
+using Beursfuif.Server.DataAccess;
 
 namespace Beursfuif.Server.ViewModel
 {
@@ -129,7 +130,7 @@ namespace Beursfuif.Server.ViewModel
             if (client != null)
             {
                 _server.KickClient(client.Id);
-                SendToastMessage("Client was kicked",client.Name + " was kicked because " + msg.Reason);
+                SendToastMessage("Client was kicked", client.Name + " was kicked because " + msg.Reason);
             }
         }
 
@@ -159,19 +160,25 @@ namespace Beursfuif.Server.ViewModel
 
         void Server_CurrentTimeAckEvent(object sender, BL.Event.BasicAuthAckEventArgs e)
         {
-            if (GetCurrentInterval().AuthenticationString() != e.AuthCode)
+            try
             {
-                KickClient(new KickClientMessage()
+               /* KickClient(new KickClientMessage()
                 {
                     ClientId = e.ClientId,
                     Reason = KickWasKickedReason.WRONG_AUTH_CODE
                 });
                 SendLogMessage("Client " + GetClientName(e.ClientId) +
-                    " kicked because wrong auth code (" + e.AuthCode + ") at time ack", LogType.CLIENT_SERVER_ERROR | LogType.CLIENT_VM);
-                return;
+                    " kicked because wrong auth code (" + e.AuthCode + GetCurrentInterval().AuthenticationString() + " !== " + ") at time ack", LogType.CLIENT_SERVER_ERROR | LogType.CLIENT_VM);
+                return;*/
+
+                //else
+                // SendLogMessage(GetClientName(e.ClientId) + " has replied to the current time update", LogType.CLIENT_VM | LogType.GOOD_NEWS | LogType.FROM_CLIENT);
+
             }
-            //else
-            SendLogMessage(GetClientName(e.ClientId) + " has replied to the current time update", LogType.CLIENT_VM | LogType.GOOD_NEWS | LogType.FROM_CLIENT);
+            catch(Exception ex)
+            {
+
+            }
         }
 
         void Server_ClientLeftEvent(object sender, BL.Event.ClientLeftEventArgs e)
@@ -180,7 +187,7 @@ namespace Beursfuif.Server.ViewModel
             if (c != null)
             {
                 SendToastMessage("Client left", c.Name + " heeft de server verlaten.");
-                SendLogMessage("Client left: "+ c.Name, LogType.FROM_CLIENT | LogType.CLIENT_VM);
+                SendLogMessage("Client left: " + c.Name, LogType.FROM_CLIENT | LogType.CLIENT_VM);
                 App.Current.Dispatcher.BeginInvoke(new Action(() =>
                 {
                     Clients.Remove(c);
@@ -190,23 +197,34 @@ namespace Beursfuif.Server.ViewModel
 
         void Server_NewOrderEvent(object sender, BL.Event.NewOrderEventArgs e)
         {
-            Client c = Clients.FirstOrDefault(x => x.Id == e.ClientId);
-            string authString = GetCurrentInterval().AuthenticationString();
-            if (c != null && e.AuthenticationCode == authString)
+            try
             {
+                Client c = Clients.FirstOrDefault(x => x.Id == e.ClientId);
+                string authString = GetCurrentInterval().AuthenticationString();
+
                 string msg = c.Name + ": " + e.Order.TotalPrice(GetCurrentInterval()) + " bons.";
-                SendToastMessage("Nieuwe bestelling ontvangen",msg);
+                SendToastMessage("Nieuwe bestelling ontvangen", msg);
                 SendLogMessage("New order: " + msg, LogType.FROM_CLIENT | LogType.CLIENT_VM);
                 DateTime currentBeursfuifTime = base.GetLocator().Settings.BeursfuifCurrentTime;
                 c.LastActivity = currentBeursfuifTime;
                 c.OrderCount++;
                 _server.SendAckNewOrder(e.ClientId, authString, currentBeursfuifTime);
+                //}
+                //else
+                //{
+                //    SendLogMessage("Client " + GetClientName(e.ClientId) +
+                //  " kicked because wrong auth code (" + e.AuthenticationCode + " !== " +authString + ") at time ack", LogType.CLIENT_SERVER_ERROR | LogType.CLIENT_VM);
+                //}
+            }
+            catch (Exception ex)
+            {
+                LogManager.AppendToLog(new LogMessage("New order didn't work, ex = " + ex.Message));
             }
         }
 
         void Server_NewClientEventHandler(object sender, BL.Event.NewClientEventArgs e)
         {
-           
+
             Action action = delegate()
             {
                 Clients.Add(new Client()
@@ -221,7 +239,7 @@ namespace Beursfuif.Server.ViewModel
 
             App.Current.Dispatcher.BeginInvoke(action, System.Windows.Threading.DispatcherPriority.Normal);
             SendToastMessage("New client connected", e.Name + " heeft zich aangemeld.");
-            SendLogMessage("New client connected: "+e.Name + " heeft zich aangemeld.", LogType.CLIENT_VM | LogType.FROM_CLIENT);
+            SendLogMessage("New client connected: " + e.Name + " heeft zich aangemeld.", LogType.CLIENT_VM | LogType.FROM_CLIENT);
         }
 
         void Server_IntervalUpdateAckEvent(object sender, BL.Event.BasicAuthAckEventArgs e)
@@ -234,7 +252,7 @@ namespace Beursfuif.Server.ViewModel
                     Reason = KickWasKickedReason.WRONG_AUTH_CODE
                 });
                 SendLogMessage("Client " + GetClientName(e.ClientId) +
-                    " kicked because wrong auth code ("+e.AuthCode+") after receiving interval update", LogType.CLIENT_SERVER_ERROR | LogType.CLIENT_VM);
+                    " kicked because wrong auth code (" + e.AuthCode + ") after receiving interval update", LogType.CLIENT_SERVER_ERROR | LogType.CLIENT_VM);
                 return;
             }
             //else
@@ -252,7 +270,7 @@ namespace Beursfuif.Server.ViewModel
         private string GetClientName(int id)
         {
             Client client = Clients.FirstOrDefault(x => x.Id == id);
-            if(client != null) return client.Name;
+            if (client != null) return client.Name;
             return null;
         }
         #endregion

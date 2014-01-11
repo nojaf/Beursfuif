@@ -234,9 +234,24 @@ namespace Beursfuif.Server.ViewModel
                 _ioManager = iomanager;
                 Drinks = iomanager.LoadObservableCollectionFromXml<Drink>(PathManager.DRINK_XML_PATH);
                 ThreadPool.QueueUserWorkItem(CleanUpImages);
-
+                ThreadPool.QueueUserWorkItem(CheckImages);
                 InitCommands();
                 CheckCanEdit();
+            }
+        }
+
+        private void CheckImages(object state)
+        {
+            foreach (Drink drink in Drinks)
+            {
+                if(!File.Exists(drink.ImageString))
+                {
+                    string newPath =    PathManager.ASSETS_PATH  + drink.ImageString.Split('\\').Last();
+                    if(File.Exists(newPath))
+                    {
+                        drink.ImageString = newPath;
+                    }
+                }
             }
         }
 

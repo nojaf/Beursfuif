@@ -1,0 +1,160 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Projection</title>
+    <link href="bootstrap-3.0.0/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="Scripts/jquery-2.0.3.min.js"></script>
+    <script src="bootstrap-3.0.0/js/bootstrap.min.js"></script>
+    <style type="text/css">
+        #progress{
+            height:70px;
+            width:100%;
+            background-color:#0094ff;
+        }
+
+        h4{
+            font-size:28px;
+        }
+
+        .table thead > tr > th, .table tbody > tr > th, .table tfoot > tr > th, .table thead > tr > td, .table tbody > tr > td, .table tfoot > tr > td {
+            border-top:1px solid black;
+        
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <form>
+                <input type="text" data-bind="value: ipAdress" placeholder="Ip adres" />
+                <input type="text" data-bind="value: port" placeholder="Poort" />
+                <button>Aanmelden</button>
+            </form>
+        </div>
+        <div class="row">
+            <table class="table table-responsive table-striped table-hover">
+                <thead>
+                    <tr>
+                        <td><h1 class="text-center">Drank</h1></td>
+                        <td><h1 class="text-center">Huidige prijs</h1></td>
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach: drinks">
+                    <tr>
+                        <td><h4 class="text-center" data-bind="text: name"></h4></td>
+                        <td><h4 class="text-center" data-bind="text: price"></h4></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="Scripts/linq.min.js"></script>
+    <script src="Scripts/knockout-2.3.0.js"></script>
+    <script src="Models/models.js"></script>
+    <script>
+        window.onload = initApp;
+
+        function Drink() {
+            var self = this;
+            self.name;
+            self.price;
+            self.id;
+            self.base64;
+        }
+
+        function viewmodel() {
+            var self = this;
+            self.ipAdress = ko.observable("192.168.0.103");
+            self.port = ko.observable("9876");
+            self.url = ko.computed(function () {
+                return "ws://" + self.ipAdress() + ":" + self.port();
+            }, self);
+            self.drinks = ko.observableArray();
+
+            self.getAuthenticationCode = function () {
+                var sortedDrinks = Enumerable.From(this.drinks()).OrderBy(function (x) { return x.name; }).ToArray();
+
+
+                console.log(sortedDrinks);
+                var length = sortedDrinks.length;
+                var auth = "" + this.drinks()[0].IntervalId+"::";
+                for (var i = 0; i < length; i++) {
+                    auth += sortedDrinks[i].id + "#" + sortedDrinks[i].name + "#" + sortedDrinks[i].price + ";";
+                }
+                console.log(auth);
+                return auth;
+            };
+        }
+
+        function webSocketOpenHandler(e) {
+            console.log("Connection made");
+            
+            var initialPackage = new Package({ ClientName: "Projectie22", MessageId: PROTOCOLKIND.NEW_CLIENT_CONNECTS });
+            websocket.send(JSON.stringify(initialPackage));
+            setTimeout(function () {
+                var dummy = new Package({ MessageId: 100 });
+                websocket.send(JSON.stringify(dummy));
+            }, 1000);
+        }
+
+        function webSocketCloseHandler(e) {
+            console.log("Connection lost");
+            vm.drinks.destroyAll();
+            connect();
+        }
+
+        function webSocketMessageHandler(e) {
+            //message received
+            var pack = new Package(JSON.parse(e.data));
+            switch (pack.MessageId) {
+                case PROTOCOLKIND.ACK_NEW_CLIENT_CONNECTS:
+                    parseDrink(pack);
+                    document.getElementsByTagName("form")[0].parentElement.style.display = "none";
+                    break;
+                case PROTOCOLKIND.UPDATE_CLIENT_INTERVAL:
+                    parseDrink(pack);
+                    var ack = new Package({ ClientName: "Projectie2", MessageId: PROTOCOLKIND.ACK_UPDATE_CLIENT_INTERVAL, AuthenticationCode: vm.getAuthenticationCode() });
+                    websocket.send(JSON.toString(ack));
+                    break;                
+            }
+        }
+
+        function parseDrink(pack) {
+            var length = pack.CurrentInterval.ClientDrinks.length;
+            console.log(pack.CurrentInterval.ClientDrinks);
+            vm.drinks.removeAll();
+            for (var i = 0; i < length; i++) {
+                var drink = new Drink();
+                drink.name = pack.CurrentInterval.ClientDrinks[i].Name;
+                drink.price = pack.CurrentInterval.ClientDrinks[i].Price;
+                drink.id = pack.CurrentInterval.ClientDrinks[i].Id;
+                vm.drinks.push(drink);
+            }
+        }
+
+        var vm;
+        var websocket;
+        function initApp() {
+            console.log("init");
+            vm = new viewmodel();
+            ko.applyBindings(vm);
+
+            document.getElementsByTagName("button")[0].onclick = connect;
+        }
+
+        function connect(e) {
+            e.preventDefault();
+            try {
+                console.log(vm.url());
+                websocket = new WebSocket(vm.url());
+                websocket.onopen = webSocketOpenHandler;
+                websocket.onclose = webSocketCloseHandler;
+                websocket.onmessage = webSocketMessageHandler;
+                websocket.onerror = webSocketErrorHandler;
+            } catch (e) {
+                console.log(e);
+            }
+        }
+    </script>
+</body>
+</html>
