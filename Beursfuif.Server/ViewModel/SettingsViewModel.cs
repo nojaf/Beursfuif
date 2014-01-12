@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using System.Net.NetworkInformation;
 using System.Windows.Forms;
 using Ionic.Zip;
+using Beursfuif.Server.Services;
 
 namespace Beursfuif.Server.ViewModel
 {
@@ -135,7 +136,7 @@ namespace Beursfuif.Server.ViewModel
 
         private IOManager _ioManager;
         private System.Threading.Timer _tmrMain;
-        private BeursfuifServer _server;
+        private IBeursfuifServer _server;
 
         /// <summary>
         /// The <see cref="BackupLocation" /> property's name.
@@ -173,7 +174,7 @@ namespace Beursfuif.Server.ViewModel
             get
             {
                 var ip = LocalIPAddress();
-                return (ip != null ? ip.ToString() + ":" + BeursfuifServer.Port : "");
+                return (ip != null ? ip.ToString() : "localhost");
             }
         }
 
@@ -192,7 +193,7 @@ namespace Beursfuif.Server.ViewModel
         public RelayCommand RestoreBackupCommand { get; set; }
         #endregion
 
-        public SettingsViewModel(IOManager ioManager, BeursfuifServer server)
+        public SettingsViewModel(IOManager ioManager, IBeursfuifServer server)
         {
             if (!IsInDesignMode)
             {
@@ -339,9 +340,7 @@ namespace Beursfuif.Server.ViewModel
 
             _tmrMain.Change(Timeout.Infinite, Timeout.Infinite);
 
-            _server.Pause();
-
-            _server.StopServer();
+            _server.Active = false;
 
             MainActionButtonContent = RESUME_PARTY;
 
@@ -354,7 +353,8 @@ namespace Beursfuif.Server.ViewModel
             SendLogMessage("Resuming party method", LogType.SETTINGS_VM);
             BeursfuifBusy = true;
             RaisePropertyChanged(BeursfuifBusyVisibilityPropertyName);
-            _server.RestartServer();
+            _server.Active = true;
+            _server.Start(IPAdress,5678); //TODO: add port property
 
             if (_tmrMain == null)
             {
@@ -401,7 +401,8 @@ namespace Beursfuif.Server.ViewModel
             //start timer
             _tmrMain = new System.Threading.Timer(MainTimer_Tick, null, 1000, 1000);
 
-            _server.StartServer();
+            _server.Start(IPAdress, 5678);
+            _server.Active = true;
             MainActionButtonContent = PAUSE_PARTY;
             SendToastMessage("Server started");
 
@@ -815,7 +816,8 @@ namespace Beursfuif.Server.ViewModel
 
             App.Current.MainWindow.Closing += (a, b) =>
             {
-                _server.StopServer();
+                _server.Active = false;
+                _server.DisposeConnection();
                 SendLogMessage("Window is closing, shutdown server", LogType.SETTINGS_VM);
             };
 

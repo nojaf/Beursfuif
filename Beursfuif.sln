@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beursfuif.Server", "Beursfuif.Server\Beursfuif.Server.csproj", "{6A547268-E30A-40C1-8E3B-90C422F42E1D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beursfuif.BL", "Beursfuif.BL\Beursfuif.BL.csproj", "{0BB30286-2A73-4955-95D2-CFA16B012FDC}"
@@ -33,6 +35,8 @@ EndProject
 Project("{6141683F-8A12-4E36-9623-2EB02B2C2303}") = "Beursfuif.Setup", "Beursfuif.Setup\Beursfuif.Setup.isproj", "{BA3F9529-0F58-4F80-A522-6D646DF5CE03}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beursfuif.UnitTests", "Beursfuif.UnitTests\Beursfuif.UnitTests.csproj", "{D894314A-0802-4DAB-9315-2E87C960E166}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beursfuif.TypedClient", "Beursfuif.TypedClient\Beursfuif.TypedClient.csproj", "{8895A17A-4295-4446-A307-90BF5BB73888}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -103,6 +107,16 @@ Global
 		{D894314A-0802-4DAB-9315-2E87C960E166}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D894314A-0802-4DAB-9315-2E87C960E166}.SingleImage|Any CPU.ActiveCfg = Release|Any CPU
 		{D894314A-0802-4DAB-9315-2E87C960E166}.SingleImage|Any CPU.Build.0 = Release|Any CPU
+		{8895A17A-4295-4446-A307-90BF5BB73888}.CD_ROM|Any CPU.ActiveCfg = Release|Any CPU
+		{8895A17A-4295-4446-A307-90BF5BB73888}.CD_ROM|Any CPU.Build.0 = Release|Any CPU
+		{8895A17A-4295-4446-A307-90BF5BB73888}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8895A17A-4295-4446-A307-90BF5BB73888}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8895A17A-4295-4446-A307-90BF5BB73888}.DVD-5|Any CPU.ActiveCfg = Debug|Any CPU
+		{8895A17A-4295-4446-A307-90BF5BB73888}.DVD-5|Any CPU.Build.0 = Debug|Any CPU
+		{8895A17A-4295-4446-A307-90BF5BB73888}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8895A17A-4295-4446-A307-90BF5BB73888}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8895A17A-4295-4446-A307-90BF5BB73888}.SingleImage|Any CPU.ActiveCfg = Release|Any CPU
+		{8895A17A-4295-4446-A307-90BF5BB73888}.SingleImage|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

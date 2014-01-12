@@ -7,7 +7,7 @@ namespace Beursfuif.Server.Messages
 {
     public class KickClientMessage
     {
-        public int ClientId { get; set; }
+        public Guid ClientId { get; set; }
         public KickWasKickedReason Reason { get; set; }
     }
 

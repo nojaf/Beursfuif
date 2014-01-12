@@ -10,13 +10,14 @@ using System.Threading;
 using Beursfuif.Server.DataAccess;
 using System.Threading.Tasks;
 using System.IO;
+using Beursfuif.Server.Services;
 
 namespace Beursfuif.Server.ViewModel
 {
     public class OrdersViewModel : BeursfuifViewModelBase
     {
         #region Fields and Properties
-        private BeursfuifServer _server;
+        private IBeursfuifServer _server;
         private IOManager _ioManager;
 
         private List<ClientDrinkOrder> _allOrderItems = new List<ClientDrinkOrder>();
@@ -184,7 +185,7 @@ namespace Beursfuif.Server.ViewModel
         }
         #endregion
 
-        public OrdersViewModel(BeursfuifServer server, IOManager ioManager)
+        public OrdersViewModel(IBeursfuifServer server, IOManager ioManager)
         {
             if (!IsInDesignMode)
             {

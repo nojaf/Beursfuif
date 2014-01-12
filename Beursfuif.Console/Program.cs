@@ -14,7 +14,6 @@ namespace Beursfuif.ConsoleApp
 {
     class Program
     {
-        private static BeursfuifServer _server;
         private static Client _client;
         private static ClientInterval _clientInterval;
 
@@ -40,23 +39,7 @@ namespace Beursfuif.ConsoleApp
 
 
 
-        #region Test Server
-        static void _server_NewClientEvent(object sender, BL.Event.NewClientEventArgs e)
-        {
-            _client = new Client()
-            {
-                Id = e.Id,
-                Ip = e.Ip,
-                 Name = e.Name,
-                 OrderCount = 0,
-                 LastActivity = DateTime.Now
-            };
 
-            _server.SendAckInitialClientConnect( _clientInterval, e.Id,DateTime.Now);
-
-            //TODO send ack
-        }
-        #endregion
 
         private static void WriteReadData()
         {

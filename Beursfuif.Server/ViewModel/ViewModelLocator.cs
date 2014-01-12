@@ -44,7 +44,7 @@ namespace Beursfuif.Server.ViewModel
             ////}
 
             SimpleIoc.Default.Register<IOManager>();
-            SimpleIoc.Default.Register<Beursfuif.BL.BeursfuifServer>();
+            SimpleIoc.Default.Register<Services.IBeursfuifServer>(() => { return new Services.BeursfuifServer();});
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<DrinkViewModel>();
             SimpleIoc.Default.Register<IntervalViewModel>();

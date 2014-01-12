@@ -76,13 +76,13 @@ namespace Beursfuif.BL
         /// </summary>
         public const string IdPropertyName = "Id";
 
-        private int _id = 0;
+        private Guid _id = Guid.Empty;
 
         /// <summary>
         /// Sets and gets the Id property.
         /// Changes to that property's value raise the PropertyChanged event. 
         /// </summary>
-        public int Id
+        public Guid Id
         {
             get
             {
@@ -163,7 +163,14 @@ namespace Beursfuif.BL
                 RaisePropertyChanged(OrderCountPropertyName);
             }
         }
+
+        public string ConnectionContext { get; set; }
         #endregion
+
+        public Client(Guid id)
+        {
+            Id = id;
+        }
 
         public Client()
         {

@@ -7,13 +7,14 @@ using System.Linq;
 using System.Text;
 using Beursfuif.BL.Extensions;
 using GalaSoft.MvvmLight.Command;
+using Beursfuif.Server.Services;
 
 namespace Beursfuif.Server.ViewModel
 {
     public class ClientsViewModel : BeursfuifViewModelBase
     {
         #region Fields and props
-        private BeursfuifServer _server;
+        private IBeursfuifServer _server;
 
         /// <summary>
         /// The <see cref="MyProperty" /> property's name.
@@ -46,10 +47,10 @@ namespace Beursfuif.Server.ViewModel
             }
         }
 
-        public RelayCommand<int> KickClientCommand { get; set; }
+        public RelayCommand<Guid> KickClientCommand { get; set; }
         #endregion
 
-        public ClientsViewModel(BeursfuifServer server)
+        public ClientsViewModel(IBeursfuifServer server)
         {
             if (IsInDesignMode)
             {
@@ -58,28 +59,28 @@ namespace Beursfuif.Server.ViewModel
                 {
 
                     new Client(){
-                        Id = 1,
+                        Id = Guid.NewGuid(),
                         Ip = "192.168.1.101",
                         LastActivity = DateTime.Now,
                         Name = "Gilles",
                         OrderCount = 5
                     },
                     new Client(){
-                        Id = 2,
+                        Id = Guid.NewGuid(),
                         Ip = "192.168.1.102",
                         LastActivity = DateTime.Now.Subtract(new TimeSpan(0,12,0)),
                         Name = "Jurgen",
                         OrderCount = 2
                     },
                     new Client(){
-                        Id = 3,
+                        Id = Guid.NewGuid(),
                         Ip = "192.168.1.103",
                         LastActivity = DateTime.Now.Subtract(new TimeSpan(0,6,0)),
                         Name = "Florejan",
                         OrderCount = 14
                     },
                     new Client(){
-                        Id = 4,
+                        Id = Guid.NewGuid(),
                         Ip = "192.168.1.104",
                         LastActivity = DateTime.Now.Subtract(new TimeSpan(0,2,0)),
                         Name = "Wouter",
@@ -103,10 +104,10 @@ namespace Beursfuif.Server.ViewModel
         #region Commands
         private void InitCommands()
         {
-            KickClientCommand = new RelayCommand<int>(KickClientHandler);
+            KickClientCommand = new RelayCommand<Guid>(KickClientHandler);
         }
 
-        private void KickClientHandler(int id)
+        private void KickClientHandler(Guid id)
         {
             Client client = Clients.FirstOrDefault(x => x.Id == id);
             if (client != null)
@@ -249,7 +250,7 @@ namespace Beursfuif.Server.ViewModel
             return locator.Settings.CurrentInterval;
         }
 
-        private string GetClientName(int id)
+        private string GetClientName(Guid id)
         {
             Client client = Clients.FirstOrDefault(x => x.Id == id);
             if(client != null) return client.Name;

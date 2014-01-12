@@ -7,11 +7,11 @@ namespace Beursfuif.BL.Event
 {
     public class NewOrderEventArgs:EventArgs
     {
-        public int ClientId { get; set; }
+        public Guid ClientId { get; set; }
         public ClientDrinkOrder[] Order { get; set; }
         public string AuthenticationCode { get; set; }
 
-        public NewOrderEventArgs(int clientId, string auth, ClientDrinkOrder[] clientDrinkOrder)
+        public NewOrderEventArgs(Guid clientId, string auth, ClientDrinkOrder[] clientDrinkOrder)
         {
             // TODO: Complete member initialization
             this.ClientId = clientId;

@@ -6,6 +6,7 @@ using GalaSoft.MvvmLight.Command;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -242,21 +243,29 @@ namespace Beursfuif.Server.ViewModel
 
         private void CleanUpImages(object state)
         {
-            string[] paths = Directory.GetFiles(PathManager.ASSETS_PATH);
-            string[] images = Drinks.Select(x => x.ImageString).ToArray();
-            var query = from path in paths
-                        where !images.Contains(path)
-                        select path;
-
-            foreach (var path in query)
+            try
             {
-                //Remove images
-                if (File.Exists(path))
+                string[] paths = Directory.GetFiles(PathManager.ASSETS_PATH);
+                string[] images = Drinks.Select(x => x.ImageString).ToArray();
+                var query = from path in paths
+                            where !images.Contains(path)
+                            select path;
+
+                foreach (var path in query)
                 {
-                    File.Delete(path);
+                    //Remove images
+                    if (File.Exists(path))
+                    {
+                        File.Delete(path);
+                    }
                 }
+                SendLogMessage("Unused images removed", LogType.DRINK_VM);
             }
-            SendLogMessage("Unused images removed", LogType.DRINK_VM);
+            catch (Exception)
+            {
+                Debug.WriteLine("No images cleared");
+            }
+
         }
 
         private void InitCommands()

@@ -9,9 +9,9 @@ namespace Beursfuif.BL.Event
     {
         public string Name { get; set; }
         public string Ip { get; set; }
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
-        public NewClientEventArgs(string name, string ip, int id)
+        public NewClientEventArgs(string name, string ip, Guid id)
         {
             Name = name;
             Ip = ip;

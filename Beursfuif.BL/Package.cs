@@ -9,7 +9,7 @@ namespace Beursfuif.BL
     //package between client and server
     public class Package
     {
-        public int MessageId { get; set; }
+        public ProtocolKind Kind { get; set; }
 
         public ClientInterval CurrentInterval { get; set; }
 
@@ -19,9 +19,11 @@ namespace Beursfuif.BL
 
         public string AuthenticationCode { get; set; }
 
-        public int ClientId { get; set; }
+        public string ClientContext { get; set; }
 
-        public string ClientName { get; set; }
+        public string Name { get; set; }
+
+        public string Ip { get; set; }
 
         public int DrinkId { get; set; }
         public ClientDrink Drink { get; set; }

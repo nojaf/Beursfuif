@@ -7,8 +7,8 @@ namespace Beursfuif.BL.Event
 {
     public class ClientLeftEventArgs:EventArgs
     {
-        public int ClientId { get; set; }
-        public ClientLeftEventArgs(int clientId)
+        public Guid ClientId { get; set; }
+        public ClientLeftEventArgs(Guid clientId)
         {
             ClientId = clientId;
         }
