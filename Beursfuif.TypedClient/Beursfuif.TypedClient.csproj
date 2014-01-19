@@ -21,6 +21,7 @@
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
     <TypeScriptToolsVersion>0.9</TypeScriptToolsVersion>
+    <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -59,9 +60,40 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="background\wallpaper-1248778.jpg" />
+    <Content Include="background\wallpaper-1346213.jpg" />
+    <Content Include="background\wallpaper-2143399.jpg" />
+    <Content Include="background\wallpaper-2155408.jpg" />
+    <Content Include="background\wallpaper-2770643.jpg" />
+    <Content Include="background\wallpaper-2837789.jpg" />
+    <Content Include="background\wallpaper-2886432.jpg" />
+    <Content Include="background\wallpaper-295035.jpg" />
+    <Content Include="background\wallpaper-399972.png" />
+    <Content Include="background\wallpaper-630648.jpg" />
+    <Content Include="background\wallpaper-69099.jpg" />
+    <Content Include="background\wallpaper-762606.jpg" />
+    <Content Include="Content\beursfuif.css">
+      <DependentUpon>beursfuif.less</DependentUpon>
+    </Content>
+    <Content Include="Content\beursfuif.min.css">
+      <DependentUpon>beursfuif.less</DependentUpon>
+    </Content>
+    <Content Include="index.html" />
+    <Content Include="Scripts\angularjs-vendors-modules\localStorage.js" />
+    <Content Include="Scripts\angularjs-vendors-modules\localStorage.min.js">
+      <DependentUpon>localStorage.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\jquery\jquery.color-2.1.2.js" />
+    <Content Include="Scripts\jquery\jquery.color-2.1.2.min.js" />
+    <Content Include="Scripts\jquery\jquery.color.svg-names-2.1.2.js" />
+    <Content Include="Scripts\jquery\jquery.color.svg-names-2.1.2.min.js" />
     <Content Include="Scripts\signalr\jquery.signalR-2.0.1.js" />
     <Content Include="Scripts\signalr\jquery.signalR-2.0.1.min.js" />
     <Content Include="Scripts\jquery\jquery-1.9.1.min.map" />
+    <Compile Include="Content\beursfuif.less" />
+    <Content Include="Scripts\angularjs-vendors-modules\localStorage.min.js.map">
+      <DependentUpon>localStorage.js</DependentUpon>
+    </Content>
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -74,7 +106,9 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
-    <Content Include="Content\toastr.css" />
+    <Content Include="Content\toastr.css">
+      <DependentUpon>toastr.less</DependentUpon>
+    </Content>
     <Content Include="Content\toastr.min.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="packages.config" />
@@ -103,6 +137,8 @@
     <Content Include="Scripts\toastr\toastr.js" />
     <Content Include="Scripts\toastr\toastr.min.js" />
     <Content Include="test.html" />
+    <Content Include="views\login.html" />
+    <Content Include="views\main.html" />
     <Content Include="Web.config" />
     <Content Include="Scripts\toastr\toastr.min.js.map" />
   </ItemGroup>
@@ -112,6 +148,12 @@
   <ItemGroup>
     <TypeScriptCompile Include="app\app.ts" />
     <TypeScriptCompile Include="app\_references.ts" />
+    <TypeScriptCompile Include="controllers\Events.ts" />
+    <TypeScriptCompile Include="controllers\Example.ts" />
+    <TypeScriptCompile Include="controllers\LoginCtrl.ts" />
+    <TypeScriptCompile Include="controllers\MainCtrl.ts" />
+    <TypeScriptCompile Include="directives\Background.ts" />
+    <TypeScriptCompile Include="models\models.ts" />
     <TypeScriptCompile Include="Scripts\typings\angularjs\angular-cookies.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\angularjs\angular-mocks.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\angularjs\angular-resource.d.ts" />
@@ -120,16 +162,14 @@
     <TypeScriptCompile Include="Scripts\typings\angularjs\angular-scenario.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\angularjs\angular.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\localStorage\ILocalStorageService.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\signalr\signalr.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\toastr\toastr.d.ts" />
     <TypeScriptCompile Include="services\SignalrService.ts" />
     <TypeScriptCompile Include="test\test.ts" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="controllers\" />
-    <Folder Include="directives\" />
     <Folder Include="img\" />
-    <Folder Include="views\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

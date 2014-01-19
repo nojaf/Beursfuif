@@ -31,6 +31,9 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Beursfuif.Client(3)", "http
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{873E9196-7FB5-4740-A9E2-A45CA3170E46}"
+	ProjectSection(SolutionItems) = preProject
+		WE2013-settings.xml = WE2013-settings.xml
+	EndProjectSection
 EndProject
 Project("{6141683F-8A12-4E36-9623-2EB02B2C2303}") = "Beursfuif.Setup", "Beursfuif.Setup\Beursfuif.Setup.isproj", "{BA3F9529-0F58-4F80-A522-6D646DF5CE03}"
 EndProject

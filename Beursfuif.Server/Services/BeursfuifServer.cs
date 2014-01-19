@@ -73,7 +73,11 @@ namespace Beursfuif.Server.Services
         #region Receive from client
         void BeursfuifHub_NewPackageReceived(object sender, BL.Package e)
         {
-            if (!Active) return;
+            if (!Active)
+            {
+
+                return;
+            }
 
             switch(e.Kind)
             {
@@ -87,7 +91,9 @@ namespace Beursfuif.Server.Services
         {
             Client newClient = new Client(Guid.NewGuid())
             {
-                Name = e.Name
+                Name = e.Name,
+                ConnectionContext  = e.ClientContext,
+                Ip = e.Ip
             };
 
             Clients.Add(newClient);
@@ -99,7 +105,9 @@ namespace Beursfuif.Server.Services
         #region Send to client
         public void SendAckInitialClientConnect(BL.ClientInterval currentInterval, Guid clientId, DateTime currentBeursfuifTime)
         {
-            throw new NotImplementedException();
+            string context = Clients.FirstOrDefault(x => x.Id == clientId).ConnectionContext;
+            //SignalR method
+            _hub.Clients.Client(context).sendInitialData(currentBeursfuifTime, currentInterval);
         }
 
         public void KickClient(Guid id)
@@ -109,12 +117,13 @@ namespace Beursfuif.Server.Services
 
         public void UpdateTime(DateTime currentTime, string authenticationCode)
         {
+            //SignalR Method
             _hub.Clients.All.UpdateTime(currentTime, authenticationCode);
         }
 
         public void UpdateInterval(BL.ClientInterval clientInterval, DateTime currentBFTime)
         {
-            throw new NotImplementedException();
+           // throw new NotImplementedException();
         }
 
         public void SendDrinkAvailableChanged(int drinkId, BL.Drink drink, int intervalId)

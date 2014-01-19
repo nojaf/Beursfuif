@@ -1,0 +1,86 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Beursfuif Client</title>
+    <link href="Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="Content/toastr.min.css" rel="stylesheet" />
+    <link href="Content/beursfuif.css" rel="stylesheet" />
+</head>
+<body ng-app="beursfuif">
+
+    <div  ng-view=""></div>
+
+
+    <!-- Angular -->
+    <script src="Scripts/angularjs/angular.min.js"></script>
+    <script src="Scripts/angularjs/angular-animate.min.js"></script>
+    <script src="Scripts/angularjs/angular-route.min.js"></script>
+    <script src="Scripts/angularjs/angular-sanitize.min.js"></script>
+
+
+    <!-- Angular Vendor modules -->
+    <script src="Scripts/angularjs-vendors-modules/localStorage.min.js"></script>
+
+    <!-- Jquery and bootstrap -->
+    <script src="Scripts/jquery/jquery-1.9.1.js"></script>
+    <script src="Scripts/jquery/jquery.color-2.1.2.min.js"></script>
+    <script src="Scripts/bootstrap/bootstrap.min.js"></script>
+
+    <!-- Toastr -->
+    <script src="Scripts/toastr/toastr.min.js"></script>
+
+    <!-- signalr -->
+    <script src="Scripts/signalr/jquery.signalR-2.0.1.min.js"></script>
+    <script ng-src="{{signalrScript}}"></script>
+
+    <!-- own code -->
+    <!-- services -->
+    <script src="services/SignalrService.js"></script>
+
+    <!-- controllers -->
+    <script src="controllers/Events.js"></script>
+    <script src="controllers/LoginCtrl.js"></script>
+    <script src="controllers/MainCtrl.js"></script>
+
+    <!-- directives -->
+    <script src="directives/Background.js"></script>
+
+    <!-- app -->
+    <script src="app/app.js"></script>
+
+    <!-- Angular Views -->
+    <!-- Would rather have separate files but it can't be done-->
+    <script type="text/ng-template" id="loginView">
+        <!-- #region loginView-->
+        <div id="loginContainer">
+            <label>Naam</label>
+            <input type="text" class="form-control" ng-model="name" placeholder="Jimmy Frey" autofocus="" />
+            <label>Server adres</label>
+            <input type="text" class="form-control" ng-model="ipAddress" placeholder="bv. 192.168.1.1" required="">
+            <label>Poort</label>
+            <input type="text" class="form-control" ng-model="port" placeholder="bv. 5678" required="">
+            <button class="btn btn-primary pull-right" ng-click="submit()" type="submit">Aanmelden</button>
+        </div>
+        <!-- #endregion -->
+    </script>
+    <script type="text/ng-template" id="mainView">
+        <div id="mainViewContainer">
+            <header>
+                <h1>Beursfuif Client</h1>
+            </header>
+            <div id="contentContainer">
+                <div id="drinks">
+                    <div class="drink" ng-repeat="dr in drinks">
+                        <img ng-src="{{parseImage(dr.Base64Image)}}" />
+                    </div>
+                </div>
+                <div id="inputs">
+                    sdcsd
+                </div>
+            </div>
+        </div>
+    </script>
+
+    <div id="mask" data-background=""></div>
+</body>
+</html>
