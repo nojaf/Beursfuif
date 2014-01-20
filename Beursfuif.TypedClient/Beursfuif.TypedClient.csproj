@@ -94,7 +94,7 @@
     <Content Include="Scripts\signalr\jquery.signalR-2.0.1.js" />
     <Content Include="Scripts\signalr\jquery.signalR-2.0.1.min.js" />
     <Content Include="Scripts\jquery\jquery-1.9.1.min.map" />
-    <Compile Include="Content\beursfuif.less" />
+    <Content Include="Content\beursfuif.less" />
     <Content Include="Scripts\angularjs-vendors-modules\localStorage.min.js.map">
       <DependentUpon>localStorage.js</DependentUpon>
     </Content>
