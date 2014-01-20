@@ -8,4 +8,5 @@
 /// <reference path="../models/models.ts" />
 /// <reference path="../controllers/events.ts" />
 /// <reference path="app.ts" />
+/// <reference path="../scripts/typings/moment/moment.d.ts" />
  

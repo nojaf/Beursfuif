@@ -12,19 +12,23 @@ module beursfuif {
     export class LoginCtrl {
 
         constructor(private $scope: ILoginCtrlScope, private localStorageService: ILocalStorageService, private signalrService:SignalrService, private $location:ng.ILocationService) {
-            $scope.ipAddress = "192.168.1.11";
-            $scope.port = "5678";
-            $scope.name = "Florian";
+            $scope.ipAddress = this.localStorageService.get("ipAddress") || "";
+            $scope.port = this.localStorageService.get("port") || "";
+            $scope.name = this.localStorageService.get("name") || "";
 
 
-            // $scope.$emit("CHANGE_OPACITY", 0.25);
             $scope.submit = () => {
                 this.submit();
             };
 
             $scope.$on(EventNames.CONNECTION_CHANGED, (event: ng.IAngularEvent, ...args: any[]) => {
                 if (args[0]) {
-                    //TODO: store the credentials with localStorageService
+                    if (this.localStorageService.isSupported) {
+                        this.localStorageService.add("name", this.$scope.name);
+                        this.localStorageService.add("ipAddress", this.$scope.ipAddress);
+                        this.localStorageService.add("port", this.$scope.port);
+                    }
+
                     $scope.$emit(EventNames.CHANGE_OPACITY, 0.50);
                     //connection has been made so the view can be changed
                     setTimeout(() => {

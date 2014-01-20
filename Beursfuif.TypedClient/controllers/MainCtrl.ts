@@ -2,13 +2,19 @@
 module beursfuif {
     export interface IMainCtrlScope extends ng.IScope {
         drinks: ClientDrink[];
-        parseImage(imgString:string): string;
+        parseImage(imgString: string): string;
+        intervalStart: string;
+        intervalEnd: string;
+        currentTime: string;
     }
 
     export class MainCtrl {
         constructor(private $scope: IMainCtrlScope, private signalrService: SignalrService, private $location: ng.ILocationService) {
             if (signalrService.clientInterval) {
                 $scope.drinks = signalrService.clientInterval.ClientDrinks;
+                $scope.intervalStart = moment(signalrService.clientInterval.Start).format("HH:mm");
+                $scope.intervalEnd = moment(signalrService.clientInterval.End).format("HH:mm");
+                $scope.currentTime = moment(signalrService.currentTime).format("HH:mm");
             }
             else {
                 $location.path("/");

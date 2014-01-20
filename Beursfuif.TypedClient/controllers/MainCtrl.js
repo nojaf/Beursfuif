@@ -8,6 +8,9 @@ var beursfuif;
             this.$location = $location;
             if (signalrService.clientInterval) {
                 $scope.drinks = signalrService.clientInterval.ClientDrinks;
+                $scope.intervalStart = moment(signalrService.clientInterval.Start).format("HH:mm");
+                $scope.intervalEnd = moment(signalrService.clientInterval.End).format("HH:mm");
+                $scope.currentTime = moment(signalrService.currentTime).format("HH:mm");
             } else {
                 $location.path("/");
             }

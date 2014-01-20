@@ -1,5 +1,5 @@
  interface ILocalStorageService{
-     isSupported(): boolean
+     isSupported: boolean
      add(key: string, value: string): void
      get(key: string): string
      remove(key: string): void

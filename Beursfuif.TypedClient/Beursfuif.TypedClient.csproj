@@ -87,6 +87,10 @@
     <Content Include="Scripts\jquery\jquery.color-2.1.2.min.js" />
     <Content Include="Scripts\jquery\jquery.color.svg-names-2.1.2.js" />
     <Content Include="Scripts\jquery\jquery.color.svg-names-2.1.2.min.js" />
+    <Content Include="Scripts\moment\moment-with-langs.js" />
+    <Content Include="Scripts\moment\moment-with-langs.min.js" />
+    <Content Include="Scripts\moment\moment.js" />
+    <Content Include="Scripts\moment\moment.min.js" />
     <Content Include="Scripts\signalr\jquery.signalR-2.0.1.js" />
     <Content Include="Scripts\signalr\jquery.signalR-2.0.1.min.js" />
     <Content Include="Scripts\jquery\jquery-1.9.1.min.map" />
@@ -163,6 +167,7 @@
     <TypeScriptCompile Include="Scripts\typings\angularjs\angular.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\localStorage\ILocalStorageService.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\moment\moment.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\signalr\signalr.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\toastr\toastr.d.ts" />
     <TypeScriptCompile Include="services\SignalrService.ts" />

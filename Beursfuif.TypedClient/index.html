@@ -26,6 +26,9 @@
     <script src="Scripts/jquery/jquery.color-2.1.2.min.js"></script>
     <script src="Scripts/bootstrap/bootstrap.min.js"></script>
 
+    <!-- moment -->
+    <script src="Scripts/moment/moment.min.js"></script>
+
     <!-- Toastr -->
     <script src="Scripts/toastr/toastr.min.js"></script>
 
@@ -54,7 +57,7 @@
         <!-- #region loginView-->
         <div id="loginContainer">
             <label>Naam</label>
-            <input type="text" class="form-control" ng-model="name" placeholder="Jimmy Frey" autofocus="" />
+            <input type="text" class="form-control" ng-model="name" placeholder="bv. Jimmy Frey" autofocus="" />
             <label>Server adres</label>
             <input type="text" class="form-control" ng-model="ipAddress" placeholder="bv. 192.168.1.1" required="">
             <label>Poort</label>
@@ -66,15 +69,18 @@
     <script type="text/ng-template" id="mainView">
         <div id="mainViewContainer">
             <header>
-                <h1>Beursfuif Client</h1>
+                <h1>Beursfuif Client</h1><p class="text-primary">{{intervalStart}}</p><p>{{currentTime}}</p><p class="text-primary">{{intervalEnd}}</p>
             </header>
             <div id="contentContainer">
                 <div id="drinks">
-                    <div class="drink" ng-repeat="dr in drinks">
-                        <img ng-src="{{parseImage(dr.Base64Image)}}" />
+                    <div class="drink" ng-repeat="dr in drinks" ng-style="{'background-image':'url('+parseImage(dr.Base64Image)+')'}">
+                        <p>{{dr.Name}}</p>
+                        <button class="btn btn-success"><i class="glyphicon glyphicon-plus"></i></button>
+                        <button class="btn btn-danger"><i class="glyphicon glyphicon-minus"></i></button>
+                        <p>{{dr.Price}} bons</p>
                     </div>
                 </div>
-                <div id="inputs">
+                <div id="order">
                     sdcsd
                 </div>
             </div>

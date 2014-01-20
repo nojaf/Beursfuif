@@ -9,4 +9,4 @@ var beursfuif;
     })();
     beursfuif.EventNames = EventNames;
 })(beursfuif || (beursfuif = {}));
-//# sourceMappingURL=events.js.map
+//# sourceMappingURL=Events.js.map
