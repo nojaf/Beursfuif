@@ -28,6 +28,13 @@ namespace Beursfuif.Server.Services
         public event EventHandler<BL.Event.NewOrderEventArgs> NewOrderEvent;
 
         public event EventHandler<BL.Event.ClientLeftEventArgs> ClientLeftEvent;
+        protected void OnClientLeftEvent(object sender, ClientLeftEventArgs e)
+        {
+            if(ClientLeftEvent != null)
+            {
+                ClientLeftEvent(sender, e);
+            }
+        }
 
         public event EventHandler<BL.Event.BasicAuthAckEventArgs> CurrentTimeAckEvent;
 
@@ -84,6 +91,19 @@ namespace Beursfuif.Server.Services
                 case BL.ProtocolKind.NEW_CLIENT_CONNECTS:
                     AddNewClient(e);
                     break;
+                case ProtocolKind.CLIENT_LEAVES_SERVER:
+                    RemoveClient(e);
+                    break;
+            }
+        }
+
+        private void RemoveClient(Package e)
+        {
+            Client client = Clients.FirstOrDefault(x => x.ConnectionContext == e.ClientContext);
+            if(client != null)
+            {
+                OnClientLeftEvent(this, new ClientLeftEventArgs(client.Id));
+                Clients.Remove(client);
             }
         }
 

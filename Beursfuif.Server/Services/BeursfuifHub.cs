@@ -65,5 +65,15 @@ namespace Beursfuif.Server.Services
             return ipAddress;
         }
         #endregion
+
+        public override Task OnDisconnected()
+        {
+            OnPackageReceived(this, new Package()
+            {
+                ClientContext = Context.ConnectionId,
+                Kind = ProtocolKind.CLIENT_LEAVES_SERVER
+            });
+            return base.OnDisconnected();
+        }
     }
 }
