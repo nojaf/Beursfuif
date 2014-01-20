@@ -42,7 +42,7 @@
             <BeginStoryboard Storyboard="{StaticResource OnLoaded1}" />
         </EventTrigger>
     </UserControl.Triggers>
-    <Grid x:Name="LayoutRoot"
+    <Grid x:Name="LayoutRoot" MouseDown="LayoutRoot_MouseDown"
           Width="385"
           Height="90"
           RenderTransformOrigin="0,1">
