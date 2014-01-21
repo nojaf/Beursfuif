@@ -34,7 +34,7 @@ module beursfuif {
                     setTimeout(() => {
                         this.$location.path("/main");
                         this.$scope.$apply();
-                    }, 500);
+                    }, 250);
                 }
             });
         }

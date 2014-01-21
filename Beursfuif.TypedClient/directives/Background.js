@@ -41,7 +41,6 @@ function Background() {
                 for (var _i = 0; _i < (arguments.length - 1); _i++) {
                     args[_i] = arguments[_i + 1];
                 }
-                console.log("received");
                 opacity = parseFloat(args[0]);
                 $mask.animate({ backgroundColor: "rgba(0,0,0," + opacity + ")" }, 500);
             }

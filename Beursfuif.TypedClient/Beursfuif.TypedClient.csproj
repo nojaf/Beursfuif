@@ -153,10 +153,10 @@
     <TypeScriptCompile Include="app\app.ts" />
     <TypeScriptCompile Include="app\_references.ts" />
     <TypeScriptCompile Include="controllers\Events.ts" />
-    <TypeScriptCompile Include="controllers\Example.ts" />
     <TypeScriptCompile Include="controllers\LoginCtrl.ts" />
     <TypeScriptCompile Include="controllers\MainCtrl.ts" />
     <TypeScriptCompile Include="directives\Background.ts" />
+    <TypeScriptCompile Include="directives\Modal.ts" />
     <TypeScriptCompile Include="models\models.ts" />
     <TypeScriptCompile Include="Scripts\typings\angularjs\angular-cookies.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\angularjs\angular-mocks.d.ts" />

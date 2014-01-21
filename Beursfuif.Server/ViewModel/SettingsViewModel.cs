@@ -566,53 +566,63 @@ namespace Beursfuif.Server.ViewModel
 
                 if (BeursfuifCurrentTime.Second == 0)
                 {
-                    ThreadPool.QueueUserWorkItem(SaveSettings);
-                    //TODO save all orders (bin)
-                    MessengerInstance.Send<AutoSaveAllOrdersMessage>(new AutoSaveAllOrdersMessage());
-                    SendLogMessage("Auto saved has been completed", LogType.SETTINGS_VM);
-
-                    //sync time with clients
-                    _server.UpdateTime(BeursfuifCurrentTime, CurrentInterval.AuthenticationString());
-                    SendLogMessage("Server send update current time to clients", LogType.SETTINGS_VM);
-                    ThreadPool.QueueUserWorkItem(BackupData);
+                    OneMinutePassed();
                 }
                 else if (BeursfuifCurrentTime > CurrentInterval.EndTime)
                 {
-                    //TODO Update time
-                    SendLogMessage("Server will commence calculating new prices", LogType.SETTINGS_VM);
-                    var locator = base.GetLocator();
-
-                    ThreadPool.QueueUserWorkItem(new WaitCallback((object target) =>
-                    {
-                        Interval next = CalculatePriceUpdates(locator.Orders.AllOrderItems, locator.Interval.Intervals, CurrentInterval.Id, false, this);
-                        if (next != null)
-                        {
-                            App.Current.Dispatcher.BeginInvoke(new Action(() =>
-                            {
-                                CurrentInterval = next;
-                                locator.Interval.SaveIntervals();
-                                _server.UpdateInterval(next.ToClientInterval(BeursfuifCurrentTime), BeursfuifCurrentTime);
-                                _tmrMain.Change(1000, 1000);
-                            }));
-                            ThreadPool.QueueUserWorkItem(SaveSettings);
-                            SendToastMessage("Update verstuurd");
-                            SendLogMessage("Interval update sent to all clients", LogType.SETTINGS_VM);
-                        }
-                        else
-                        {
-                            //end of fuif
-                            MainActionCommand();
-                            locator.Clients.KickAll(KickWasKickedReason.END_OF_FUIF);
-                            SendLogMessage("Beursfuif has ended", LogType.SETTINGS_VM | LogType.GOOD_NEWS);
-                            SendToastMessage("Beursfuif completed", "De fuif is gedaan");
-                            //TODO, disable restart fuif button
-                        }
-                    }));
+                    EndOfInterval();
                     return;
                 }
             }
             //END CODE
             _tmrMain.Change(1000, 1000);
+        }
+
+        private void EndOfInterval()
+        {
+            //TODO Update time
+            SendLogMessage("Server will commence calculating new prices", LogType.SETTINGS_VM);
+            var locator = base.GetLocator();
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback((object target) =>
+            {
+                Interval next = CalculatePriceUpdates(locator.Orders.AllOrderItems, locator.Interval.Intervals, CurrentInterval.Id, false, this);
+                if (next != null)
+                {
+                    App.Current.Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        CurrentInterval = next;
+                        locator.Interval.SaveIntervals();
+                        _server.UpdateInterval(next.ToClientInterval(BeursfuifCurrentTime), BeursfuifCurrentTime);
+                        _tmrMain.Change(1000, 1000);
+                    }));
+                    ThreadPool.QueueUserWorkItem(SaveSettings);
+                    SendToastMessage("Update verstuurd");
+                    SendLogMessage("Interval update sent to all clients", LogType.SETTINGS_VM);
+                }
+                else
+                {
+                    //end of fuif
+                    MainActionCommand();
+                    locator.Clients.KickAll(KickWasKickedReason.END_OF_FUIF);
+                    SendLogMessage("Beursfuif has ended", LogType.SETTINGS_VM | LogType.GOOD_NEWS);
+                    SendToastMessage("Beursfuif completed", "De fuif is gedaan");
+                    //TODO, disable restart fuif button
+                }
+            }));
+        }
+
+        private void OneMinutePassed()
+        {
+            ThreadPool.QueueUserWorkItem(SaveSettings);
+            //TODO save all orders (bin)
+            MessengerInstance.Send<AutoSaveAllOrdersMessage>(new AutoSaveAllOrdersMessage());
+            SendLogMessage("Auto saved has been completed", LogType.SETTINGS_VM);
+
+            //sync time with clients
+            _server.UpdateTime(BeursfuifCurrentTime, CurrentInterval.AuthenticationString());
+            SendLogMessage("Server send update current time to clients", LogType.SETTINGS_VM);
+            ThreadPool.QueueUserWorkItem(BackupData);
         }
 
         private void BackupData(object state)

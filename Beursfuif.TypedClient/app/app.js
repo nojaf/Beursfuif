@@ -24,7 +24,8 @@ var beursfuif;
 
     //directives
     // Update the app1 variable name to be that of your module variable
-    app.directive("background", [Background]);
+    app.directive("bfBackground", [Background]);
+    app.directive("bfModal", [Modal]);
 
     //routes
     app.config(function ($routeProvider, $locationProvider) {

@@ -2,10 +2,11 @@
 // Install the angularjs.TypeScript.DefinitelyTyped NuGet package to resovle the .d.ts reference paths,
 // then adjust the path value to be relative to this file
 
-function Background()  {
+
+function Background() {
     return {
         restrict: "EA",
-        link: function (scope: ng.IScope, element:any, attrs: any) {
+        link: function (scope: ng.IScope, element: any, attrs: any) {
             var backgrounds: string[] = ["url('background/wallpaper-1248778.jpg')",
                 "url('background/wallpaper-1346213.jpg')",
                 "url('background/wallpaper-2143399.jpg')",
@@ -37,8 +38,7 @@ function Background()  {
 
             scope.$on("CHANGE_OPACITY", changeOpacity);
 
-            function changeOpacity(e: ng.IAngularEvent, ...args:any[]):any {
-                console.log("received");
+            function changeOpacity(e: ng.IAngularEvent, ...args: any[]): any {
                 opacity = parseFloat(args[0]);
                 $mask.animate({ backgroundColor: "rgba(0,0,0," + opacity + ")" }, 500);
             }

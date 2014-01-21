@@ -20,10 +20,12 @@ module beursfuif {
             return new MainCtrl($scope, signalrService, $location);
         }]);
 
+
     //directives
 
     // Update the app1 variable name to be that of your module variable
-    app.directive("background", [Background]);
+    app.directive("bfBackground", [Background]);
+    app.directive("bfModal", [Modal]);
 
     //routes
     app.config(($routeProvider: ng.route.IRouteProvider, $locationProvider: ng.ILocationProvider) => {
