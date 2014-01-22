@@ -1,18 +1,20 @@
 /// <reference path="../app/_references.ts" />
 module beursfuif {
     class SignalRMethodNames {
-        //send to server
+        //#region send to server
         static LOGIN: string = "logOn";
+        static ACK_TIME_UPDATE: string = "ackTimeUpdate";
+        //#endregion
 
-        //receiv from server
+        //#region receive from server
         static SEND_INITIAL_DATA: string = "sendInitialData";
-        static UPDATE_TIME:string  = "updateTime"//(currentTime, authenticationCode);
+        static UPDATE_TIME: string = "updateTime"//(currentTime, authenticationCode);
+        static YOU_GOT_KICKED: string = "youGotKicked";
+        //#endregion
     }
 
     export class SignalrService {
-
-        constructor(private $q: ng.IQService, private $log: ng.ILogService, private $rootScope:ng.IRootScopeService) {}
-
+        //#region fields
         connection: HubConnection;
 
         hub: HubProxy;
@@ -20,6 +22,9 @@ module beursfuif {
         currentTime: Date;
 
         clientInterval: ClientInterval;
+        //#endregion
+
+        constructor(private $q: ng.IQService, private $log: ng.ILogService, private $rootScope: ng.IRootScopeService) { }
 
         initialize(url: string, name: string) {
             this.connection = $.hubConnection(url);
@@ -32,9 +37,11 @@ module beursfuif {
             });
         }
 
+        //#region callbacks from the server
         registerCallback(): void {
             this.hub.on(SignalRMethodNames.SEND_INITIAL_DATA, (...msg: any[]) => this.sendInitialData(msg));
             this.hub.on(SignalRMethodNames.UPDATE_TIME, (...msg: any[]) => this.updateTime(msg));
+            this.hub.on(SignalRMethodNames.YOU_GOT_KICKED, () => this.kicked());
         }
 
         sendInitialData(...msg: any[]) {
@@ -43,7 +50,6 @@ module beursfuif {
             this.clientInterval.ClientDrinks.sort(this.sortByLowerDrinkName);
             this.$log.log(this.currentTime);
             this.$log.log(this.clientInterval);     
-
             this.$rootScope.$broadcast(EventNames.CONNECTION_CHANGED, true);    
         }
 
@@ -57,22 +63,24 @@ module beursfuif {
             this.$rootScope.$broadcast(EventNames.TIME_CHANGED);
         }
 
+        kicked(): void {
+            this.connection.stop(false, true);
+            this.$rootScope.$broadcast(EventNames.OPEN_MODAL, ModalMessages.YOU_GOT_KICKED_TITLE, ModalMessages.YOU_GOT_KICKED);
+        }
+        //#endregion
+
         //#region Authcode
         validateAuthString(serverAuthString: string) {
             var clientAuthString: string = this.generateAuthString();
-            this.$log.log("Client auth = " + clientAuthString);
-            this.$log.log("Received server auth = " + serverAuthString);
             if (clientAuthString === serverAuthString) {
                 this.$log.log("Auth code mathces");
+                //respond to the incoming message
+                this.hub.invoke(SignalRMethodNames.ACK_TIME_UPDATE, clientAuthString);
             }
             else {
-                this.$log.error("Wrong auth code");
-                //TODO: show modal that says you're kicked, ...
+                this.$log.warn("Wrong auth code");
                 this.connection.stop(false, true);
-                this.$rootScope.$broadcast(EventNames.OPEN_MODAL, "Verkeerde authenticatie code", "Je authenticatie code komt niet overeen met die van de server. " +
-                    "<br />Dit wil zeggen dat je niet de juiste prijzen hebt."+
-                    "<br />De connectie met de server wordt verbroken."+
-                    "<br />gelieve opnieuw aan te melden.");
+                this.$rootScope.$broadcast(EventNames.OPEN_MODAL, ModalMessages.WRONG_AUTH_TITLE, ModalMessages.WRONG_AUTH);
             }
         }
 

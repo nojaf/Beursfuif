@@ -24,8 +24,8 @@ module beursfuif {
     //directives
 
     // Update the app1 variable name to be that of your module variable
-    app.directive("bfBackground", [Background]);
-    app.directive("bfModal", [Modal]);
+    app.directive("bfBackground", [() => { return new Background(); }]);
+    app.directive("bfModal", [() => { return new beursfuif.Modal(); }]);
 
     //routes
     app.config(($routeProvider: ng.route.IRouteProvider, $locationProvider: ng.ILocationProvider) => {

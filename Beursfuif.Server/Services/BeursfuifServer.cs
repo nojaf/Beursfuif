@@ -12,34 +12,10 @@ namespace Beursfuif.Server.Services
 {
     public class BeursfuifServer:IBeursfuifServer
     {
+
+        #region Fields and properties
         private IDisposable _webApp;
         private IHubContext _hub;
-
-        #region Events
-        public event EventHandler<NewClientEventArgs> NewClientEvent;
-        protected void OnNewClient(object sender, NewClientEventArgs e)
-        {
-            if (NewClientEvent != null)
-            {
-                NewClientEvent(sender, e);
-            }
-        }
-
-        public event EventHandler<BL.Event.NewOrderEventArgs> NewOrderEvent;
-
-        public event EventHandler<BL.Event.ClientLeftEventArgs> ClientLeftEvent;
-        protected void OnClientLeftEvent(object sender, ClientLeftEventArgs e)
-        {
-            if(ClientLeftEvent != null)
-            {
-                ClientLeftEvent(sender, e);
-            }
-        }
-
-        public event EventHandler<BL.Event.BasicAuthAckEventArgs> CurrentTimeAckEvent;
-
-        public event EventHandler<BL.Event.BasicAuthAckEventArgs> IntervalUpdateAckEvent;
-        #endregion
 
         public List<BL.Client> Clients
         {
@@ -64,6 +40,7 @@ namespace Beursfuif.Server.Services
             get;
             set;
         }
+        #endregion
 
         public BeursfuifServer()
         {
@@ -77,12 +54,45 @@ namespace Beursfuif.Server.Services
             BeursfuifHub.NewPackageReceived += BeursfuifHub_NewPackageReceived;
         }
 
+        #region Events
+        public event EventHandler<NewClientEventArgs> NewClientEvent;
+        protected void OnNewClient(object sender, NewClientEventArgs e)
+        {
+            if (NewClientEvent != null)
+            {
+                NewClientEvent(sender, e);
+            }
+        }
+
+        public event EventHandler<BL.Event.NewOrderEventArgs> NewOrderEvent;
+
+        public event EventHandler<BL.Event.ClientLeftEventArgs> ClientLeftEvent;
+        protected void OnClientLeftEvent(object sender, ClientLeftEventArgs e)
+        {
+            if (ClientLeftEvent != null)
+            {
+                ClientLeftEvent(sender, e);
+            }
+        }
+
+        public event EventHandler<BL.Event.BasicAuthAckEventArgs> CurrentTimeAckEvent;
+        protected void OnCurrentTimeAckEvent(object sender, BasicAuthAckEventArgs e)
+        {
+            if (CurrentTimeAckEvent != null)
+            {
+                CurrentTimeAckEvent(sender, e);
+            }
+        }
+
+        public event EventHandler<BL.Event.BasicAuthAckEventArgs> IntervalUpdateAckEvent;
+        #endregion
+
         #region Receive from client
         void BeursfuifHub_NewPackageReceived(object sender, BL.Package e)
         {
             if (!Active)
             {
-
+                //TODO: send message to client that server isn't running
                 return;
             }
 
@@ -94,12 +104,24 @@ namespace Beursfuif.Server.Services
                 case ProtocolKind.CLIENT_LEAVES_SERVER:
                     RemoveClient(e);
                     break;
+                case ProtocolKind.ACK_TIME_UPDATE:
+                    AckTimeUpdate(e);
+                    break;
+            }
+        }
+
+        private void AckTimeUpdate(Package e)
+        {
+            Client client = GetClientByConnectionContext(e.ClientContext);
+            if(client != null)
+            {
+                OnCurrentTimeAckEvent(this,new BasicAuthAckEventArgs(client.Id,e.AuthenticationCode));
             }
         }
 
         private void RemoveClient(Package e)
         {
-            Client client = Clients.FirstOrDefault(x => x.ConnectionContext == e.ClientContext);
+            Client client = GetClientByConnectionContext(e.ClientContext);
             if(client != null)
             {
                 OnClientLeftEvent(this, new ClientLeftEventArgs(client.Id));
@@ -120,6 +142,12 @@ namespace Beursfuif.Server.Services
 
             OnNewClient(this, new NewClientEventArgs(newClient.Name, newClient.Ip, newClient.Id));
         }
+
+        //Helper method
+        private Client GetClientByConnectionContext(string context)
+        {
+            return Clients.FirstOrDefault(x => x.ConnectionContext == context);
+        }
         #endregion
 
         #region Send to client
@@ -132,7 +160,12 @@ namespace Beursfuif.Server.Services
 
         public void KickClient(Guid id)
         {
-            throw new NotImplementedException();
+            //SignalR Method
+            Client toKick = Clients.FirstOrDefault(x => x.Id == id);
+            if(toKick != null)
+            {
+                _hub.Clients.Client(toKick.ConnectionContext).youGotKicked();
+            }
         }
 
         public void UpdateTime(DateTime currentTime, string authenticationCode)

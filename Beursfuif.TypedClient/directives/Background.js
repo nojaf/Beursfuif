@@ -1,10 +1,13 @@
 ﻿// Update the reference to app1.ts to be that of your module file.
 // Install the angularjs.TypeScript.DefinitelyTyped NuGet package to resovle the .d.ts reference paths,
 // then adjust the path value to be relative to this file
-function Background() {
-    return {
-        restrict: "EA",
-        link: function (scope, element, attrs) {
+var beursfuif;
+(function (beursfuif) {
+    var Background = (function () {
+        function Background() {
+            this.restrict = "EA";
+        }
+        Background.prototype.link = function (scope, element, attrs) {
             var backgrounds = [
                 "url('background/wallpaper-1248778.jpg')",
                 "url('background/wallpaper-1346213.jpg')",
@@ -54,7 +57,9 @@ function Background() {
             }
 
             changeBackground();
-        }
-    };
-}
+        };
+        return Background;
+    })();
+    beursfuif.Background = Background;
+})(beursfuif || (beursfuif = {}));
 //# sourceMappingURL=Background.js.map

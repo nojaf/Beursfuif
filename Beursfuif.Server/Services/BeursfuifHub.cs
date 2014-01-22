@@ -40,10 +40,10 @@ namespace Beursfuif.Server.Services
             {
                 Kind = ProtocolKind.ACK_TIME_UPDATE,
                 AuthenticationCode = auth,
-                ClientContext = base.Context.ConnectionId,
-                Ip = GetIpAddress()
+                ClientContext = base.Context.ConnectionId
             });
         }
+
 
         #region Helper
         protected string GetIpAddress()

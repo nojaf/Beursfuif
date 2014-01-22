@@ -157,7 +157,6 @@ namespace Beursfuif.Server.ViewModel
             _server.IntervalUpdateAckEvent += Server_IntervalUpdateAckEvent;
         }
 
-
         void Server_CurrentTimeAckEvent(object sender, BL.Event.BasicAuthAckEventArgs e)
         {
             if (GetCurrentInterval().AuthenticationString() != e.AuthCode)
@@ -172,8 +171,11 @@ namespace Beursfuif.Server.ViewModel
                 return;
             }
             //else
+            ClientResponded(e.ClientId);
             SendLogMessage(GetClientName(e.ClientId) + " has replied to the current time update", LogType.CLIENT_VM | LogType.GOOD_NEWS | LogType.FROM_CLIENT);
         }
+
+
 
         void Server_ClientLeftEvent(object sender, BL.Event.ClientLeftEventArgs e)
         {
@@ -198,10 +200,9 @@ namespace Beursfuif.Server.ViewModel
                 string msg = c.Name + ": " + e.Order.TotalPrice(GetCurrentInterval()) + " bons.";
                 SendToastMessage("Nieuwe bestelling ontvangen",msg);
                 SendLogMessage("New order: " + msg, LogType.FROM_CLIENT | LogType.CLIENT_VM);
-                DateTime currentBeursfuifTime = base.GetLocator().Settings.BeursfuifCurrentTime;
-                c.LastActivity = currentBeursfuifTime;
                 c.OrderCount++;
-                _server.SendAckNewOrder(e.ClientId, authString, currentBeursfuifTime);
+                _server.SendAckNewOrder(e.ClientId, authString, GetCurrentBeursfuifTime());
+                ClientResponded(e.ClientId);
             }
         }
 
@@ -214,7 +215,7 @@ namespace Beursfuif.Server.ViewModel
                 {
                     Id = e.Id,
                     Ip = e.Ip,
-                    LastActivity = base.GetLocator().Settings.BeursfuifCurrentTime,
+                    LastActivity = GetCurrentBeursfuifTime(),
                     Name = e.Name,
                     OrderCount = 0
                 });
@@ -239,6 +240,7 @@ namespace Beursfuif.Server.ViewModel
                 return;
             }
             //else
+            ClientResponded(e.ClientId);
             SendLogMessage(GetClientName(e.ClientId) + " has replied to the current interval update", LogType.CLIENT_VM | LogType.GOOD_NEWS | LogType.FROM_CLIENT);
         }
         #endregion
@@ -255,6 +257,17 @@ namespace Beursfuif.Server.ViewModel
             Client client = Clients.FirstOrDefault(x => x.Id == id);
             if(client != null) return client.Name;
             return null;
+        }
+
+        private DateTime GetCurrentBeursfuifTime()
+        {
+            return base.GetLocator().Settings.BeursfuifCurrentTime;
+        }
+
+        private void ClientResponded(Guid id)
+        {
+            Client responder = Clients.FirstOrDefault(x => x.Id == id);
+            if (responder != null) responder.LastActivity = GetCurrentBeursfuifTime();
         }
         #endregion
 
