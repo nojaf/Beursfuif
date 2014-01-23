@@ -140,7 +140,6 @@
     <Content Include="Scripts\jquery\jquery-1.9.1.min.js" />
     <Content Include="Scripts\toastr\toastr.js" />
     <Content Include="Scripts\toastr\toastr.min.js" />
-    <Content Include="test.html" />
     <Content Include="views\login.html" />
     <Content Include="views\main.html" />
     <Content Include="Web.config" />
@@ -171,7 +170,6 @@
     <TypeScriptCompile Include="Scripts\typings\signalr\signalr.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\toastr\toastr.d.ts" />
     <TypeScriptCompile Include="services\SignalrService.ts" />
-    <TypeScriptCompile Include="test\test.ts" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="img\" />

@@ -197,6 +197,8 @@ namespace Beursfuif.Server.ViewModel
         {
             if (!IsInDesignMode)
             {
+                PointInCode("SettingsViewModel: Ctor");
+
                 _ioManager = ioManager;
                 _server = server;
 
@@ -242,6 +244,8 @@ namespace Beursfuif.Server.ViewModel
 
         private void InitCommands()
         {
+            PointInCode("SettingsViewModel: InitCommands");
+
             MainActionButtonCommand = new RelayCommand(MainActionCommand, ValidatePartyConditions);
             AddOneMinute = new RelayCommand(() => { BeursfuifCurrentTime = BeursfuifCurrentTime.AddMinutes(1); });
             ForceAutoSaveAllOrders = new RelayCommand(() => { MessengerInstance.Send<AutoSaveAllOrdersMessage>(new AutoSaveAllOrdersMessage()); });
@@ -253,6 +257,9 @@ namespace Beursfuif.Server.ViewModel
 
         private void RestoreBackup()
         {
+            PointInCode("SettingsViewModel: RestoreBackup");
+
+
             FileDialog dialog = new OpenFileDialog()
             {
                 Filter = "Zip Files|*.zip"
@@ -285,6 +292,8 @@ namespace Beursfuif.Server.ViewModel
 
         private void ChangeBackupLocation()
         {
+            PointInCode("SettingsViewModel: ChangeBackupLocation");
+
             FolderBrowserDialog dialog = new FolderBrowserDialog();
            var result = dialog.ShowDialog();
            if (result == DialogResult.OK)
@@ -295,6 +304,8 @@ namespace Beursfuif.Server.ViewModel
 
         private bool ValidatePartyConditions()
         {
+            PointInCode("SettingsViewModel: ValidatePartyConditions");
+
             var locator = GetLocator();
             if (locator != null)
             {
@@ -316,8 +327,11 @@ namespace Beursfuif.Server.ViewModel
             return false;
         }
 
+        #region MainActionCommands
         private void MainActionCommand()
         {
+            PointInCode("SettingsViewModel: MainActionCommand");
+
             switch (MainActionButtonContent)
             {
                 case PARTY_NEVER_STARTED:
@@ -334,6 +348,8 @@ namespace Beursfuif.Server.ViewModel
 
         private void PauseParty()
         {
+            PointInCode("SettingsViewModel: PauseParty");
+
             SendLogMessage("Party paused method", LogType.SETTINGS_VM);
             BeursfuifBusy = false;
             RaisePropertyChanged(BeursfuifBusyVisibilityPropertyName);
@@ -348,13 +364,32 @@ namespace Beursfuif.Server.ViewModel
             SendToastMessage("Server paused");
         }
 
-        private void ResumeParty()
+        private async void ResumeParty()
         {
+            PointInCode("SettingsViewModel: ResumeParty");
+
             SendLogMessage("Resuming party method", LogType.SETTINGS_VM);
             BeursfuifBusy = true;
             RaisePropertyChanged(BeursfuifBusyVisibilityPropertyName);
             _server.Active = true;
-            _server.Start(IPAdress,5678); //TODO: add port property
+
+
+            bool succes = await _server.Start(IPAdress, 5678); //TODO: add port property
+            
+            if(!succes)
+            {
+                _server.Active = false;
+                BeursfuifBusy = false;
+                RaisePropertyChanged(BeursfuifBusyVisibilityPropertyName);
+                _dm = new DialogMessage("Kon de server niet opstarten");
+                _dm.Errors.Add("Werd het programma als administrator opgestart?");
+                _dm.Errors.Add("Is er netwerk beschikbaar?");
+                _dm.Answer = false;
+                _dm.Nay = Visibility.Collapsed;
+                MessengerInstance.Send<DialogMessage>(_dm);
+                return;
+            }
+
 
             if (_tmrMain == null)
             {
@@ -374,6 +409,8 @@ namespace Beursfuif.Server.ViewModel
 
         public void InitParty(object state)
         {
+            PointInCode("SettingsViewModel: InitParty");
+
             //initial save triggers the views (Interval & Drink) to disable controls
             SaveSettings(state);
 
@@ -410,10 +447,13 @@ namespace Beursfuif.Server.ViewModel
 
             SaveSettings(state);
         }
+        #endregion
 
         //Because c# is always byRef on objects, that's why
         private void FillInDrinks(Interval interval, Drink[] drinks)
         {
+            PointInCode("SettingsViewModel: FillInDrinks");
+
             int length = drinks.Length;
             interval.Drinks = new Drink[length];
             for (int i = 0; i < length; i++)
@@ -422,8 +462,11 @@ namespace Beursfuif.Server.ViewModel
             }
         }
 
+        #region Save and reset
         private void SaveSettings(object state)
         {
+            PointInCode("SettingsViewModel: SaveSettings");
+
             _ioManager.SaveObjectToXml<SaveSettings>(PathManager.BUSY_AND_TIME_PATH, new SaveSettings(BeursfuifBusy, BeursfuifCurrentTime));
 
             //CurrentInterval
@@ -434,6 +477,8 @@ namespace Beursfuif.Server.ViewModel
 
         private void ResetAll()
         {
+            PointInCode("SettingsViewModel: ResetAll");
+
             _dm = new DialogMessage();
 
             if (BeursfuifBusy)
@@ -480,6 +525,8 @@ namespace Beursfuif.Server.ViewModel
 
         private void ResetFuifData()
         {
+            PointInCode("SettingsViewModel: ResetFuifData");
+
             _dm = new DialogMessage();
 
             if (BeursfuifBusy)
@@ -555,7 +602,9 @@ namespace Beursfuif.Server.ViewModel
                 MessengerInstance.Send<DialogMessage>(_dm);
             }
         }
+        #endregion
 
+        #region Timer
         public void MainTimer_Tick(object state)
         {
             _tmrMain.Change(int.MaxValue, int.MaxValue);
@@ -580,13 +629,15 @@ namespace Beursfuif.Server.ViewModel
 
         private void EndOfInterval()
         {
+            PointInCode("SettingsViewModel: EndOfInterval");
+
             //TODO Update time
             SendLogMessage("Server will commence calculating new prices", LogType.SETTINGS_VM);
             var locator = base.GetLocator();
 
             ThreadPool.QueueUserWorkItem(new WaitCallback((object target) =>
             {
-                Interval next = CalculatePriceUpdates(locator.Orders.AllOrderItems, locator.Interval.Intervals, CurrentInterval.Id, false, this);
+                Interval next = PriceCalculation.CalculatePriceUpdates(locator.Orders.AllOrderItems, locator.Interval.Intervals, CurrentInterval.Id, false, this);
                 if (next != null)
                 {
                     App.Current.Dispatcher.BeginInvoke(new Action(() =>
@@ -614,6 +665,8 @@ namespace Beursfuif.Server.ViewModel
 
         private void OneMinutePassed()
         {
+            PointInCode("SettingsViewModel: OneMinutePassed");
+
             ThreadPool.QueueUserWorkItem(SaveSettings);
             //TODO save all orders (bin)
             MessengerInstance.Send<AutoSaveAllOrdersMessage>(new AutoSaveAllOrdersMessage());
@@ -627,6 +680,9 @@ namespace Beursfuif.Server.ViewModel
 
         private void BackupData(object state)
         {
+            PointInCode("SettingsViewModel: BackupData");
+
+
             if (string.IsNullOrEmpty(BackupLocation))
             {
                 SendToastMessage("Can't back up", "De data kon niet worden opgeslaan. Heb je een map gekozen om te backuppen?");
@@ -648,10 +704,13 @@ namespace Beursfuif.Server.ViewModel
 
           
         }
+        #endregion
 
         #region Messages
         private void InitMessages()
         {
+            PointInCode("SettingsViewModel: InitMessages");
+
             MessengerInstance.Send<BeursfuifBusyMessage>(new BeursfuifBusyMessage() { Value = this.BeursfuifBusy });
             MessengerInstance.Register<DrinkAvailableMessage>(this, DrinkAvailableMessageReceived);
             MessengerInstance.Register<DrinkModifiedMessage>(this, DrinkModifiedHandler);
@@ -659,6 +718,8 @@ namespace Beursfuif.Server.ViewModel
 
         private void DrinkModifiedHandler(DrinkModifiedMessage msg)
         {
+            PointInCode("SettingsViewModel: DrinkModifiedHandler");
+
             var intervals = base.GetLocator().Interval.Intervals;
             if (intervals != null && intervals.Length > 0)
             {
@@ -671,6 +732,8 @@ namespace Beursfuif.Server.ViewModel
 
         private void DrinkAvailableMessageReceived(DrinkAvailableMessage msg)
         {
+            PointInCode("SettingsViewModel: DrinkAvailableMessageReceived");
+
             Drink changed = CurrentInterval.Drinks.FirstOrDefault(x => x.Id == msg.DrinkId);
             if (changed != null)
             {
@@ -681,148 +744,10 @@ namespace Beursfuif.Server.ViewModel
         }
         #endregion
 
-        #region Price Updates
-        public static Interval CalculatePriceUpdates(List<ClientDrinkOrder> allOrdersItems, Interval[] intervals, int idCurrentInterval, bool predict, BeursfuifViewModelBase viewmodel)
-        {
-            Interval currentInterval = intervals.FirstOrDefault(x => x.Id == idCurrentInterval);
-            if (currentInterval == null) throw new Exception("Current interval isn't part of the Interval array");
-
-            int currentIntervalIndex = Array.IndexOf(intervals, intervals.FirstOrDefault(x =>x.Id == idCurrentInterval));
-            //the first to intervals don't trigger an update
-            if (currentIntervalIndex == 0) return intervals[1];
-
-            Interval previousInterval = intervals[currentIntervalIndex - 1];
-            //no new update possible, end of beursfuif
-            if (currentIntervalIndex == intervals.Length - 1) return null;
-
-            Interval nextInterval = (predict ? intervals[currentIntervalIndex + 1].Clone() : intervals[currentIntervalIndex + 1]);
-
-            int previousAllDrinkCount = allOrdersItems.Where(x => x.IntervalId == previousInterval.Id).Sum(x => x.Count);
-            viewmodel.SendLogMessage("Previous drink count: " + previousAllDrinkCount, LogType.SETTINGS_VM);
-            int currentAllDrinkCount = allOrdersItems.Where(x => x.IntervalId == currentInterval.Id).Sum(x => x.Count);
-            viewmodel.SendLogMessage("Current drink count: " + previousAllDrinkCount, LogType.SETTINGS_VM);
-
-            //2 in the excel file
-            int differenceAllDrinks = currentAllDrinkCount - previousAllDrinkCount;
-            viewmodel.SendLogMessage("Current all drinkcount - Previous all drinkcount", LogType.SETTINGS_VM);
-
-            Drink[] drinksForNextInterval = currentInterval.Drinks.Where(x => x.Available).ToArray();
-            int numberOfDrinks = drinksForNextInterval.Length;
-            for (int i = 0; i < numberOfDrinks; i++)
-            {
-                Drink drink = drinksForNextInterval[i];
-
-                int previousDrinkCount = allOrdersItems.Where(x => x.DrinkId == drink.Id && x.IntervalId == previousInterval.Id).Sum(x => x.Count);
-                int currentDrinkCount = allOrdersItems.Where(x => x.DrinkId == drink.Id && x.IntervalId == currentInterval.Id).Sum(x => x.Count);
-                //1 in the excel
-                int differenceDrinkCount = currentDrinkCount - previousDrinkCount;
-
-                //3 in the excel
-                double differenceProcentage = ((double)currentDrinkCount / (double)currentAllDrinkCount)
-                                                                        -
-                                               ((double)previousDrinkCount / (double)previousAllDrinkCount);
-
-                if (differenceDrinkCount >= 0)
-                {
-                    #region 1A
-                    //the drink has been drank more
-                    if (differenceAllDrinks >= 0)
-                    {
-                        #region 2AA
-                        //more drinks have been drunk in general
-                        if (differenceProcentage > 0)
-                        {
-                            //the drink has been drunk more procentually
-                            drink.PriceFactor = PriceFactor.BIG_RISE;
-                        }
-                        else
-                        {
-                            //the drink has been drunk less procentually
-                            drink.PriceFactor = PriceFactor.BIG_DECREASE;
-                        }
-                        #endregion
-                    }
-                    else
-                    {
-                        #region 2AB
-                        //less drinks have been drunk in general
-                        if (differenceProcentage > 0)
-                        {
-                            //the drink has been drunk more procentually
-                            drink.PriceFactor = PriceFactor.SMALL_RISE;
-                        }
-                        else
-                        {
-                            //the drink has been drunk less procentually
-                            drink.PriceFactor = PriceFactor.SMALL_DECREASE;
-                        }
-                        #endregion
-                    }
-                    #endregion
-                }
-                else
-                {
-                    #region 1B
-                    //the drink has been drank less
-                    if (differenceAllDrinks > 0)
-                    {
-                        #region 2BA
-                        //more drinks have been drunk in general
-                        if (differenceProcentage > 0)
-                        {
-                            //the drink has been drunk more procentually
-                            drink.PriceFactor = PriceFactor.BIG_DECREASE;
-                        }
-                        else
-                        {
-                            //the drink has been drunk less procentually
-                            drink.PriceFactor = PriceFactor.BIG_RISE;
-                        }
-                        #endregion
-                    }
-                    else
-                    {
-                        #region 2BB
-                        //more drinks have been drunk in general
-                        if (differenceProcentage > 0)
-                        {
-                            //the drink has been drunk more procentually
-                            drink.PriceFactor = PriceFactor.SMALL_DECREASE;
-                        }
-                        else
-                        {
-                            //the drink has been drunk less procentually
-                            drink.PriceFactor = PriceFactor.SMALL_RISE;
-                        }
-                        #endregion
-                    }
-                    #endregion
-                }
-
-                //check if we need to use the override factor
-                if (drink.OverrideFactor != 0 && !predict) drink.PriceFactor = PriceFactor.OVERRIDE;
-
-                
-
-                Drink nextDrink = nextInterval.Drinks.FirstOrDefault(x => x.Id == drink.Id);
-                double priceFactor = drink.GetPriceFactorValue();
-                double priceWithoutRouding = drink.CurrentPrice * priceFactor;
-                byte nextPrice = (byte)Math.Round(priceWithoutRouding);
-                if (nextPrice > nextDrink.MaximumPrice) nextPrice = nextDrink.MaximumPrice;
-                if (nextPrice < nextDrink.MiniumPrice) nextPrice = nextDrink.MiniumPrice;
-
-                nextDrink.CurrentPrice = nextPrice;
-                if (predict) nextDrink.PriceFactor = drink.PriceFactor;
-            }
-
-            return nextInterval;
-        }
-                    #endregion
-
         #region Websocket
         private void InitServer()
         {
-            _server.NewClientEvent += Server_NewClientEvent;
+            PointInCode("SettingsViewModel: InitServer");
 
             App.Current.MainWindow.Closing += (a, b) =>
             {
@@ -838,12 +763,6 @@ namespace Beursfuif.Server.ViewModel
         private void AddressChangedCallback(object sender, EventArgs e)
         {
             RaisePropertyChanged("IPAdress");
-        }
-
-        void Server_NewClientEvent(object sender, BL.Event.NewClientEventArgs e)
-        {
-            _server.SendAckInitialClientConnect(CurrentInterval.ToClientInterval(BeursfuifCurrentTime), e.Id, BeursfuifCurrentTime);
-            SendLogMessage("Repley on " + e.Name + "'s connection request", LogType.SETTINGS_VM);
         }
 
         private IPAddress LocalIPAddress()

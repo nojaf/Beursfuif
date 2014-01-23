@@ -84,7 +84,7 @@ namespace Beursfuif.Server.ViewModel
             {
                 _stateChanger.GoToState(FADE_IN);
                 _visible = true;
-                SendLogMessage("Changed view to " + currentClassName, LogType.INFO);
+                //SendLogMessage("Changed view to " + currentClassName, LogType.INFO);
             }
             else if (_visible && message.ClassName != currentClassName)
             {
@@ -99,7 +99,6 @@ namespace Beursfuif.Server.ViewModel
             _stateChanger = drinkView;
         }
 
-
         protected ViewModelLocator GetLocator()
         {
             return Application.Current.Resources["Locator"] as ViewModelLocator;
@@ -112,6 +111,11 @@ namespace Beursfuif.Server.ViewModel
         protected virtual void SendToastMessage(string title, string message = null)
         {
             MessengerInstance.Send<ToastMessage>(new ToastMessage(title, message));
+        }
+
+        public virtual void PointInCode(string where)
+        {
+            SendLogMessage(where, LogType.POINT_IN_CODE);
         }
     }
 }

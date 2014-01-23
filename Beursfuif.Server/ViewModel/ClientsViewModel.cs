@@ -92,6 +92,7 @@ namespace Beursfuif.Server.ViewModel
             }
             else
             {
+                PointInCode("ClientsViewModel: Ctor");
                 Clients = new ObservableCollection<Client>();
                 _server = server;
                 InitServer();
@@ -104,11 +105,13 @@ namespace Beursfuif.Server.ViewModel
         #region Commands
         private void InitCommands()
         {
+            PointInCode("ClientsViewModel: InitCommands");
             KickClientCommand = new RelayCommand<Guid>(KickClientHandler);
         }
 
         private void KickClientHandler(Guid id)
         {
+            PointInCode("ClientsViewModel: KickClientHandler");
             Client client = Clients.FirstOrDefault(x => x.Id == id);
             if (client != null)
             {
@@ -121,11 +124,13 @@ namespace Beursfuif.Server.ViewModel
         #region Messages
         private void InitMessages()
         {
+            PointInCode("ClientsViewModel: InitMessages");
             MessengerInstance.Register<KickClientMessage>(this, KickClient);
         }
 
         private void KickClient(KickClientMessage msg)
         {
+            PointInCode("ClientsViewModel: KickClient");
             Client client = Clients.FirstOrDefault(x => x.Id == msg.ClientId);
             if (client != null)
             {
@@ -136,6 +141,7 @@ namespace Beursfuif.Server.ViewModel
 
         public void KickAll(KickWasKickedReason kickWasKickedReason)
         {
+            PointInCode("ClientsViewModel: KickAll");
             foreach (var client in Clients)
             {
                 KickClient(new KickClientMessage()
@@ -150,6 +156,7 @@ namespace Beursfuif.Server.ViewModel
         #region Server
         private void InitServer()
         {
+            PointInCode("ClientsViewModel: InitServer");
             _server.NewClientEvent += Server_NewClientEventHandler;
             _server.NewOrderEvent += Server_NewOrderEvent;
             _server.ClientLeftEvent += Server_ClientLeftEvent;
@@ -159,6 +166,7 @@ namespace Beursfuif.Server.ViewModel
 
         void Server_CurrentTimeAckEvent(object sender, BL.Event.BasicAuthAckEventArgs e)
         {
+            PointInCode("ClientsViewModel: Server_CurrentTimeAckEvent");
             if (GetCurrentInterval().AuthenticationString() != e.AuthCode)
             {
                 KickClient(new KickClientMessage()
@@ -175,10 +183,9 @@ namespace Beursfuif.Server.ViewModel
             SendLogMessage(GetClientName(e.ClientId) + " has replied to the current time update", LogType.CLIENT_VM | LogType.GOOD_NEWS | LogType.FROM_CLIENT);
         }
 
-
-
         void Server_ClientLeftEvent(object sender, BL.Event.ClientLeftEventArgs e)
         {
+            PointInCode("ClientsViewModel: Server_ClientLeftEvent");
             Client c = Clients.FirstOrDefault(x => x.Id == e.ClientId);
             if (c != null)
             {
@@ -193,6 +200,7 @@ namespace Beursfuif.Server.ViewModel
 
         void Server_NewOrderEvent(object sender, BL.Event.NewOrderEventArgs e)
         {
+            PointInCode("ClientsViewModel: Server_NewOrderEvent");
             Client c = Clients.FirstOrDefault(x => x.Id == e.ClientId);
             string authString = GetCurrentInterval().AuthenticationString();
             if (c != null && e.AuthenticationCode == authString)
@@ -208,14 +216,16 @@ namespace Beursfuif.Server.ViewModel
 
         void Server_NewClientEventHandler(object sender, BL.Event.NewClientEventArgs e)
         {
-           
+            PointInCode("ClientsViewModel: Server_NewClientEventHandler");
+            DateTime currentBFTime = GetCurrentBeursfuifTime();
+
             Action action = delegate()
             {
                 Clients.Add(new Client()
                 {
                     Id = e.Id,
                     Ip = e.Ip,
-                    LastActivity = GetCurrentBeursfuifTime(),
+                    LastActivity = currentBFTime,
                     Name = e.Name,
                     OrderCount = 0
                 });
@@ -224,10 +234,16 @@ namespace Beursfuif.Server.ViewModel
             App.Current.Dispatcher.BeginInvoke(action, System.Windows.Threading.DispatcherPriority.Normal);
             SendToastMessage("New client connected", e.Name + " heeft zich aangemeld.");
             SendLogMessage("New client connected: "+e.Name + " heeft zich aangemeld.", LogType.CLIENT_VM | LogType.FROM_CLIENT);
+
+            Interval currentInterval = GetCurrentInterval();
+
+            _server.SendAckInitialClientConnect(currentInterval.ToClientInterval(currentBFTime), e.Id, currentBFTime);
+            SendLogMessage("Repley on " + e.Name + "'s connection request", LogType.SETTINGS_VM);
         }
 
         void Server_IntervalUpdateAckEvent(object sender, BL.Event.BasicAuthAckEventArgs e)
         {
+            PointInCode("ClientsViewModel: Server_IntervalUpdateAckEvent");           
             if (GetCurrentInterval().AuthenticationString() != e.AuthCode)
             {
                 KickClient(new KickClientMessage()

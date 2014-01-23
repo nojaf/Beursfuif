@@ -1,4 +1,4 @@
-﻿var beursfuif;
+var beursfuif;
 (function (beursfuif) {
     var EventNames = (function () {
         function EventNames() {
@@ -11,4 +11,4 @@
     })();
     beursfuif.EventNames = EventNames;
 })(beursfuif || (beursfuif = {}));
-//# sourceMappingURL=events.js.map
+//# sourceMappingURL=Events.js.map

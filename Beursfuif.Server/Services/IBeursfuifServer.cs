@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Beursfuif.Server.Services
 {
@@ -23,7 +24,7 @@ namespace Beursfuif.Server.Services
 
         bool Active { get; set; }
 
-        void Start(string ip, int port);
+        Task<bool> Start(string ip, int port);
 
         void SendAckInitialClientConnect(ClientInterval currentInterval, Guid clientId, DateTime currentBeursfuifTime);
 

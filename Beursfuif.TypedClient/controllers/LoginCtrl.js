@@ -35,7 +35,7 @@ var beursfuif;
                     setTimeout(function () {
                         _this.$location.path("/main");
                         _this.$scope.$apply();
-                    }, 500);
+                    }, 250);
                 }
             });
         }

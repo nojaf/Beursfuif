@@ -189,6 +189,8 @@ namespace Beursfuif.Server.ViewModel
         {
             if (!IsInDesignMode)
             {
+                PointInCode("OrdersViewModel: Ctor");
+
                 _server = server;
                 _ioManager = ioManager;
                 InitServer();
@@ -204,11 +206,15 @@ namespace Beursfuif.Server.ViewModel
         #region Messages
         private void InitMessages()
         {
+            PointInCode("OrdersViewModel: InitMessages");
+
             MessengerInstance.Register<AutoSaveAllOrdersMessage>(this, AutoSaveAllOrdersHandler);
         }
 
         private void AutoSaveAllOrdersHandler(AutoSaveAllOrdersMessage obj)
         {
+            PointInCode("OrdersViewModel: AutoSaveAllOrdersHandler");
+
             ThreadPool.QueueUserWorkItem(new WaitCallback((object target) =>
             {
                 _ioManager.SaveObservableCollectionToBinary<ShowOrder>(PathManager.AUTO_SAVE_ALL_ORDERS, AllOrders);
@@ -222,6 +228,8 @@ namespace Beursfuif.Server.ViewModel
         #region Data
         private void InitData()
         {
+            PointInCode("OrdersViewModel: InitData");
+
             AllOrders = _ioManager.LoadObservableCollectionFromBinary<ShowOrder>(PathManager.AUTO_SAVE_ALL_ORDERS);
             if (AllOrders == null)
             {
@@ -260,6 +268,8 @@ namespace Beursfuif.Server.ViewModel
 
         private void UpdateShowOrderList()
         {
+            PointInCode("OrdersViewModel: UpdateShowOrderList");
+
             App.Current.Dispatcher.BeginInvoke(new Action(() =>
             {
                 if (ShowOrderList != null && SelectedInterval != null && AllOrders.Count > 0)
@@ -290,43 +300,22 @@ namespace Beursfuif.Server.ViewModel
         #region Server
         private void InitServer()
         {
+            PointInCode("OrdersViewModel: InitServer");
+
             _server.NewOrderEvent += Server_NewOrderEvent;
         }
 
         void Server_NewOrderEvent(object sender, BL.Event.NewOrderEventArgs e)
         {
+            PointInCode("OrdersViewModel: Server_NewOrderEvent");
+
             var locator = base.GetLocator();
             var currentInterval = locator.Settings.CurrentInterval;
             if (currentInterval.AuthenticationString() == e.AuthenticationCode)
             {
                 App.Current.Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    ClientDrinkOrder[] items = e.Order;
-                    foreach (var drinkItem in items)
-                    {
-                        drinkItem.IntervalId = currentInterval.Id;
-                    }
-
-                    ShowOrder newOrder = new ShowOrder()
-                    {
-                        ClientName = locator.Clients.Clients.FirstOrDefault(x => x.Id == e.ClientId).Name,
-                        IntervalId = currentInterval.Id,
-                        OrderContent = e.Order.ToContentString(locator.Drink.Drinks),
-                        Time = locator.Settings.BeursfuifCurrentTime,
-                        TotalPrice = e.Order.TotalPrice(currentInterval),
-                        Orders = items
-                    };
-
-                    AllOrders.Add(newOrder);
-                    RaisePropertyChanged(AllOrdersPropertyName);
-                    if (SelectedInterval == null) SelectedInterval = ReducedIntervals[0];
-
-                    if (SelectedInterval.Id == currentInterval.Id || SelectedInterval.Id == int.MaxValue)
-                    {
-                        ShowOrderList.Add(newOrder);
-                    }
-
-                    _allOrderItems.AddRange(e.Order);
+                    AddOrder(e, locator, currentInterval);
                 }));
                 return;
             }
@@ -342,6 +331,38 @@ namespace Beursfuif.Server.ViewModel
             });
 
 
+        }
+
+        private void AddOrder(BL.Event.NewOrderEventArgs e, ViewModelLocator locator, Interval currentInterval)
+        {
+            PointInCode("OrdersViewModel: AddOrder");
+
+            ClientDrinkOrder[] items = e.Order;
+            foreach (var drinkItem in items)
+            {
+                drinkItem.IntervalId = currentInterval.Id;
+            }
+
+            ShowOrder newOrder = new ShowOrder()
+            {
+                ClientName = locator.Clients.Clients.FirstOrDefault(x => x.Id == e.ClientId).Name,
+                IntervalId = currentInterval.Id,
+                OrderContent = e.Order.ToContentString(locator.Drink.Drinks),
+                Time = locator.Settings.BeursfuifCurrentTime,
+                TotalPrice = e.Order.TotalPrice(currentInterval),
+                Orders = items
+            };
+
+            AllOrders.Add(newOrder);
+            RaisePropertyChanged(AllOrdersPropertyName);
+            if (SelectedInterval == null) SelectedInterval = ReducedIntervals[0];
+
+            if (SelectedInterval.Id == currentInterval.Id || SelectedInterval.Id == int.MaxValue)
+            {
+                ShowOrderList.Add(newOrder);
+            }
+
+            _allOrderItems.AddRange(e.Order);
         }
         #endregion
     }

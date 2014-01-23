@@ -232,6 +232,7 @@ namespace Beursfuif.Server.ViewModel
         {
             if (!IsInDesignMode)
             {
+                PointInCode("DrinkViewModel: Ctor");
                 _ioManager = iomanager;
                 Drinks = iomanager.LoadObservableCollectionFromXml<Drink>(PathManager.DRINK_XML_PATH);
                 ThreadPool.QueueUserWorkItem(CleanUpImages);
@@ -243,6 +244,7 @@ namespace Beursfuif.Server.ViewModel
 
         private void CleanUpImages(object state)
         {
+            PointInCode("DrinkViewModel: CleanUpImages");
             try
             {
                 string[] paths = Directory.GetFiles(PathManager.ASSETS_PATH);
@@ -270,6 +272,7 @@ namespace Beursfuif.Server.ViewModel
 
         private void InitCommands()
         {
+            PointInCode("DrinkViewModel: InitCommands");
             //It shouldn't be posible to remove a drink when the party is busy
             RemoveDrinkCommand = new RelayCommand<int>(DeleteDrink, (int id) => { return (!BeursfuifBusy && Drinks.Any(x => x.Id == id)); });
             AddNewDrinkCommand = new RelayCommand(delegate() { NewEditDrink = new Drink() { Id = (Drinks.Count > 0 ? Drinks.Max(x => x.Id) + 1 : 1) }; },
@@ -283,6 +286,8 @@ namespace Beursfuif.Server.ViewModel
 
         private bool ValidateDrink()
         {
+            PointInCode("DrinkViewModel: ValidateDrink");
+
             bool valid = true;
             _dm = new DialogMessage("Drank niet in orde");
             _dm.Nay = Visibility.Collapsed;
@@ -323,12 +328,14 @@ namespace Beursfuif.Server.ViewModel
 
         void ErrorMessage_AnswerChanged(object sender, AnswerChangedArgs e)
         {
-            Console.WriteLine("You answered " + e);
+            PointInCode("DrinkViewModel: ErrorMessage_AnswerChanged");
             _dm.AnswerChanged -= ErrorMessage_AnswerChanged;
         }
 
         private void SaveDrink()
         {
+            PointInCode("DrinkViewModel: SaveDrink");
+
             if (ValidateDrink())
             {
                 NewEditDrink.CurrentPrice = NewEditDrink.InitialPrice;
@@ -351,6 +358,7 @@ namespace Beursfuif.Server.ViewModel
                     });
                    SendLogMessage("Drink modified", LogType.DRINK_VM);
                 }
+
                 ThreadPool.QueueUserWorkItem(new WaitCallback((object target) =>
                 {
                     _ioManager.SaveObservableCollectionToXml(PathManager.DRINK_XML_PATH, Drinks);
@@ -365,6 +373,8 @@ namespace Beursfuif.Server.ViewModel
 
         private void ChooseLocalImage()
         {
+            PointInCode("DrinkViewModel: ChooseLocalImage");
+
             // Create OpenFileDialog 
             Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
 
@@ -396,6 +406,8 @@ namespace Beursfuif.Server.ViewModel
 
         private void ResetValues()
         {
+            PointInCode("DrinkViewModel: ResetValues");
+
             NewEditDrink.Name = _previousValuesOfEditDrink.Name;
             NewEditDrink.InitialPrice = _previousValuesOfEditDrink.InitialPrice;
             NewEditDrink.MiniumPrice = _previousValuesOfEditDrink.MiniumPrice;
@@ -407,6 +419,8 @@ namespace Beursfuif.Server.ViewModel
 
         private void DownloadImage()
         {
+            PointInCode("DrinkViewModel: DownloadImage");
+
             Downloading = true;
             ThreadPool.QueueUserWorkItem(new WaitCallback((object target) =>
             {
@@ -436,9 +450,11 @@ namespace Beursfuif.Server.ViewModel
 
         private void ResizeImage(string originalPath, string destinationPath)
         {
+            PointInCode("DrinkViewModel: ResizeImage");
+
             //Crop to square format
             ImageResizer.ImageJob i = new ImageResizer.ImageJob(originalPath, destinationPath, new ImageResizer.ResizeSettings(
-               "height=100;format=png;mode=max;"));
+               "height=200;format=png;mode=max;"));
             i.CreateParentDirectory = true; //Auto-create the uploads directory.
             i.Build();
             NewEditDrink.ImageString = destinationPath;
@@ -446,6 +462,8 @@ namespace Beursfuif.Server.ViewModel
 
         private void DeleteDrink(int id)
         {
+            PointInCode("DrinkViewModel: DeleteDrink");
+
             Drink drink = Drinks.FirstOrDefault(x => x.Id == id);
             if (drink != null)
             {
@@ -470,6 +488,8 @@ namespace Beursfuif.Server.ViewModel
 
         private void DownloadRemoteImageFile(string uri, string path)
         {
+            PointInCode("DrinkViewModel: DownloadRemoteImageFile");
+
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
 
@@ -501,6 +521,8 @@ namespace Beursfuif.Server.ViewModel
 
         private void UpdateDrinkAvailability(int id)
         {
+            PointInCode("DrinkViewModel: UpdateDrinkAvailability");
+
             var locator = base.GetLocator();
             Drink changed = Drinks.FirstOrDefault(x => x.Id == id);
             Interval currentInterval = locator.Settings.CurrentInterval;

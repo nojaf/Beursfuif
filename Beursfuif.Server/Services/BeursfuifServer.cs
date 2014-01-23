@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Beursfuif.Server.Services
 {
@@ -47,11 +48,20 @@ namespace Beursfuif.Server.Services
             Clients = new List<BL.Client>();
         }
 
-        private void InitServer(object state)
+        private bool InitServer(object state)
         {
-            _webApp = WebApp.Start<Startup>("http://"+Ip + ":" + Port);
-            _hub = GlobalHost.ConnectionManager.GetHubContext<BeursfuifHub>();
-            BeursfuifHub.NewPackageReceived += BeursfuifHub_NewPackageReceived;
+            try
+            {
+                _webApp = WebApp.Start<Startup>("http://" + Ip + ":" + Port);
+                _hub = GlobalHost.ConnectionManager.GetHubContext<BeursfuifHub>();
+                BeursfuifHub.NewPackageReceived += BeursfuifHub_NewPackageReceived;
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
         }
 
         #region Events
@@ -198,14 +208,16 @@ namespace Beursfuif.Server.Services
             }
         }
 
-        public void Start(string ip, int port)
+        public async Task<bool> Start(string ip, int port)
         {
-            if (string.IsNullOrEmpty(Ip))
-            {
-                Ip = ip;
-                Port = port;
-                ThreadPool.QueueUserWorkItem(new WaitCallback(InitServer));
-            }
+
+                if (string.IsNullOrEmpty(Ip))
+                {
+                    Ip = ip;
+                    Port = port;
+                    return await Task.Factory.StartNew<bool>(InitServer,null);
+                }
+                return false;
         }
     }
 }
