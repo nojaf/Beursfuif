@@ -1,4 +1,4 @@
-/// <reference path="_references.ts" />
+﻿/// <reference path="_references.ts" />
 var beursfuif;
 (function (beursfuif) {
     var app = angular.module("beursfuif", ["ngRoute", "ngAnimate", "ngSanitize", "LocalStorageModule"]);
@@ -33,6 +33,7 @@ var beursfuif;
 
     //routes
     app.config(function ($routeProvider, $locationProvider) {
+        //routes
         $routeProvider.when("/", {
             templateUrl: "loginView",
             controller: "LoginCtrl"
@@ -42,6 +43,22 @@ var beursfuif;
         }).otherwise({
             redirectTo: "/"
         });
+
+        //toastr
+        toastr.options = {
+            closeButton: false,
+            debug: false,
+            positionClass: "toast-top-right",
+            onclick: null,
+            showDuration: 300,
+            hideDuration: 300,
+            timeOut: 1000,
+            extendedTimeOut: 1000,
+            showEasing: "swing",
+            hideEasing: "linear",
+            showMethod: "fadeIn",
+            hideMethod: "fadeOut"
+        };
     });
 })(beursfuif || (beursfuif = {}));
 ;

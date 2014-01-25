@@ -1,11 +1,13 @@
 /// <reference path="../app/_references.ts" />
 module beursfuif {
     export interface IMainCtrlScope extends ng.IScope {
-        drinks: ClientDrink[];
+        drinks: IClientDrink[];
         parseImage(imgString: string): string;
         intervalStart: string;
         intervalEnd: string;
         currentTime: string;
+        currentOrder: Array<IClientDrinkOrder>;
+        vm: MainCtrl;
     }
 
     export class MainCtrl {
@@ -17,6 +19,7 @@ module beursfuif {
                 $scope.intervalEnd = moment(signalrService.clientInterval.End).format("HH:mm");
                 $scope.currentTime = moment(signalrService.currentTime).format("HH:mm");
 
+                this.$scope.vm = this;
                 this.initScope();
             }
             else {
@@ -46,13 +49,85 @@ module beursfuif {
                     this.$scope.$apply();
                 }, 250);
             });
+
+            this.$scope.currentOrder = [];
+
+            
         }
 
         updateTime() {
-            console.log("Lukt dees al?");
             console.log(this.signalrService.currentTime);
             this.$scope.currentTime = moment(this.signalrService.currentTime).format("HH:mm");
             this.$scope.$apply();
+        }
+
+        addItem(drinkId: number, name: string):void {
+            //check if item is already a part of the current Order
+            var length: number = this.$scope.currentOrder.length;
+            for (var i: number = 0; i < length; i++) {
+                var drinkInOrder: IClientDrinkOrder = this.$scope.currentOrder[i];
+                if (drinkInOrder.DrinkId == drinkId) {
+                    drinkInOrder.Count++;
+                    return;
+                }
+            }
+
+            this.$scope.currentOrder.push({
+                Count: 1,
+                DrinkId: drinkId,
+                IntervalId: this.signalrService.clientInterval.Id,
+                Name:name
+            });
+        }
+
+        subtractItem(drinkId: number) {
+            var length: number = this.$scope.currentOrder.length;
+            for (var i: number = 0; i < length; i++) {
+                var drinkInOrder: IClientDrinkOrder = this.$scope.currentOrder[i];
+                if (drinkInOrder.DrinkId == drinkId) {
+                    console.log(drinkInOrder.Count);
+                    drinkInOrder.Count--;
+                    if (drinkInOrder.Count < 1) this.$scope.currentOrder.splice(i, 1);
+                    return;
+                }
+            }
+        }
+
+        removeItem(drinkId:number){
+            var length: number = this.$scope.currentOrder.length;
+            for (var i: number = 0; i < length; i++) {
+                var drinkInOrder: IClientDrinkOrder = this.$scope.currentOrder[i];
+                if (drinkInOrder.DrinkId == drinkId) {
+                    this.$scope.currentOrder.splice(i, 1);
+                    return;
+                }
+            }
+        }
+
+        totalOrderPrice() {
+            var price: number = 0;
+            var length: number = this.$scope.currentOrder.length;
+            for (var i: number = 0; i < length; i++) {
+                var drinkInOrder: IClientDrinkOrder = this.$scope.currentOrder[i];
+                price += drinkInOrder.Count * this.getPrice(drinkInOrder.DrinkId);
+            }
+            return price;
+        }
+
+        private getPrice(drId: number):number {
+            var length: number = this.signalrService.clientInterval.ClientDrinks.length;
+            for (var i: number = 0; i < length; i++) {
+                var drink: IClientDrink = this.signalrService.clientInterval.ClientDrinks[i];
+                if (drink.DrinkId == drId) {
+                    return drink.Price;
+                }
+            }
+            return 0;
+        }
+
+        sendOrder() {
+            this.signalrService.sendNewOrder(this.$scope.currentOrder);
+            this.$scope.currentOrder = [];
         }
     }
 }

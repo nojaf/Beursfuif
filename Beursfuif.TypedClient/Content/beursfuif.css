@@ -1,4 +1,4 @@
-html {
+﻿html {
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -9,6 +9,13 @@ html {
 body {
   background-color: transparent;
   height: 100%;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: default;
 }
 body > div {
   height: 100%;
@@ -65,7 +72,7 @@ body > div {
 }
 #contentContainer {
   margin: auto;
-  width: 80%;
+  width: 95%;
   height: 100%;
   padding: 75px 0px 25px 0px;
 }
@@ -116,6 +123,70 @@ body > div {
 #contentContainer #order {
   float: right;
   width: 25%;
-  background-color: red;
   height: 100%;
+  background-color: black;
+  color: white;
+  border-radius: 25px;
+  text-align: center;
+}
+#contentContainer #order h2 {
+  line-height: 55px;
+  height: 10%;
+  width: 100%;
+  margin: 0px;
+}
+#contentContainer #order .tableContainer {
+  width: 98%;
+  height: 73%;
+  display: block;
+  margin-left: 1%;
+  text-align: center;
+}
+#contentContainer #order .tableContainer table {
+  margin: auto;
+}
+#contentContainer #order .tableContainer table tr th {
+  padding: 10px 7px 10px 0px;
+  text-align: center;
+  min-width: 40px;
+}
+#contentContainer #order .tableContainer table tr button {
+  margin: 5px;
+}
+#contentContainer #order .submitOrder {
+  height: 17%;
+  width: 100%;
+  position: relative;
+}
+#contentContainer #order .submitOrder h3 {
+  text-align: left;
+  width: 90%;
+  position: absolute;
+  bottom: 45px;
+  left: 5%;
+  font-size: 25px;
+}
+#contentContainer #order .submitOrder button {
+  width: 90%;
+  position: absolute;
+  bottom: 12px;
+  left: 5%;
+}
+@media (max-width: 1060px) {
+  #order button {
+    padding: 6px;
+  }
+}
+@media (max-width: 1024px) {
+  #order h2 {
+    font-size: 20px;
+  }
+}
+.blackAndWhite {
+  color: white;
+  background-color: black;
+}
+.blackAndWhite:hover {
+  color: black;
+  background-color: #fafbfc;
 }

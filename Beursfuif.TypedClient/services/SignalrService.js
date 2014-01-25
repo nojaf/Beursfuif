@@ -6,10 +6,12 @@ var beursfuif;
         }
         SignalRMethodNames.LOGIN = "logOn";
         SignalRMethodNames.ACK_TIME_UPDATE = "ackTimeUpdate";
+        SignalRMethodNames.NEW_ORDER = "NewOrder";
 
         SignalRMethodNames.SEND_INITIAL_DATA = "sendInitialData";
         SignalRMethodNames.UPDATE_TIME = "updateTime";
         SignalRMethodNames.YOU_GOT_KICKED = "youGotKicked";
+        SignalRMethodNames.ACK_NEW_ORDER = "ackNewOrder";
         return SignalRMethodNames;
     })();
 
@@ -52,6 +54,9 @@ var beursfuif;
             this.hub.on(SignalRMethodNames.YOU_GOT_KICKED, function () {
                 return _this.kicked();
             });
+            this.hub.on(SignalRMethodNames.ACK_NEW_ORDER, function () {
+                return _this.showToast();
+            });
         };
 
         SignalrService.prototype.sendInitialData = function () {
@@ -86,6 +91,10 @@ var beursfuif;
             this.$rootScope.$broadcast(beursfuif.EventNames.OPEN_MODAL, beursfuif.ModalMessages.YOU_GOT_KICKED_TITLE, beursfuif.ModalMessages.YOU_GOT_KICKED);
         };
 
+        SignalrService.prototype.showToast = function () {
+            toastr.success("Je bestelling werd goed ontvangen.", "Bestelling gelukt!");
+        };
+
         //#endregion
         //#region Authcode
         SignalrService.prototype.validateAuthString = function (serverAuthString) {
@@ -118,6 +127,12 @@ var beursfuif;
                 return -1;
             }
             return 0;
+        };
+
+        //#endregion
+        //#region Send to the server
+        SignalrService.prototype.sendNewOrder = function (order) {
+            this.hub.invoke(SignalRMethodNames.NEW_ORDER, order, this.generateAuthString());
         };
         return SignalrService;
     })();

@@ -1,3 +1,4 @@
+/// <reference path="../app/_references.ts" />
 module beursfuif {
     export class ModalMessages {
         static WRONG_AUTH_TITLE:string = "Verkeerde authenticatie code";

@@ -75,6 +75,10 @@ namespace Beursfuif.Server.Services
         }
 
         public event EventHandler<BL.Event.NewOrderEventArgs> NewOrderEvent;
+        protected void OnNewOrderEvent(object sender, NewOrderEventArgs e)
+        {
+            if (NewOrderEvent != null) NewOrderEvent(this, e);
+        }
 
         public event EventHandler<BL.Event.ClientLeftEventArgs> ClientLeftEvent;
         protected void OnClientLeftEvent(object sender, ClientLeftEventArgs e)
@@ -117,6 +121,18 @@ namespace Beursfuif.Server.Services
                 case ProtocolKind.ACK_TIME_UPDATE:
                     AckTimeUpdate(e);
                     break;
+                case ProtocolKind.NEW_ORDER:
+                    NewOrder(e);
+                    break;
+            }
+        }
+
+        private void NewOrder(Package e)
+        {
+            Client client = GetClientByConnectionContext(e.ClientContext);
+            if (client != null)
+            {
+                OnNewOrderEvent(this, new NewOrderEventArgs(client.Id, e.AuthenticationCode, e.NewOrder));
             }
         }
 
@@ -196,7 +212,12 @@ namespace Beursfuif.Server.Services
 
         public void SendAckNewOrder(Guid clientId, string authCode, DateTime currentBeursfuifTime)
         {
-            throw new NotImplementedException();
+            //SignalR Method
+            Client client = Clients.FirstOrDefault(x => x.Id == clientId);
+            if(client != null)
+            {
+                _hub.Clients.Client(client.ConnectionContext).ackNewOrder();
+            }
         }
         #endregion
 

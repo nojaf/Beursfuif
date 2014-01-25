@@ -173,6 +173,8 @@
 						map: map
 					};
 
+				$toastElement.css("opacity", "1");
+
 				if (map.iconClass) {
 					$toastElement.addClass(options.toastClass).addClass(iconClass);
 				}

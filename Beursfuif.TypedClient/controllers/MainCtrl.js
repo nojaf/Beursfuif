@@ -13,6 +13,7 @@ var beursfuif;
                 $scope.intervalEnd = moment(signalrService.clientInterval.End).format("HH:mm");
                 $scope.currentTime = moment(signalrService.currentTime).format("HH:mm");
 
+                this.$scope.vm = this;
                 this.initScope();
             } else {
                 $location.path("/");
@@ -41,13 +42,84 @@ var beursfuif;
                     _this.$scope.$apply();
                 }, 250);
             });
+
+            this.$scope.currentOrder = [];
         };
 
         MainCtrl.prototype.updateTime = function () {
-            console.log("Lukt dees al?");
             console.log(this.signalrService.currentTime);
             this.$scope.currentTime = moment(this.signalrService.currentTime).format("HH:mm");
             this.$scope.$apply();
+        };
+
+        MainCtrl.prototype.addItem = function (drinkId, name) {
+            //check if item is already a part of the current Order
+            var length = this.$scope.currentOrder.length;
+            for (var i = 0; i < length; i++) {
+                var drinkInOrder = this.$scope.currentOrder[i];
+                if (drinkInOrder.DrinkId == drinkId) {
+                    drinkInOrder.Count++;
+                    return;
+                }
+            }
+
+            this.$scope.currentOrder.push({
+                Count: 1,
+                DrinkId: drinkId,
+                IntervalId: this.signalrService.clientInterval.Id,
+                Name: name
+            });
+        };
+
+        MainCtrl.prototype.subtractItem = function (drinkId) {
+            var length = this.$scope.currentOrder.length;
+            for (var i = 0; i < length; i++) {
+                var drinkInOrder = this.$scope.currentOrder[i];
+                if (drinkInOrder.DrinkId == drinkId) {
+                    console.log(drinkInOrder.Count);
+                    drinkInOrder.Count--;
+                    if (drinkInOrder.Count < 1)
+                        this.$scope.currentOrder.splice(i, 1);
+                    return;
+                }
+            }
+        };
+
+        MainCtrl.prototype.removeItem = function (drinkId) {
+            var length = this.$scope.currentOrder.length;
+            for (var i = 0; i < length; i++) {
+                var drinkInOrder = this.$scope.currentOrder[i];
+                if (drinkInOrder.DrinkId == drinkId) {
+                    this.$scope.currentOrder.splice(i, 1);
+                    return;
+                }
+            }
+        };
+
+        MainCtrl.prototype.totalOrderPrice = function () {
+            var price = 0;
+            var length = this.$scope.currentOrder.length;
+            for (var i = 0; i < length; i++) {
+                var drinkInOrder = this.$scope.currentOrder[i];
+                price += drinkInOrder.Count * this.getPrice(drinkInOrder.DrinkId);
+            }
+            return price;
+        };
+
+        MainCtrl.prototype.getPrice = function (drId) {
+            var length = this.signalrService.clientInterval.ClientDrinks.length;
+            for (var i = 0; i < length; i++) {
+                var drink = this.signalrService.clientInterval.ClientDrinks[i];
+                if (drink.DrinkId == drId) {
+                    return drink.Price;
+                }
+            }
+            return 0;
+        };
+
+        MainCtrl.prototype.sendOrder = function () {
+            this.signalrService.sendNewOrder(this.$scope.currentOrder);
+            this.$scope.currentOrder = [];
         };
         return MainCtrl;
     })();

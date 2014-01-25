@@ -1,4 +1,4 @@
-var beursfuif;
+﻿var beursfuif;
 (function (beursfuif) {
     var EventNames = (function () {
         function EventNames() {
@@ -7,8 +7,9 @@ var beursfuif;
         EventNames.CHANGE_OPACITY = "CHANGE_OPACITY";
         EventNames.TIME_CHANGED = "TIME_CHANGED";
         EventNames.OPEN_MODAL = "OPEN_MODAL";
+        EventNames.SHOW_TOAST = "SHOW_TOAST";
         return EventNames;
     })();
     beursfuif.EventNames = EventNames;
 })(beursfuif || (beursfuif = {}));
-//# sourceMappingURL=Events.js.map
+//# sourceMappingURL=events.js.map

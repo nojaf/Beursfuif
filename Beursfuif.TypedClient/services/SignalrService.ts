@@ -4,12 +4,14 @@ module beursfuif {
         //#region send to server
         static LOGIN: string = "logOn";
         static ACK_TIME_UPDATE: string = "ackTimeUpdate";
+        static NEW_ORDER: string = "NewOrder";
         //#endregion
 
         //#region receive from server
         static SEND_INITIAL_DATA: string = "sendInitialData";
         static UPDATE_TIME: string = "updateTime"//(currentTime, authenticationCode);
         static YOU_GOT_KICKED: string = "youGotKicked";
+        static ACK_NEW_ORDER: string = "ackNewOrder";
         //#endregion
     }
 
@@ -21,7 +23,7 @@ module beursfuif {
 
         currentTime: Date;
 
-        clientInterval: ClientInterval;
+        clientInterval: IClientInterval;
         //#endregion
 
         constructor(private $q: ng.IQService, private $log: ng.ILogService, private $rootScope: ng.IRootScopeService) { }
@@ -42,11 +44,12 @@ module beursfuif {
             this.hub.on(SignalRMethodNames.SEND_INITIAL_DATA, (...msg: any[]) => this.sendInitialData(msg));
             this.hub.on(SignalRMethodNames.UPDATE_TIME, (...msg: any[]) => this.updateTime(msg));
             this.hub.on(SignalRMethodNames.YOU_GOT_KICKED, () => this.kicked());
+            this.hub.on(SignalRMethodNames.ACK_NEW_ORDER, () => this.showToast());
         }
 
         sendInitialData(...msg: any[]) {
             this.currentTime = <Date>msg[0][0];
-            this.clientInterval = <ClientInterval>msg[0][1];
+            this.clientInterval = <IClientInterval>msg[0][1];
             this.clientInterval.ClientDrinks.sort(this.sortByLowerDrinkName);
             this.$log.log(this.currentTime);
             this.$log.log(this.clientInterval);     
@@ -66,6 +69,10 @@ module beursfuif {
         kicked(): void {
             this.connection.stop(false, true);
             this.$rootScope.$broadcast(EventNames.OPEN_MODAL, ModalMessages.YOU_GOT_KICKED_TITLE, ModalMessages.YOU_GOT_KICKED);
+        }
+
+        showToast(): void {
+            toastr.success("Je bestelling werd goed ontvangen.","Bestelling gelukt!");
         }
         //#endregion
 
@@ -93,13 +100,19 @@ module beursfuif {
             return clientAuth;
         }
 
-        sortByLowerDrinkName(a: ClientDrink, b: ClientDrink):number {
+        sortByLowerDrinkName(a: IClientDrink, b: IClientDrink):number {
             if (a.Name.toLowerCase() > b.Name.toLowerCase()) {
                 return 1;
             } else if (a.Name.toLowerCase() < b.Name.toLowerCase()) {
                 return -1;
             }
             return 0;
+        }
+        //#endregion
+
+        //#region Send to the server
+        sendNewOrder(order: Array<IClientDrinkOrder>) {
+            this.hub.invoke(SignalRMethodNames.NEW_ORDER, order, this.generateAuthString());
         }
         //#endregion
     }

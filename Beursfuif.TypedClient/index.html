@@ -76,13 +76,39 @@
                 <div id="drinks">
                     <div class="drink" ng-repeat="dr in drinks" ng-style="{'background-image':'url('+parseImage(dr.Base64Image)+')'}">
                         <p>{{dr.Name}}</p>
-                        <button class="btn btn-success"><i class="glyphicon glyphicon-plus"></i></button>
-                        <button class="btn btn-danger"><i class="glyphicon glyphicon-minus"></i></button>
+                        <button class="btn btn-success" ng-click="vm.addItem(dr.DrinkId, dr.Name)"><i class="glyphicon glyphicon-plus"></i></button>
+                        <button class="btn btn-danger" ng-click="vm.subtractItem(dr.DrinkId)"><i class="glyphicon glyphicon-minus"></i></button>
                         <p>{{dr.Price}} bons</p>
                     </div>
                 </div>
                 <div id="order">
-                    sdcsd
+                    <h2>Huidige bestelling</h2>
+                    <div class="tableContainer">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Drank</th>
+                                    <th>Aantal</th>
+                                    <th><i class="glyphicon glyphicon-plus"></i></th>
+                                    <th><i class="glyphicon glyphicon-minus"></i></th>
+                                    <th><i class="glyphicon glyphicon-remove"></i></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="item in currentOrder">
+                                    <td>{{item.Name}}</td>
+                                    <td>{{item.Count}}</td>
+                                    <td><button class="btn btn-success" ng-click="vm.addItem(item.DrinkId)"><i class="glyphicon glyphicon-plus"></i></button></td>
+                                    <td><button class="btn btn-danger" ng-click="vm.subtractItem(item.DrinkId)"><i class="glyphicon glyphicon-minus"></i></button></td>
+                                    <td><button class="btn btn-default blackAndWhite" ng-click="vm.removeItem(item.DrinkId)"><i class="glyphicon glyphicon-remove"></i></button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="submitOrder">
+                        <h3>Totaal: {{vm.totalOrderPrice()}} bons</h3>
+                        <button class="btn btn-primary" ng-disabled="vm.totalOrderPrice() == 0" ng-click="vm.sendOrder()">Bevestigen</button>
+                    </div>
                 </div>
             </div>
         </div>

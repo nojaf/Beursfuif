@@ -44,6 +44,17 @@ namespace Beursfuif.Server.Services
             });
         }
 
+        public void NewOrder(ClientDrinkOrder[] order, string auth)
+        {
+            OnPackageReceived(this, new Package()
+            {
+                Kind = ProtocolKind.NEW_ORDER,
+                AuthenticationCode = auth,
+                NewOrder = order,
+                ClientContext = base.Context.ConnectionId
+            });
+        }
+
 
         #region Helper
         protected string GetIpAddress()

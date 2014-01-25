@@ -98,6 +98,12 @@
     <Content Include="Scripts\angularjs-vendors-modules\localStorage.min.js.map">
       <DependentUpon>localStorage.js</DependentUpon>
     </Content>
+    <Content Include="Scripts\toastr\toastr.min.js">
+      <DependentUpon>toastr.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\toastr\toastr.min.js.map">
+      <DependentUpon>toastr.js</DependentUpon>
+    </Content>
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -139,11 +145,7 @@
     <Content Include="Scripts\jquery\jquery-1.9.1.js" />
     <Content Include="Scripts\jquery\jquery-1.9.1.min.js" />
     <Content Include="Scripts\toastr\toastr.js" />
-    <Content Include="Scripts\toastr\toastr.min.js" />
-    <Content Include="views\login.html" />
-    <Content Include="views\main.html" />
     <Content Include="Web.config" />
-    <Content Include="Scripts\toastr\toastr.min.js.map" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
