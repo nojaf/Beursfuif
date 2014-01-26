@@ -1,39 +1,47 @@
 /// <reference path="../app/_references.ts" />
+
 module beursfuif {
-    export interface IMainCtrlScope extends ng.IScope {
-        drinks: IClientDrink[];
-        parseImage(imgString: string): string;
-        intervalStart: string;
-        intervalEnd: string;
-        currentTime: string;
-        currentOrder: Array<IClientDrinkOrder>;
-        vm: MainCtrl;
+    export interface IBeamerCtrlScope extends ng.IScope {
+        vm: BeamerCtrl;
+        ipAddress: string;
+        port: string;
+        showLogin: boolean;
+        showTable: boolean
+        drinks: Array<IClientDrink>;
+        progress: number;
     }
 
-    export class MainCtrl {
-        constructor(private $scope: IMainCtrlScope, private signalrService: SignalrService, private $location: ng.ILocationService) {
-            if (signalrService.clientInterval) {
-                //bind current data
-                this.bindData();
+    export class BeamerCtrl {
 
+        constructor(private $scope: IBeamerCtrlScope, private localStorageService: ILocalStorageService,
+            private signalrService: SignalrService) {
 
                 this.$scope.vm = this;
-                this.initScope();
-            }
-            else {
-                $location.path("/");
-            }
+                this.$scope.ipAddress = (localStorage.getItem("ip") || "");
+                this.$scope.port = (localStorage.getItem("port") || "");
+                this.$scope.showLogin = true;
+                this.$scope.showTable = false;
+
+                $scope.$on(EventNames.CONNECTION_CHANGED, (e: ng.IAngularEvent, ...msg: any[]) => { this.connectionChanged(e, msg); });
+                $scope.$on(EventNames.TIME_CHANGED, (e: ng.IAngularEvent, ...msg: any[]) => { this.updateTime(); });
+                $scope.$on(EventNames.OPEN_MODAL, (e: ng.IAngularEvent, ...msg: any[]) => { this.errorHappened(msg[0]); });
+                this.$scope.$on(EventNames.INTERVAL_UPDATE, (e: ng.IAngularEvent) => {
+                    this.bindDrinks();
+                    this.updateTime();
+                    this.$scope.$apply();
+                });
         }
 
-        bindData(): void {
-            this.$scope.drinks = this.signalrService.clientInterval.ClientDrinks;
-            this.$scope.intervalStart = moment(this.signalrService.clientInterval.Start).format("HH:mm");
-            this.$scope.intervalEnd = moment(this.signalrService.clientInterval.End).format("HH:mm");
-            this.$scope.currentTime = moment(this.signalrService.currentTime).format("HH:mm");
-            this.$scope.$apply();
+        orderByPrice(a: IClientDrink, b: IClientDrink): number {
+            if (a.Price > b.Price) {
+                return 1;
+            } else if (a.Price < b.Price) {
+                return -1;
+            }
+            return 0;
         }
 
-        parseImage(imgString: string):string {
+        parseImage(imgString: string): string {
             if (imgString) {
                 return "data:image/png;base64," + imgString;
             } else {
@@ -41,107 +49,60 @@ module beursfuif {
             }
         }
 
-        initScope(): void {
+        connectionChanged(e: ng.IAngularEvent, ...msg: any[]): void {
+            console.log("Changed?? " + msg[0][0]);
+            if (msg[0][0]) {
+                //store address and ip 
+                this.localStorageService.add("ip", this.$scope.ipAddress);
+                this.localStorageService.add("port", this.$scope.port);
 
+                this.bindDrinks();
 
-            this.$scope.$on(EventNames.TIME_CHANGED, (e:ng.IAngularEvent) => {
-                this.updateTime();
-            });
+                this.calculateProgress();
+                this.$scope.showLogin = false;
+                this.$scope.showTable = true;
+            } else {
+                this.$scope.showLogin = true;
+                this.$scope.showTable = false;
+            }
 
-            this.$scope.$on(EventNames.OPEN_MODAL, (e: ng.IAngularEvent) => {
-                //we don't really care what the message is.
-                //All we know is that something went wrong and the connection is lost
-                //So we route back to the login screen
-                setTimeout(() => {
-                    this.$location.path("/");
-                    this.$scope.$apply();
-                }, 250);
-            });
-
-            this.$scope.currentOrder = [];
-
-            this.$scope.$on(EventNames.INTERVAL_UPDATE, (e: ng.IAngularEvent) => {
-                if (this.$scope.currentOrder.length > 0) {
-                    this.$scope.currentOrder = [];
-                }
-
-                this.bindData();
-            });
-        }
-
-        updateTime() {
-            console.log(this.signalrService.currentTime);
-            this.$scope.currentTime = moment(this.signalrService.currentTime).format("HH:mm");
             this.$scope.$apply();
         }
 
-        addItem(drinkId: number, name: string):void {
-            //check if item is already a part of the current Order
-            var length: number = this.$scope.currentOrder.length;
-            for (var i: number = 0; i < length; i++) {
-                var drinkInOrder: IClientDrinkOrder = this.$scope.currentOrder[i];
-                if (drinkInOrder.DrinkId == drinkId) {
-                    drinkInOrder.Count++;
-                    return;
-                }
-            }
-
-            this.$scope.currentOrder.push({
-                Count: 1,
-                DrinkId: drinkId,
-                IntervalId: this.signalrService.clientInterval.Id,
-                Name:name
-            });
-        }
-
-        subtractItem(drinkId: number) {
-            var length: number = this.$scope.currentOrder.length;
-            for (var i: number = 0; i < length; i++) {
-                var drinkInOrder: IClientDrinkOrder = this.$scope.currentOrder[i];
-                if (drinkInOrder.DrinkId == drinkId) {
-                    console.log(drinkInOrder.Count);
-                    drinkInOrder.Count--;
-                    if (drinkInOrder.Count < 1) this.$scope.currentOrder.splice(i, 1);
-                    return;
-                }
-            }
-        }
-
-        removeItem(drinkId:number){
-            var length: number = this.$scope.currentOrder.length;
-            for (var i: number = 0; i < length; i++) {
-                var drinkInOrder: IClientDrinkOrder = this.$scope.currentOrder[i];
-                if (drinkInOrder.DrinkId == drinkId) {
-                    this.$scope.currentOrder.splice(i, 1);
-                    return;
-                }
-            }
-        }
-
-        totalOrderPrice() {
-            var price: number = 0;
-            var length: number = this.$scope.currentOrder.length;
-            for (var i: number = 0; i < length; i++) {
-                var drinkInOrder: IClientDrinkOrder = this.$scope.currentOrder[i];
-                price += drinkInOrder.Count * this.getPrice(drinkInOrder.DrinkId);
-            }
-            return price;
-        }
-
-        private getPrice(drId: number):number {
+        bindDrinks() {
+            this.$scope.drinks = [];
             var length: number = this.signalrService.clientInterval.ClientDrinks.length;
             for (var i: number = 0; i < length; i++) {
-                var drink: IClientDrink = this.signalrService.clientInterval.ClientDrinks[i];
-                if (drink.DrinkId == drId) {
-                    return drink.Price;
-                }
+                this.$scope.drinks.push(this.signalrService.clientInterval.ClientDrinks[i]);
             }
-            return 0;
+            this.$scope.drinks.sort(this.orderByPrice);
         }
 
-        sendOrder() {
-            this.signalrService.sendNewOrder(this.$scope.currentOrder);
-            this.$scope.currentOrder = [];
+        updateTime(): void {
+            this.calculateProgress();
+        }
+
+        calculateProgress() {
+            var start: Moment = moment(this.signalrService.clientInterval.Start);
+            var current: Moment = moment(this.signalrService.currentTime);
+            var end: Moment = moment(this.signalrService.clientInterval.End);
+
+            var intervalLength = (end.hours() * 60 + end.minutes()) - (start.hours() * 60 + start.minutes());
+            console.log(intervalLength);
+            var currentMinutes = (current.hours() * 60 + current.minutes()) - (start.hours() * 60 + start.minutes());
+            console.log(currentMinutes);
+            this.$scope.progress = Math.round(currentMinutes / intervalLength * 100);
+            this.$scope.$apply();
+        }
+
+        submit(): void {
+            console.log("submit");
+            var fullAddress: string = "http://" + this.$scope.ipAddress + ":" + this.$scope.port;
+            this.signalrService.initialize(fullAddress, "Beamer");
+        }
+
+        errorHappened(msg: any[]) {
+            console.log(msg);
         }
     }
-}
+} 

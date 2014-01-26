@@ -247,7 +247,7 @@ namespace Beursfuif.Server.ViewModel
             PointInCode("SettingsViewModel: InitCommands");
 
             MainActionButtonCommand = new RelayCommand(MainActionCommand, ValidatePartyConditions);
-            AddOneMinute = new RelayCommand(() => { BeursfuifCurrentTime = BeursfuifCurrentTime.AddMinutes(1); });
+            AddOneMinute = new RelayCommand(() => { BeursfuifCurrentTime = BeursfuifCurrentTime.AddMinutes(1); OneMinutePassed(); });
             ForceAutoSaveAllOrders = new RelayCommand(() => { MessengerInstance.Send<AutoSaveAllOrdersMessage>(new AutoSaveAllOrdersMessage()); });
             ResetFuifCommand = new RelayCommand(ResetFuifData);
             ResetAllCommand = new RelayCommand(ResetAll);

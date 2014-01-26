@@ -1,4 +1,4 @@
-﻿/// <reference path="_references.ts" />
+/// <reference path="_references.ts" />
 var beursfuif;
 (function (beursfuif) {
     var app = angular.module("beursfuif", ["ngRoute", "ngAnimate", "ngSanitize", "LocalStorageModule"]);

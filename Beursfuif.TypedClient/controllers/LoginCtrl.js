@@ -13,9 +13,7 @@ var beursfuif;
             $scope.port = this.localStorageService.get("port") || "";
             $scope.name = this.localStorageService.get("name") || "";
 
-            $scope.submit = function () {
-                _this.submit();
-            };
+            $scope.vm = this;
 
             $scope.$on(beursfuif.EventNames.CONNECTION_CHANGED, function (event) {
                 var args = [];

@@ -5,8 +5,9 @@ module beursfuif {
         ipAddress: string;
         port: string;
         name: string;
-        submit: Function;
+        vm: LoginCtrl;
         connectionEstablished: any;
+
     }
     //localStorageService
     export class LoginCtrl {
@@ -16,10 +17,7 @@ module beursfuif {
             $scope.port = this.localStorageService.get("port") || "";
             $scope.name = this.localStorageService.get("name") || "";
 
-
-            $scope.submit = () => {
-                this.submit();
-            };
+            $scope.vm = this;
 
             $scope.$on(EventNames.CONNECTION_CHANGED, (event: ng.IAngularEvent, ...args: any[]) => {
                 if (args[0]) {

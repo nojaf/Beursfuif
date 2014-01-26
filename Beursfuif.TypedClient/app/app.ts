@@ -62,9 +62,3 @@ module beursfuif {
     });
 
 };
-//angular.module('MainModule', []).config(function ($locationProvider, $routeProvider) {
-//    $locationProvider.hashPrefix("!");
-//    $locationProvider.html5Mode(false);
-//    $routeProvider.when('/', { template: './js/templates/index.html', controller: HelloWorldCtrl });
-//    $routeProvider.when('/second', { template: './js/templates/second.html' });
-//});

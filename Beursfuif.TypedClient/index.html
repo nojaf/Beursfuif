@@ -63,7 +63,7 @@
             <input type="text" class="form-control" ng-model="ipAddress" placeholder="bv. 192.168.1.1" required="">
             <label>Poort</label>
             <input type="text" class="form-control" ng-model="port" placeholder="bv. 5678" required="">
-            <button class="btn btn-primary pull-right" ng-click="submit()" type="submit">Aanmelden</button>
+            <button class="btn btn-primary pull-right" ng-click="vm.submit()" type="submit">Aanmelden</button>
         </div>
         <!-- #endregion -->
     </script>
@@ -74,7 +74,7 @@
             </header>
             <div id="contentContainer">
                 <div id="drinks">
-                    <div class="drink" ng-repeat="dr in drinks" ng-style="{'background-image':'url('+parseImage(dr.Base64Image)+')'}">
+                    <div class="drink" ng-repeat="dr in drinks" ng-style="{'background-image':'url('+vm.parseImage(dr.Base64Image)+')'}">
                         <p>{{dr.Name}}</p>
                         <button class="btn btn-success" ng-click="vm.addItem(dr.DrinkId, dr.Name)"><i class="glyphicon glyphicon-plus"></i></button>
                         <button class="btn btn-danger" ng-click="vm.subtractItem(dr.DrinkId)"><i class="glyphicon glyphicon-minus"></i></button>

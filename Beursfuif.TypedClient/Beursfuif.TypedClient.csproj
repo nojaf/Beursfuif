@@ -72,6 +72,7 @@
     <Content Include="background\wallpaper-630648.jpg" />
     <Content Include="background\wallpaper-69099.jpg" />
     <Content Include="background\wallpaper-762606.jpg" />
+    <Content Include="beamer.html" />
     <Content Include="Content\beursfuif.css">
       <DependentUpon>beursfuif.less</DependentUpon>
     </Content>
@@ -152,7 +153,9 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="app\app.ts" />
+    <TypeScriptCompile Include="app\beamer.ts" />
     <TypeScriptCompile Include="app\_references.ts" />
+    <TypeScriptCompile Include="controllers\BeamerCtrl.ts" />
     <TypeScriptCompile Include="controllers\Events.ts" />
     <TypeScriptCompile Include="controllers\LoginCtrl.ts" />
     <TypeScriptCompile Include="controllers\MainCtrl.ts" />
