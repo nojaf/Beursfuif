@@ -8,10 +8,7 @@ var beursfuif;
             this.$location = $location;
             if (signalrService.clientInterval) {
                 //bind current data
-                $scope.drinks = signalrService.clientInterval.ClientDrinks;
-                $scope.intervalStart = moment(signalrService.clientInterval.Start).format("HH:mm");
-                $scope.intervalEnd = moment(signalrService.clientInterval.End).format("HH:mm");
-                $scope.currentTime = moment(signalrService.currentTime).format("HH:mm");
+                this.bindData();
 
                 this.$scope.vm = this;
                 this.initScope();
@@ -19,6 +16,14 @@ var beursfuif;
                 $location.path("/");
             }
         }
+        MainCtrl.prototype.bindData = function () {
+            this.$scope.drinks = this.signalrService.clientInterval.ClientDrinks;
+            this.$scope.intervalStart = moment(this.signalrService.clientInterval.Start).format("HH:mm");
+            this.$scope.intervalEnd = moment(this.signalrService.clientInterval.End).format("HH:mm");
+            this.$scope.currentTime = moment(this.signalrService.currentTime).format("HH:mm");
+            this.$scope.$apply();
+        };
+
         MainCtrl.prototype.initScope = function () {
             var _this = this;
             this.$scope.parseImage = function (imgString) {
@@ -44,6 +49,14 @@ var beursfuif;
             });
 
             this.$scope.currentOrder = [];
+
+            this.$scope.$on(beursfuif.EventNames.INTERVAL_UPDATE, function (e) {
+                if (_this.$scope.currentOrder.length > 0) {
+                    _this.$scope.currentOrder = [];
+                }
+
+                _this.bindData();
+            });
         };
 
         MainCtrl.prototype.updateTime = function () {

@@ -17,6 +17,13 @@ module beursfuif {
         "<li>...de persoon aan de serverkant doesn't like you.</li>" +
         "</ul>" +
         "<br />Gelieve opnieuw aan te melden of even te wachten.";
+
+        static CONNECTION_LOST_TITLE:string = "Verbinding weggevallen!";
+        static CONNECTION_LOST: string = "De verbinding met de server is weggevallen." +
+        "<br />Controleer of ..." +
+        "<br /><ul>" +
+        "<li>... de server nog actief is.</li>" +
+        "<li>... je nog op het netwerk zit.</li>";
     }
 
     export interface IModalScope extends ng.IScope {

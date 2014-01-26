@@ -8,7 +8,7 @@
 </head>
 <body ng-app="beursfuif">
 
-    <div  ng-view=""></div>
+    <div ng-view="" ng-class="view"></div>
 
 
     <!-- Angular -->
@@ -22,7 +22,7 @@
     <script src="Scripts/angularjs-vendors-modules/localStorage.min.js"></script>
 
     <!-- Jquery and bootstrap -->
-    <script src="Scripts/jquery/jquery-1.9.1.js"></script>
+    <script src="Scripts/jquery/jquery-2.1.0.min.js"></script>
     <script src="Scripts/jquery/jquery.color-2.1.2.min.js"></script>
     <script src="Scripts/bootstrap/bootstrap.min.js"></script>
 
@@ -33,7 +33,7 @@
     <script src="Scripts/toastr/toastr.min.js"></script>
 
     <!-- signalr -->
-    <script src="Scripts/signalr/jquery.signalR-2.0.1.min.js"></script>
+    <script src="Scripts/signalr/jquery.signalR-2.0.2.min.js"></script>
     <script ng-src="{{signalrScript}}"></script>
 
     <!-- own code -->

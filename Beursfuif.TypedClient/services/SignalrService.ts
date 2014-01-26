@@ -4,7 +4,8 @@ module beursfuif {
         //#region send to server
         static LOGIN: string = "logOn";
         static ACK_TIME_UPDATE: string = "ackTimeUpdate";
-        static NEW_ORDER: string = "NewOrder";
+        static NEW_ORDER: string = "newOrder";
+        static ACK_INTERVAL_UPDATE: string = "ackIntervalUpdate";
         //#endregion
 
         //#region receive from server
@@ -12,6 +13,7 @@ module beursfuif {
         static UPDATE_TIME: string = "updateTime"//(currentTime, authenticationCode);
         static YOU_GOT_KICKED: string = "youGotKicked";
         static ACK_NEW_ORDER: string = "ackNewOrder";
+        static UPDATE_INTERVAL: string = "updateInterval"; //(clientInterval, currentBFTime);
         //#endregion
     }
 
@@ -34,8 +36,17 @@ module beursfuif {
 
             this.registerCallback();
 
+            this.connection.error(() => {
+                this.connection.stop(false, false);
+                this.$rootScope.$broadcast(EventNames.OPEN_MODAL, ModalMessages.CONNECTION_LOST_TITLE, ModalMessages.CONNECTION_LOST);
+            });
+
             this.connection.start(() => {
+                console.log("start");
                 this.hub.invoke(SignalRMethodNames.LOGIN, name);
+            }).fail(() => {
+                console.log("fail");
+                this.$rootScope.$broadcast(EventNames.OPEN_MODAL, ModalMessages.CONNECTION_LOST_TITLE, ModalMessages.CONNECTION_LOST);
             });
         }
 
@@ -45,6 +56,7 @@ module beursfuif {
             this.hub.on(SignalRMethodNames.UPDATE_TIME, (...msg: any[]) => this.updateTime(msg));
             this.hub.on(SignalRMethodNames.YOU_GOT_KICKED, () => this.kicked());
             this.hub.on(SignalRMethodNames.ACK_NEW_ORDER, () => this.showToast());
+            this.hub.on(SignalRMethodNames.UPDATE_INTERVAL, (...msg: any[]) => this.updateInterval(msg));
         }
 
         sendInitialData(...msg: any[]) {
@@ -73,6 +85,18 @@ module beursfuif {
 
         showToast(): void {
             toastr.success("Je bestelling werd goed ontvangen.","Bestelling gelukt!");
+        }
+
+        updateInterval(...msg: any[]) {
+            this.$log.log(msg);
+            this.currentTime = <Date>msg[0][1];
+            this.clientInterval = <IClientInterval>msg[0][0];
+            this.clientInterval.ClientDrinks.sort(this.sortByLowerDrinkName);
+            this.$rootScope.$broadcast(EventNames.INTERVAL_UPDATE);
+            toastr.info("De prijzen werden aangepast", "Prijzen update.");
+
+            //respond to server
+            this.hub.invoke(SignalRMethodNames.ACK_INTERVAL_UPDATE, this.generateAuthString());
         }
         //#endregion
 

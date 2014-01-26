@@ -6,12 +6,14 @@ var beursfuif;
         }
         SignalRMethodNames.LOGIN = "logOn";
         SignalRMethodNames.ACK_TIME_UPDATE = "ackTimeUpdate";
-        SignalRMethodNames.NEW_ORDER = "NewOrder";
+        SignalRMethodNames.NEW_ORDER = "newOrder";
+        SignalRMethodNames.ACK_INTERVAL_UPDATE = "ackIntervalUpdate";
 
         SignalRMethodNames.SEND_INITIAL_DATA = "sendInitialData";
         SignalRMethodNames.UPDATE_TIME = "updateTime";
         SignalRMethodNames.YOU_GOT_KICKED = "youGotKicked";
         SignalRMethodNames.ACK_NEW_ORDER = "ackNewOrder";
+        SignalRMethodNames.UPDATE_INTERVAL = "updateInterval";
         return SignalRMethodNames;
     })();
 
@@ -29,8 +31,17 @@ var beursfuif;
 
             this.registerCallback();
 
+            this.connection.error(function () {
+                _this.connection.stop(false, false);
+                _this.$rootScope.$broadcast(beursfuif.EventNames.OPEN_MODAL, beursfuif.ModalMessages.CONNECTION_LOST_TITLE, beursfuif.ModalMessages.CONNECTION_LOST);
+            });
+
             this.connection.start(function () {
+                console.log("start");
                 _this.hub.invoke(SignalRMethodNames.LOGIN, name);
+            }).fail(function () {
+                console.log("fail");
+                _this.$rootScope.$broadcast(beursfuif.EventNames.OPEN_MODAL, beursfuif.ModalMessages.CONNECTION_LOST_TITLE, beursfuif.ModalMessages.CONNECTION_LOST);
             });
         };
 
@@ -56,6 +67,13 @@ var beursfuif;
             });
             this.hub.on(SignalRMethodNames.ACK_NEW_ORDER, function () {
                 return _this.showToast();
+            });
+            this.hub.on(SignalRMethodNames.UPDATE_INTERVAL, function () {
+                var msg = [];
+                for (var _i = 0; _i < (arguments.length - 0); _i++) {
+                    msg[_i] = arguments[_i + 0];
+                }
+                return _this.updateInterval(msg);
             });
         };
 
@@ -93,6 +111,22 @@ var beursfuif;
 
         SignalrService.prototype.showToast = function () {
             toastr.success("Je bestelling werd goed ontvangen.", "Bestelling gelukt!");
+        };
+
+        SignalrService.prototype.updateInterval = function () {
+            var msg = [];
+            for (var _i = 0; _i < (arguments.length - 0); _i++) {
+                msg[_i] = arguments[_i + 0];
+            }
+            this.$log.log(msg);
+            this.currentTime = msg[0][1];
+            this.clientInterval = msg[0][0];
+            this.clientInterval.ClientDrinks.sort(this.sortByLowerDrinkName);
+            this.$rootScope.$broadcast(beursfuif.EventNames.INTERVAL_UPDATE);
+            toastr.info("De prijzen werden aangepast", "Prijzen update.");
+
+            //respond to server
+            this.hub.invoke(SignalRMethodNames.ACK_INTERVAL_UPDATE, this.generateAuthString());
         };
 
         //#endregion

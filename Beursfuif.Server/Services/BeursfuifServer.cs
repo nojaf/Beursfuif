@@ -99,6 +99,10 @@ namespace Beursfuif.Server.Services
         }
 
         public event EventHandler<BL.Event.BasicAuthAckEventArgs> IntervalUpdateAckEvent;
+        protected void OnIntervalUpdateAckEvent(object sender, BasicAuthAckEventArgs e)
+        {
+            if (IntervalUpdateAckEvent != null) IntervalUpdateAckEvent(sender, e);
+        }
         #endregion
 
         #region Receive from client
@@ -124,6 +128,18 @@ namespace Beursfuif.Server.Services
                 case ProtocolKind.NEW_ORDER:
                     NewOrder(e);
                     break;
+                case ProtocolKind.ACK_UPDATE_CLIENT_INTERVAL:
+                    AckIntervalUpdate(e);
+                    break;
+            }
+        }
+
+        private void AckIntervalUpdate(Package e)
+        {
+            Client client = GetClientByConnectionContext(e.ClientContext);
+            if (client != null)
+            {
+                OnIntervalUpdateAckEvent(this, new BasicAuthAckEventArgs(client.Id, e.AuthenticationCode));
             }
         }
 
@@ -202,7 +218,8 @@ namespace Beursfuif.Server.Services
 
         public void UpdateInterval(BL.ClientInterval clientInterval, DateTime currentBFTime)
         {
-           // throw new NotImplementedException();
+           //SignalR Method
+            _hub.Clients.All.UpdateInterval(clientInterval, currentBFTime);
         }
 
         public void SendDrinkAvailableChanged(int drinkId, BL.Drink drink, int intervalId)

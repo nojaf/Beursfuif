@@ -190,3 +190,56 @@ body > div {
   color: black;
   background-color: #fafbfc;
 }
+.view .ng-enter {
+  opacity: 0;
+  -moz-animation: enterAnimation 10s ease;
+  -o-animation: enterAnimation 10s ease;
+  -webkit-animation: enterAnimation 10s ease;
+  animation: enterAnimation 10s ease;
+}
+@keyframes enterAnimation {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@-webkit-keyframes enterAnimation {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@-moz-keyframes enterAnimation {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@-o-keyframes enterAnimation {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+.view .ng-leave {
+  -moz-animation: leaveAnimation 10s ease;
+  -o-animation: leaveAnimation 10s ease;
+  -webkit-animation: leaveAnimation 10s ease;
+  animation: leaveAnimation 10s ease;
+}
+@keyframes leaveAnimation {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}

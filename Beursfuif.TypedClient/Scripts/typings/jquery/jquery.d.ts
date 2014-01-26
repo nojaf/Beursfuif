@@ -957,6 +957,8 @@ interface JQueryStatic {
  * The jQuery instance members
  */
 interface JQuery {
+
+    modal(name?:string);
     /**
      * Register a handler to be called when Ajax requests complete. This is an AjaxEvent.
      *

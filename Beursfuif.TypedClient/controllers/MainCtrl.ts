@@ -14,10 +14,8 @@ module beursfuif {
         constructor(private $scope: IMainCtrlScope, private signalrService: SignalrService, private $location: ng.ILocationService) {
             if (signalrService.clientInterval) {
                 //bind current data
-                $scope.drinks = signalrService.clientInterval.ClientDrinks;
-                $scope.intervalStart = moment(signalrService.clientInterval.Start).format("HH:mm");
-                $scope.intervalEnd = moment(signalrService.clientInterval.End).format("HH:mm");
-                $scope.currentTime = moment(signalrService.currentTime).format("HH:mm");
+                this.bindData();
+
 
                 this.$scope.vm = this;
                 this.initScope();
@@ -25,6 +23,14 @@ module beursfuif {
             else {
                 $location.path("/");
             }
+        }
+
+        bindData(): void {
+            this.$scope.drinks = this.signalrService.clientInterval.ClientDrinks;
+            this.$scope.intervalStart = moment(this.signalrService.clientInterval.Start).format("HH:mm");
+            this.$scope.intervalEnd = moment(this.signalrService.clientInterval.End).format("HH:mm");
+            this.$scope.currentTime = moment(this.signalrService.currentTime).format("HH:mm");
+            this.$scope.$apply();
         }
 
         initScope(): void {
@@ -52,7 +58,13 @@ module beursfuif {
 
             this.$scope.currentOrder = [];
 
-            
+            this.$scope.$on(EventNames.INTERVAL_UPDATE, (e: ng.IAngularEvent) => {
+                if (this.$scope.currentOrder.length > 0) {
+                    this.$scope.currentOrder = [];
+                }
+
+                this.bindData();
+            });
         }
 
         updateTime() {

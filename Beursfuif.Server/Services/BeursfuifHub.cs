@@ -55,6 +55,15 @@ namespace Beursfuif.Server.Services
             });
         }
 
+        public void AckIntervalUpdate(string auth)
+        {
+            OnPackageReceived(this, new Package()
+            {
+                Kind = ProtocolKind.ACK_UPDATE_CLIENT_INTERVAL,
+                AuthenticationCode = auth,
+                ClientContext = base.Context.ConnectionId
+            });
+        }
 
         #region Helper
         protected string GetIpAddress()
