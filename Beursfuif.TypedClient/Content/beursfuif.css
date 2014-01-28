@@ -1,4 +1,4 @@
-html {
+﻿html {
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -77,7 +77,7 @@ body > div {
   padding: 75px 0px 25px 0px;
 }
 #contentContainer #drinks {
-  width: 75%;
+  width: 70%;
   height: 100%;
   float: left;
 }
@@ -122,7 +122,7 @@ body > div {
 }
 #contentContainer #order {
   float: right;
-  width: 25%;
+  width: 30%;
   height: 100%;
   background-color: black;
   color: white;
@@ -141,6 +141,7 @@ body > div {
   display: block;
   margin-left: 1%;
   text-align: center;
+  overflow-y: auto;
 }
 #contentContainer #order .tableContainer table {
   margin: auto;
@@ -242,4 +243,87 @@ body > div {
   100% {
     opacity: 1;
   }
+}
+#beamerContainer {
+  width: 100%;
+  padding: 1% 20% 5% 20%;
+  margin: auto;
+  height: 100%;
+  background-color: #000;
+  color: white;
+}
+#beamerContainer h1 {
+  font-size: 4em;
+  text-align: center;
+  margin: 0px;
+  padding: 0px;
+  margin-bottom: 15px;
+}
+#beamerContainer #beamerLogin {
+  width: 250px;
+  margin: 50px auto;
+}
+#beamerContainer #beamerLogin * {
+  margin: 7px 0px;
+}
+#beamerContainer #beamerOverview {
+  height: 85%;
+}
+#beamerContainer #beamerOverview ul {
+  width: 90%;
+  height: 100%;
+  list-style-type: none;
+}
+#beamerContainer #beamerOverview ul li {
+  width: 45%;
+  min-height: 60px;
+  float: left;
+  margin: 5px 0px 0px 5%;
+  border: 1px solid white;
+  border-radius: 10px;
+  /*&:nth-child(odd){
+                border-color:#ffd800;
+            }
+
+            &:nth-child(even){
+                border-color:#b6ff00;
+            }*/
+}
+#beamerContainer #beamerOverview ul li .img {
+  float: left;
+  border-radius: 10px;
+  min-height: 60px;
+  width: 25%;
+  -moz-background-origin: content-box;
+  -webkit-background-origin: content-box;
+  background-origin: content-box;
+  background-position: center;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  -webkit-background-size: cover;
+  background-size: cover;
+}
+#beamerContainer #beamerOverview ul li .text {
+  float: left;
+  position: relative;
+  padding-left: 10px;
+  width: 75%;
+  min-height: 60px;
+}
+#beamerContainer #beamerOverview ul li .text .name {
+  position: absolute;
+  top: 7px;
+  left: 7px;
+}
+#beamerContainer #beamerOverview ul li .text .price {
+  font-size: 1.4em;
+  background-color: #74DB92;
+  position: absolute;
+  bottom: 5px;
+  right: 7px;
+}
+#beamerContainer #beamerLoading {
+  height: 50px;
+  background-color: white;
+  clear: both;
 }

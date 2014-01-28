@@ -60,6 +60,21 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="app\app.js">
+      <DependentUpon>app.ts</DependentUpon>
+    </Content>
+    <Content Include="app\app.js.map">
+      <DependentUpon>app.ts</DependentUpon>
+    </Content>
+    <Content Include="app\beamer.js.map">
+      <DependentUpon>beamer.ts</DependentUpon>
+    </Content>
+    <None Include="app\_references.js">
+      <DependentUpon>_references.ts</DependentUpon>
+    </None>
+    <Content Include="app\beamer.js">
+      <DependentUpon>beamer.ts</DependentUpon>
+    </Content>
     <Content Include="background\wallpaper-1248778.jpg" />
     <Content Include="background\wallpaper-1346213.jpg" />
     <Content Include="background\wallpaper-2143399.jpg" />
@@ -79,7 +94,28 @@
     <Content Include="Content\beursfuif.min.css">
       <DependentUpon>beursfuif.less</DependentUpon>
     </Content>
+    <Content Include="controllers\beamerCtrl.js">
+      <DependentUpon>BeamerCtrl.ts</DependentUpon>
+    </Content>
+    <Content Include="controllers\Events.js">
+      <DependentUpon>Events.ts</DependentUpon>
+    </Content>
+    <Content Include="controllers\LoginCtrl.js">
+      <DependentUpon>LoginCtrl.ts</DependentUpon>
+    </Content>
+    <Content Include="controllers\MainCtrl.js">
+      <DependentUpon>MainCtrl.ts</DependentUpon>
+    </Content>
+    <Content Include="directives\Background.js">
+      <DependentUpon>Background.ts</DependentUpon>
+    </Content>
+    <Content Include="directives\Modal.js">
+      <DependentUpon>Modal.ts</DependentUpon>
+    </Content>
     <Content Include="index.html" />
+    <Content Include="models\models.js">
+      <DependentUpon>models.ts</DependentUpon>
+    </Content>
     <Content Include="Scripts\angularjs\angular-animate.js" />
     <Content Include="Scripts\angularjs\angular-animate.min.js" />
     <Content Include="Scripts\angularjs\angular-mocks.js" />
@@ -92,6 +128,30 @@
     <Content Include="Scripts\angularjs-vendors-modules\localStorage.js" />
     <Content Include="Scripts\angularjs-vendors-modules\localStorage.min.js">
       <DependentUpon>localStorage.js</DependentUpon>
+    </Content>
+    <Content Include="controllers\Events.js.map">
+      <DependentUpon>Events.ts</DependentUpon>
+    </Content>
+    <Content Include="controllers\beamerCtrl.js.map">
+      <DependentUpon>BeamerCtrl.ts</DependentUpon>
+    </Content>
+    <Content Include="controllers\LoginCtrl.js.map">
+      <DependentUpon>LoginCtrl.ts</DependentUpon>
+    </Content>
+    <Content Include="controllers\MainCtrl.js.map">
+      <DependentUpon>MainCtrl.ts</DependentUpon>
+    </Content>
+    <Content Include="app\_references.js.map">
+      <DependentUpon>_references.ts</DependentUpon>
+    </Content>
+    <Content Include="models\models.js.map">
+      <DependentUpon>models.ts</DependentUpon>
+    </Content>
+    <Content Include="directives\Background.js.map">
+      <DependentUpon>Background.ts</DependentUpon>
+    </Content>
+    <Content Include="directives\Modal.js.map">
+      <DependentUpon>Modal.ts</DependentUpon>
     </Content>
     <None Include="Scripts\jquery\jquery-2.1.0.intellisense.js" />
     <Content Include="Scripts\jquery\jquery-2.1.0.js" />
@@ -121,6 +181,9 @@
     <Content Include="Scripts\angularjs\angular-route.min.js.map" />
     <Content Include="Scripts\angularjs\angular-sanitize.min.js.map" />
     <Content Include="Scripts\jquery\jquery-2.1.0.min.map" />
+    <Content Include="services\SignalrService.js.map">
+      <DependentUpon>SignalrService.ts</DependentUpon>
+    </Content>
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -130,9 +193,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />
-    <Content Include="Content\bootstrap-theme.min.css" />
+    <Content Include="Content\bootstrap-theme.min.css">
+      <DependentUpon>bootstrap-theme.css</DependentUpon>
+    </Content>
     <Content Include="Content\bootstrap.css" />
-    <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\bootstrap.min.css">
+      <DependentUpon>bootstrap.css</DependentUpon>
+    </Content>
     <Content Include="Content\toastr.css">
       <DependentUpon>toastr.less</DependentUpon>
     </Content>
@@ -146,6 +213,9 @@
     <Content Include="Scripts\bootstrap\bootstrap.js" />
     <Content Include="Scripts\bootstrap\bootstrap.min.js" />
     <Content Include="Scripts\toastr\toastr.js" />
+    <Content Include="services\SignalrService.js">
+      <DependentUpon>SignalrService.ts</DependentUpon>
+    </Content>
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>

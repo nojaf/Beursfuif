@@ -91,7 +91,7 @@ body {
 
 
     #drinks {
-        width: 75%;
+        width: 70%;
         height: 100%;
         float: left;
 
@@ -141,7 +141,7 @@ body {
 
     #order {
         float: right;
-        width: 25%;
+        width: 30%;
         height: 100%;
         background-color: black;
         color: white;
@@ -161,6 +161,7 @@ body {
             display: block;
             margin-left: 1%;
             text-align: center;
+            overflow-y:auto;
 
             table {
                 margin: auto;
@@ -293,6 +294,109 @@ body {
 
     100% {
         opacity: 1;
+    }
+}
+//#endregion
+
+//#region beamer
+#beamerContainer{
+    width:100%;
+    padding: 1% 20% 5% 20%;
+    margin:auto;
+    height:100%;
+    background-color:#000;
+    color:white;
+
+    h1{
+        font-size:4em;
+        text-align:center;
+        margin:0px;
+        padding:0px;
+        margin-bottom:15px;
+    }
+
+    #beamerLogin{
+        width:250px;
+        margin:50px auto;
+        
+        *{
+            margin:7px 0px;
+        }
+    }
+
+    #beamerOverview{
+        height:85%;
+
+            ul{
+        width:90%;
+        height:100%;
+        list-style-type:none;
+
+        li{
+
+            width:45%;
+            min-height:60px;
+            float:left;
+            margin:5px 0px 0px 5%;
+            border:1px solid white;
+            border-radius:10px;
+
+            /*&:nth-child(odd){
+                border-color:#ffd800;
+            }
+
+            &:nth-child(even){
+                border-color:#b6ff00;
+            }*/
+
+            .img{
+                float:left;
+                border-radius:10px;
+                min-height:60px;
+                width:25%;
+                -moz-background-origin: content-box;
+                -webkit-background-origin: content-box;
+                background-origin: content-box;
+                background-position: center;
+                -moz-background-size: cover;
+                -o-background-size: cover;
+                -webkit-background-size: cover;
+                background-size: cover;
+            }
+
+            .text{
+                float:left;
+                position:relative;
+                padding-left:10px;
+                width:75%;
+                min-height:60px;
+
+                .name{
+                    position:absolute;
+                    top:7px;
+                    left:7px;
+                }
+
+                .price{
+                    font-size:1.4em;
+                    background-color:#74DB92;
+                    position:absolute;
+                    bottom:5px;
+                    right:7px;
+                }
+            }
+
+
+        }
+
+        
+    }
+    }
+
+    #beamerLoading{
+        height: 50px;
+        background-color: white;
+        clear: both;
     }
 }
 //#endregion
