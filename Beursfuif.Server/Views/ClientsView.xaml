@@ -41,8 +41,6 @@
                   ItemContainerStyle="{StaticResource MediumListViewItem}">
             <ListView.View>
                 <GridView ColumnHeaderContainerStyle="{StaticResource MediumViewColumnHeader}" >
-                    <GridViewColumn DisplayMemberBinding="{Binding Id}"
-                                    Header="Id" />
                     <GridViewColumn DisplayMemberBinding="{Binding Ip}"
                                     Header="Ip adres" />
                     <GridViewColumn DisplayMemberBinding="{Binding Name}"

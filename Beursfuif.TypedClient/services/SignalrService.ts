@@ -33,6 +33,7 @@ module beursfuif {
         initialize(url: string, name: string) {
             this.connection = $.hubConnection(url);
             this.hub = this.connection.createHubProxy("beursfuif");
+            $.connection.hub.logging = true;
 
             this.registerCallback();
 

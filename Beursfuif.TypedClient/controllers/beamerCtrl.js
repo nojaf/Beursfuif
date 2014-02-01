@@ -8,8 +8,8 @@ var beursfuif;
             this.localStorageService = localStorageService;
             this.signalrService = signalrService;
             this.$scope.vm = this;
-            this.$scope.ipAddress = localStorage.getItem("b.ip") || "";
-            this.$scope.port = localStorage.getItem("b.port") || "";
+            this.$scope.ipAddress = localStorage.getItem("bIp") || "";
+            this.$scope.port = localStorage.getItem("bPort") || "";
             this.$scope.showLogin = true;
             this.$scope.showTable = false;
 
@@ -65,8 +65,11 @@ var beursfuif;
             console.log("Changed?? " + msg[0][0]);
             if (msg[0][0]) {
                 //store address and ip
-                this.localStorageService.add("b.ip", this.$scope.ipAddress);
-                this.localStorageService.add("b.port", this.$scope.port);
+                if (this.localStorageService.isSupported) {
+                    console.log("opslaan?");
+                    this.localStorageService.add("bIp", this.$scope.ipAddress);
+                    this.localStorageService.add("bPort", this.$scope.port);
+                }
 
                 this.bindDrinks();
 
@@ -115,6 +118,9 @@ var beursfuif;
 
         BeamerCtrl.prototype.errorHappened = function (msg) {
             console.log(msg);
+            this.$scope.showLogin = true;
+            this.$scope.showTable = false;
+            this.$scope.$apply();
         };
         return BeamerCtrl;
     })();

@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:t="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d"
              d:DesignHeight="735"
              MinHeight="735"
@@ -54,6 +55,12 @@
             <Button Content="{Binding MainActionButtonContent}"
                     Command="{Binding MainActionButtonCommand}"
                     Margin="0,0,0,10" />
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <TextBlock Style="{DynamicResource Label}"><Run Text="Poort:"/></TextBlock>
+                <t:IntegerUpDown Value="{Binding Port}" 
+                                 IsEnabled="{Binding NotBeursfuifBusy}"
+                                 Minimum="1000" Maximum="10000"/>
+            </StackPanel>
             <StackPanel Orientation="Horizontal"
                         Margin="0,0,0,10">
                 <TextBlock Style="{DynamicResource Label}">Fuifdata resetten</TextBlock>
@@ -75,7 +82,7 @@
                 <TextBlock Style="{DynamicResource Label}">Voeg één minuut toe</TextBlock>
                 <Button Style="{DynamicResource IconButton}"
                         Height="30"
-                        Content=""
+                        Content=""
                         Command="{Binding AddOneMinute}"></Button>
             </StackPanel>
             <StackPanel Orientation="Horizontal"
@@ -92,7 +99,7 @@
             <TextBlock Style="{DynamicResource LargeText}">Fuifdata:</TextBlock>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Style="{DynamicResource Label}">Huidig interval:</TextBlock>
-                <TextBlock Style="{DynamicResource Data}">
+                <TextBlock Style="{DynamicResource StrongText}">
                     <TextBlock.Text>
                         <MultiBinding StringFormat="{}{0:HH:mm} - {1:HH:mm}">
                             <Binding Path="CurrentInterval.StartTime" />
@@ -127,12 +134,12 @@
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Style="{DynamicResource Label}">Huidige tijd:</TextBlock>
-                <TextBlock Style="{DynamicResource Data}"
+                <TextBlock Style="{DynamicResource StrongText}"
                            Text="{Binding BeursfuifCurrentTime,StringFormat=HH:mm:ss}" />
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Style="{DynamicResource Label}">Server IP adress</TextBlock>
-                <TextBlock Style="{DynamicResource Data}"
+                <TextBlock Style="{DynamicResource StrongText}"
                            Text="{Binding IPAdress}"></TextBlock>
             </StackPanel>
         </StackPanel>

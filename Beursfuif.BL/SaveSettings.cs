@@ -11,15 +11,18 @@ namespace Beursfuif.BL
 
         public DateTime CurrentTime { get; set; }
 
+        public int Port { get; set; }
+
         public SaveSettings()
         {
 
         }
 
-        public SaveSettings(bool busy, DateTime currentTime)
+        public SaveSettings(bool busy, DateTime currentTime, int port)
         {
             Busy = busy;
             CurrentTime = currentTime;
+            Port = port;
         }
     }
 }

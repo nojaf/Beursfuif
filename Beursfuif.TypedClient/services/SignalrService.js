@@ -28,6 +28,7 @@ var beursfuif;
             var _this = this;
             this.connection = $.hubConnection(url);
             this.hub = this.connection.createHubProxy("beursfuif");
+            $.connection.hub.logging = true;
 
             this.registerCallback();
 

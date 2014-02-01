@@ -178,6 +178,39 @@ namespace Beursfuif.Server.ViewModel
             }
         }
 
+        /// <summary>
+        /// The <see cref="Port" /> property's name.
+        /// </summary>
+        public const string PortPropertyName = "Port";
+
+        private int _port = 5678;
+
+        /// <summary>
+        /// Sets and gets the Port property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public int Port
+        {
+            get
+            {
+                return _port;
+            }
+
+            set
+            {
+                if (value < 1000) return;
+
+                if (_port == value)
+                {
+                    return;
+                }
+
+                RaisePropertyChanging(PortPropertyName);
+                _port = value;
+                RaisePropertyChanged(PortPropertyName);
+            }
+        }
+
         public RelayCommand AddOneMinute { get; set; }
 
         public RelayCommand ForceAutoSaveAllOrders { get; set; }
@@ -208,6 +241,7 @@ namespace Beursfuif.Server.ViewModel
                     SaveSettings settings = _ioManager.LoadObjectFromXml<SaveSettings>(PathManager.BUSY_AND_TIME_PATH);
                     BeursfuifBusy = settings.Busy;
                     BeursfuifCurrentTime = settings.CurrentTime;
+                    Port = settings.Port;
                     CurrentInterval = LoadCurrentInterval();
 
                     if (BeursfuifBusy)
@@ -306,6 +340,8 @@ namespace Beursfuif.Server.ViewModel
         {
             PointInCode("SettingsViewModel: ValidatePartyConditions");
 
+            if (Port < 1000) return false;
+
             var locator = GetLocator();
             if (locator != null)
             {
@@ -374,7 +410,7 @@ namespace Beursfuif.Server.ViewModel
             _server.Active = true;
 
 
-            bool succes = await _server.Start(IPAdress, 5678); //TODO: add port property
+            bool succes = await _server.Start(IPAdress, Port);
             
             if(!succes)
             {
@@ -438,7 +474,7 @@ namespace Beursfuif.Server.ViewModel
             //start timer
             _tmrMain = new System.Threading.Timer(MainTimer_Tick, null, 1000, 1000);
 
-            _server.Start(IPAdress, 5678);
+            _server.Start(IPAdress, Port);
             _server.Active = true;
             MainActionButtonContent = PAUSE_PARTY;
             SendToastMessage("Server started");
@@ -467,7 +503,7 @@ namespace Beursfuif.Server.ViewModel
         {
             PointInCode("SettingsViewModel: SaveSettings");
 
-            _ioManager.SaveObjectToXml<SaveSettings>(PathManager.BUSY_AND_TIME_PATH, new SaveSettings(BeursfuifBusy, BeursfuifCurrentTime));
+            _ioManager.SaveObjectToXml<SaveSettings>(PathManager.BUSY_AND_TIME_PATH, new SaveSettings(BeursfuifBusy, BeursfuifCurrentTime, Port));
 
             //CurrentInterval
             _ioManager.SaveObjectToXml<Interval>(PathManager.CURRENT_INTERVAL_XML_PATH, CurrentInterval);
@@ -500,7 +536,6 @@ namespace Beursfuif.Server.ViewModel
                 {
                     if (b.Value)
                     {
-                        ResetFuifData();
 
                         var drinkVM = base.GetLocator().Drink;
 
@@ -744,7 +779,7 @@ namespace Beursfuif.Server.ViewModel
         }
         #endregion
 
-        #region Websocket
+        #region Server
         private void InitServer()
         {
             PointInCode("SettingsViewModel: InitServer");
