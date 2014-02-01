@@ -399,6 +399,7 @@ namespace Beursfuif.UnitTests
             foreach (Drink drink in drinks)
             {
                 drink.Available = true;
+                drink.ContainsAlcohol = true;
                 drink.CurrentPrice = drink.InitialPrice;
                 drink.MiniumPrice = 7;
                 drink.MaximumPrice = 37;

@@ -1,4 +1,5 @@
 ﻿using Beursfuif.BL;
+using Beursfuif.Server.Services;
 using GalaSoft.MvvmLight.Command;
 using Microsoft.Practices.ServiceLocation;
 using System;
@@ -10,6 +11,7 @@ namespace Beursfuif.Server.ViewModel
 {
     public class PredictionViewModel : BeursfuifViewModelBase
     {
+        #region Fields and properties
         /// <summary>
         /// The <see cref="PredictDrinks" /> property's name.
         /// </summary>
@@ -74,23 +76,30 @@ namespace Beursfuif.Server.ViewModel
 
         public RelayCommand RecalculateCommand { get; set; }
         public RelayCommand PersistOverrideFactorCommand { get; set; }
+        #endregion
 
         public PredictionViewModel()
         {
             if (!IsInDesignMode)
             {
+                PointInCode("PredictionViewModel: Ctor");
+
                 InitCommands();
             }
         }
 
         private void InitCommands()
         {
+            PointInCode("PredictionViewModel: InitCommands");
+
             RecalculateCommand = new RelayCommand(Recalculate);
             PersistOverrideFactorCommand = new RelayCommand(PersistAdditions, () => { return IsDirty; });
         }
 
         private void PersistAdditions()
         {
+            PointInCode("PredictionViewModel: PersistAdditions");
+
             var locator = GetLocator();
             Interval current = locator.Interval.Intervals.FirstOrDefault(x => x.Id == locator.Settings.CurrentInterval.Id);
             var queryChanged = PredictDrinks.Where(x => x.OverrideFactor != 0.0);
@@ -108,11 +117,14 @@ namespace Beursfuif.Server.ViewModel
 
         private void Recalculate()
         {
+            PointInCode("PredictionViewModel: Recalculate");
+
+
             IsDirty = false;
             var locator = GetLocator();
 
             Interval currentInterval = locator.Settings.CurrentInterval;
-            Interval nextInterval = SettingsViewModel.CalculatePriceUpdates(locator.Orders.AllOrderItems,
+            Interval nextInterval = PriceCalculation.CalculatePriceUpdates(locator.Orders.AllOrderItems,
             locator.Interval.Intervals, currentInterval.Id, true, this);
 
             int drinkLength = nextInterval.Drinks.Length;
@@ -134,8 +146,6 @@ namespace Beursfuif.Server.ViewModel
             RaisePropertyChanged(PredictDrinksPropertyName);
 
         }
-
-
 
     }
 }

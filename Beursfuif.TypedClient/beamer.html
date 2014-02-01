@@ -1,0 +1,74 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Beursfuif projectie</title>
+    <link href="Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="Content/bootstrap-theme.min.css" rel="stylesheet" />
+    <link href="Content/beursfuif.min.css" rel="stylesheet" />
+</head>
+<body ng-app="beamer">
+    <div id="beamerContainer" ng-controller="BeamerCtrl">
+        <h1>Beursfuif prijslijst</h1>
+        <div id="beamerLogin" ng-show="showLogin">
+            <label>Server adres</label>
+            <input type="text" class="form-control" ng-model="ipAddress" placeholder="bv. 192.168.1.1" required="">
+            <label>Poort</label>
+            <input type="text" class="form-control" ng-model="port" placeholder="bv. 5678" required="">
+            <button class="btn btn-primary pull-right" ng-click="vm.submit()" type="submit">Aanmelden</button>
+        </div>
+        <div id="beamerOverview" ng-show="showTable">
+            <ul>
+                <li ng-repeat="dr in drinks">
+                    <div class="img" ng-style="{'background-image':'url('+vm.parseImage(dr.Base64Image)+')'}"></div>
+                    <div class="text">
+                        <div class="name">{{dr.Name}}</div>
+                        <div class="price badge">{{dr.Price}}</div>
+                  </div>
+                </li>
+            </ul>
+        </div>
+        <div ng-show="progress && showTable" id="beamerLoading" class="progress progress-striped active">
+            <div class="progress-bar" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" ng-style="{'width':progress + '%'}">
+            </div>
+        </div>
+    </div>
+
+    <!-- #region scripts -->
+    <!-- Angular -->
+    <script src="Scripts/angularjs/angular.min.js"></script>
+    <script src="Scripts/angularjs/angular-animate.min.js"></script>
+    <script src="Scripts/angularjs/angular-route.min.js"></script>
+    <script src="Scripts/angularjs/angular-sanitize.min.js"></script>
+
+
+    <!-- Angular Vendor modules -->
+    <script src="Scripts/angularjs-vendors-modules/localStorage.min.js"></script>
+
+    <!-- Jquery and bootstrap -->
+    <script src="Scripts/jquery/jquery-2.1.0.min.js"></script>
+    <script src="Scripts/bootstrap/bootstrap.min.js"></script>
+    <script>$(function () { $(window).resize(function () { var width = $(".img").width(); $(".img").height(width); }); })</script>
+
+    <!-- Toastr -->
+    <script src="Scripts/toastr/toastr.min.js"></script>
+
+    <!-- moment -->
+    <script src="Scripts/moment/moment.min.js"></script>
+
+    <!-- signalr -->
+    <script src="Scripts/signalr/jquery.signalR-2.0.2.min.js"></script>
+
+    <!-- own code -->
+    <!-- services -->
+    <script src="services/SignalrService.js"></script>
+
+    <!-- controller -->
+    <script src="controllers/beamerCtrl.js"></script>
+    <script src="controllers/Events.js"></script>
+    <script src="directives/Modal.js"></script>
+
+    <!-- App -->
+    <script src="app/beamer.js"></script>
+    <!-- #endregion -->
+</body>
+</html>

@@ -1,0 +1,285 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{8895A17A-4295-4446-A307-90BF5BB73888}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Beursfuif.TypedClient</RootNamespace>
+    <AssemblyName>Beursfuif.TypedClient</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <TypeScriptToolsVersion>0.9</TypeScriptToolsVersion>
+    <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="app\app.js">
+      <DependentUpon>app.ts</DependentUpon>
+    </Content>
+    <Content Include="app\app.js.map">
+      <DependentUpon>app.ts</DependentUpon>
+    </Content>
+    <Content Include="app\beamer.js.map">
+      <DependentUpon>beamer.ts</DependentUpon>
+    </Content>
+    <None Include="app\_references.js">
+      <DependentUpon>_references.ts</DependentUpon>
+    </None>
+    <Content Include="app\beamer.js">
+      <DependentUpon>beamer.ts</DependentUpon>
+    </Content>
+    <Content Include="background\wallpaper-1248778.jpg" />
+    <Content Include="background\wallpaper-1346213.jpg" />
+    <Content Include="background\wallpaper-2143399.jpg" />
+    <Content Include="background\wallpaper-2155408.jpg" />
+    <Content Include="background\wallpaper-2770643.jpg" />
+    <Content Include="background\wallpaper-2837789.jpg" />
+    <Content Include="background\wallpaper-2886432.jpg" />
+    <Content Include="background\wallpaper-295035.jpg" />
+    <Content Include="background\wallpaper-399972.png" />
+    <Content Include="background\wallpaper-630648.jpg" />
+    <Content Include="background\wallpaper-69099.jpg" />
+    <Content Include="background\wallpaper-762606.jpg" />
+    <Content Include="beamer.html" />
+    <Content Include="Content\beursfuif.css">
+      <DependentUpon>beursfuif.less</DependentUpon>
+    </Content>
+    <Content Include="Content\beursfuif.min.css">
+      <DependentUpon>beursfuif.less</DependentUpon>
+    </Content>
+    <Content Include="controllers\beamerCtrl.js">
+      <DependentUpon>BeamerCtrl.ts</DependentUpon>
+    </Content>
+    <Content Include="controllers\Events.js">
+      <DependentUpon>Events.ts</DependentUpon>
+    </Content>
+    <Content Include="controllers\LoginCtrl.js">
+      <DependentUpon>LoginCtrl.ts</DependentUpon>
+    </Content>
+    <Content Include="controllers\MainCtrl.js">
+      <DependentUpon>MainCtrl.ts</DependentUpon>
+    </Content>
+    <Content Include="directives\Background.js">
+      <DependentUpon>Background.ts</DependentUpon>
+    </Content>
+    <Content Include="directives\Modal.js">
+      <DependentUpon>Modal.ts</DependentUpon>
+    </Content>
+    <Content Include="index.html" />
+    <Content Include="models\models.js">
+      <DependentUpon>models.ts</DependentUpon>
+    </Content>
+    <Content Include="Scripts\angularjs\angular-animate.js" />
+    <Content Include="Scripts\angularjs\angular-animate.min.js" />
+    <Content Include="Scripts\angularjs\angular-mocks.js" />
+    <Content Include="Scripts\angularjs\angular-route.js" />
+    <Content Include="Scripts\angularjs\angular-route.min.js" />
+    <Content Include="Scripts\angularjs\angular-sanitize.js" />
+    <Content Include="Scripts\angularjs\angular-sanitize.min.js" />
+    <Content Include="Scripts\angularjs\angular.js" />
+    <Content Include="Scripts\angularjs\angular.min.js" />
+    <Content Include="Scripts\angularjs-vendors-modules\localStorage.js" />
+    <Content Include="Scripts\angularjs-vendors-modules\localStorage.min.js">
+      <DependentUpon>localStorage.js</DependentUpon>
+    </Content>
+    <Content Include="controllers\Events.js.map">
+      <DependentUpon>Events.ts</DependentUpon>
+    </Content>
+    <Content Include="controllers\beamerCtrl.js.map">
+      <DependentUpon>BeamerCtrl.ts</DependentUpon>
+    </Content>
+    <Content Include="controllers\LoginCtrl.js.map">
+      <DependentUpon>LoginCtrl.ts</DependentUpon>
+    </Content>
+    <Content Include="controllers\MainCtrl.js.map">
+      <DependentUpon>MainCtrl.ts</DependentUpon>
+    </Content>
+    <Content Include="app\_references.js.map">
+      <DependentUpon>_references.ts</DependentUpon>
+    </Content>
+    <Content Include="models\models.js.map">
+      <DependentUpon>models.ts</DependentUpon>
+    </Content>
+    <Content Include="directives\Background.js.map">
+      <DependentUpon>Background.ts</DependentUpon>
+    </Content>
+    <Content Include="directives\Modal.js.map">
+      <DependentUpon>Modal.ts</DependentUpon>
+    </Content>
+    <None Include="Scripts\jquery\jquery-2.1.0.intellisense.js" />
+    <Content Include="Scripts\jquery\jquery-2.1.0.js" />
+    <Content Include="Scripts\jquery\jquery-2.1.0.min.js" />
+    <Content Include="Scripts\signalr\jquery.signalR-2.0.2.js" />
+    <Content Include="Scripts\signalr\jquery.signalR-2.0.2.min.js" />
+    <Content Include="Scripts\jquery\jquery.color-2.1.2.js" />
+    <Content Include="Scripts\jquery\jquery.color-2.1.2.min.js" />
+    <Content Include="Scripts\jquery\jquery.color.svg-names-2.1.2.js" />
+    <Content Include="Scripts\jquery\jquery.color.svg-names-2.1.2.min.js" />
+    <Content Include="Scripts\moment\moment-with-langs.js" />
+    <Content Include="Scripts\moment\moment-with-langs.min.js" />
+    <Content Include="Scripts\moment\moment.js" />
+    <Content Include="Scripts\moment\moment.min.js" />
+    <Content Include="Content\beursfuif.less" />
+    <Content Include="Scripts\angularjs-vendors-modules\localStorage.min.js.map">
+      <DependentUpon>localStorage.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\toastr\toastr.min.js">
+      <DependentUpon>toastr.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\toastr\toastr.min.js.map">
+      <DependentUpon>toastr.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\angularjs\angular.min.js.map" />
+    <Content Include="Scripts\angularjs\angular-animate.min.js.map" />
+    <Content Include="Scripts\angularjs\angular-route.min.js.map" />
+    <Content Include="Scripts\angularjs\angular-sanitize.min.js.map" />
+    <Content Include="Scripts\jquery\jquery-2.1.0.min.map" />
+    <Content Include="services\SignalrService.js.map">
+      <DependentUpon>SignalrService.ts</DependentUpon>
+    </Content>
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\bootstrap-theme.css" />
+    <Content Include="Content\bootstrap-theme.min.css">
+      <DependentUpon>bootstrap-theme.css</DependentUpon>
+    </Content>
+    <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\bootstrap.min.css">
+      <DependentUpon>bootstrap.css</DependentUpon>
+    </Content>
+    <Content Include="Content\toastr.css">
+      <DependentUpon>toastr.less</DependentUpon>
+    </Content>
+    <Content Include="Content\toastr.min.css" />
+    <Content Include="fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="packages.config" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\toastr.less" />
+    <Content Include="Scripts\bootstrap\bootstrap.js" />
+    <Content Include="Scripts\bootstrap\bootstrap.min.js" />
+    <Content Include="Scripts\toastr\toastr.js" />
+    <Content Include="services\SignalrService.js">
+      <DependentUpon>SignalrService.ts</DependentUpon>
+    </Content>
+    <Content Include="Web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="app\app.ts" />
+    <TypeScriptCompile Include="app\beamer.ts" />
+    <TypeScriptCompile Include="app\_references.ts" />
+    <TypeScriptCompile Include="controllers\BeamerCtrl.ts" />
+    <TypeScriptCompile Include="controllers\Events.ts" />
+    <TypeScriptCompile Include="controllers\LoginCtrl.ts" />
+    <TypeScriptCompile Include="controllers\MainCtrl.ts" />
+    <TypeScriptCompile Include="directives\Background.ts" />
+    <TypeScriptCompile Include="directives\Modal.ts" />
+    <TypeScriptCompile Include="models\models.ts" />
+    <TypeScriptCompile Include="Scripts\typings\angularjs\angular-cookies.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\angularjs\angular-mocks.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\angularjs\angular-resource.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\angularjs\angular-route.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\angularjs\angular-sanitize.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\angularjs\angular-scenario.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\angularjs\angular.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\localStorage\ILocalStorageService.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\moment\moment.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\signalr\signalr.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\toastr\toastr.d.ts" />
+    <TypeScriptCompile Include="services\SignalrService.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="img\" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>6292</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:6292/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

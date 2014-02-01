@@ -55,5 +55,10 @@ namespace Beursfuif.Server
                 }
             }));
         }
+
+        private void LayoutRoot_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            (this.Parent as Grid).Children.Remove(this);
+        }
 	}
 }

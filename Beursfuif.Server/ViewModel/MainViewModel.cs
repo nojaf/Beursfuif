@@ -21,7 +21,7 @@ namespace Beursfuif.Server.ViewModel
     /// </summary>
     public class MainViewModel : ViewModelBase
     {
-
+        #region Fields and properties
         private IStateChange _stateChanger;
         private IToastManager _toastManager;
         /// <summary>
@@ -60,20 +60,14 @@ namespace Beursfuif.Server.ViewModel
             get;
             set;
         }
+        #endregion
+
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
         public MainViewModel()
         {
-            ////if (IsInDesignMode)
-            ////{
-            ////    // Code runs in Blend --> create design time data.
-            ////}
-            ////else
-            ////{
-            ////    // Code runs "for real"
-            ////}
-            InitializeViewModel();
+            InitCommands();
             MessengerInstance.Register<DialogMessage>(this,HandleErrorMessages);
             MessengerInstance.Register<ToastMessage>(this, HandleToasts);
         }
@@ -92,7 +86,7 @@ namespace Beursfuif.Server.ViewModel
             _stateChanger.GoToState("FadeIn", true,"messageGrid");
         }
 
-        private void InitializeViewModel()
+        private void InitCommands()
         {
             MenuClicked = new RelayCommand<string>(MenuClickAction);
         }

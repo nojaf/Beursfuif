@@ -16,6 +16,7 @@ namespace Beursfuif.Server.ViewModel
 {
     public class IntervalViewModel : BeursfuifViewModelBase
     {
+        #region properties and fields
         private TimeSpan[] _intervalChoices = new TimeSpan[]{
             new TimeSpan(0,10,0),
             new TimeSpan(0,15,0),
@@ -192,6 +193,7 @@ namespace Beursfuif.Server.ViewModel
             get;
             set;
         }
+        #endregion
 
         private IOManager _iomanager;
 
@@ -200,6 +202,7 @@ namespace Beursfuif.Server.ViewModel
         {
             if (IsInDesignMode)
             {
+                #region DummyData
                 Intervals = new Interval[]{
                     new Interval(){
                         Id = 1,
@@ -222,9 +225,12 @@ namespace Beursfuif.Server.ViewModel
                         EndTime = new DateTime(1970,1,1,22,00,0)
                     }
                 };
+                #endregion
             }
             else
             {
+                PointInCode("IntervalViewModel: Ctor");
+
                 _iomanager = iomanager;
 
                 Intervals = _iomanager.LoadArrayFromBinary<Interval>(PathManager.INTERVAL_BINARY_PATH);
@@ -242,13 +248,18 @@ namespace Beursfuif.Server.ViewModel
             }
         }
 
+        #region InitCommands
         private void InitCommands()
         {
+            PointInCode("IntervalViewModel: InitCommands");
+
             GenerateIntervalsCommand = new RelayCommand(GenerateIntervals, () => { return !BeursfuifBusy; });
         }
 
         private void GenerateIntervals()
         {
+            PointInCode("IntervalViewModel: GenerateIntervals");
+
             if (BeginTime.CompareTo(EndTime) == 1)
             {
                 _dm = new DialogMessage("Begin ligt na einde");
@@ -279,32 +290,35 @@ namespace Beursfuif.Server.ViewModel
             MessengerInstance.Send<DialogMessage>(_dm);
             SendLogMessage("Error creating Intervals, " + string.Join(";", _dm.Errors.ToArray()), LogType.INTERVAL_VM | LogType.USER_ERROR);
         }
+        #endregion
 
         private void CreateIntervals(object state)
         {
-            Action onGui = delegate()
+            PointInCode("IntervalViewModel: CreateIntervals");
+
+
+            int numberOfIntervals = Convert.ToInt32(state);
+            Intervals = new Interval[numberOfIntervals];
+            for (int i = 0; i < numberOfIntervals; i++)
             {
-                int numberOfIntervals = Convert.ToInt32(state);
-                Intervals = new Interval[numberOfIntervals];
-                for (int i = 0; i < numberOfIntervals; i++)
+                Intervals[i] = new Interval()
                 {
-                    Intervals[i] = new Interval()
-                    {
-                        StartTime = BeginTime.AddMinutes(i * ChosenInterval.TotalMinutes),
-                        EndTime = BeginTime.AddMinutes((i + 1) * ChosenInterval.TotalMinutes),
-                        Id = i + 1
-                    };
-                }
-                SendLogMessage("New intervals created", LogType.INTERVAL_VM);
-                SaveIntervals();
-            };
+                    StartTime = BeginTime.AddMinutes(i * ChosenInterval.TotalMinutes),
+                    EndTime = BeginTime.AddMinutes((i+1) * ChosenInterval.TotalMinutes),
+                    Id = i + 1
+                };
+            }
 
-            App.Current.Dispatcher.BeginInvoke(onGui);
+            SendLogMessage("New intervals created", LogType.INTERVAL_VM);
 
+            SaveIntervals();
         }
 
         public void SaveIntervals()
         {
+            PointInCode("IntervalViewModel: SaveIntervals");
+
+
             ThreadPool.QueueUserWorkItem(new WaitCallback(new Action<object>((object state) => {
                 _iomanager.SaveArrayToBinary<Interval>(PathManager.INTERVAL_BINARY_PATH, Intervals);
             })));

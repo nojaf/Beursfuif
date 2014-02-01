@@ -61,6 +61,8 @@ namespace Beursfuif.BL
         [Description("Gebruikersfout")]
         USER_ERROR = 2048,
         [Description("Client-Server fout")]
-        CLIENT_SERVER_ERROR = 4096
+        CLIENT_SERVER_ERROR = 4096,
+        [Description("Code bericht")]
+        POINT_IN_CODE = 8192
     }
 }

@@ -10,6 +10,7 @@ namespace Beursfuif.Server.ViewModel
 {
     public class LogViewModel:BeursfuifViewModelBase
     {
+        #region Properties
         /// <summary>
         /// The <see cref="AllLogMessages" /> property's name.
         /// </summary>
@@ -104,7 +105,7 @@ namespace Beursfuif.Server.ViewModel
             }
         }
 
-
+        #endregion
 
         private IOManager _ioManager;
 
