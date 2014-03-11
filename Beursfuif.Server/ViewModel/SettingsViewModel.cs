@@ -238,7 +238,7 @@ namespace Beursfuif.Server.ViewModel
                 if (System.IO.File.Exists(PathManager.BUSY_AND_TIME_PATH))
                 {
                     SendLogMessage("Beursfuif has already started", LogType.SETTINGS_VM);
-                    SaveSettings settings = _ioManager.LoadObjectFromXml<SaveSettings>(PathManager.BUSY_AND_TIME_PATH);
+                    Beursfuif.BL.SaveSettings settings = _ioManager.LoadObjectFromXml<SaveSettings>(PathManager.BUSY_AND_TIME_PATH);
                     BeursfuifBusy = settings.Busy;
                     BeursfuifCurrentTime = settings.CurrentTime;
                     Port = settings.Port;

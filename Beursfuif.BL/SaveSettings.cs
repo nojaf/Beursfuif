@@ -24,5 +24,7 @@ namespace Beursfuif.BL
             CurrentTime = currentTime;
             Port = port;
         }
+
+        
     }
 }

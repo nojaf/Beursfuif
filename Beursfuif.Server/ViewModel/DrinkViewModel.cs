@@ -457,7 +457,9 @@ namespace Beursfuif.Server.ViewModel
                "height=200;format=png;mode=max;"));
             i.CreateParentDirectory = true; //Auto-create the uploads directory.
             i.Build();
-            NewEditDrink.ImageString = destinationPath;
+            Uri assets = new Uri(PathManager.ASSETS_PATH);
+            Uri image = new Uri(destinationPath);
+            NewEditDrink.ImageString = assets.MakeRelativeUri(image).ToString();
         }
 
         private void DeleteDrink(int id)
