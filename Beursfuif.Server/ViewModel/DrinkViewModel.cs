@@ -247,7 +247,7 @@ namespace Beursfuif.Server.ViewModel
             PointInCode("DrinkViewModel: CleanUpImages");
             try
             {
-                string[] paths = Directory.GetFiles(PathManager.ASSETS_PATH);
+                string[] paths = Directory.GetFiles(PathManager.ASSETS_PATH).Select(x => x.Replace(PathManager.ASSETS_PATH, "")).ToArray();
                 string[] images = Drinks.Select(x => x.ImageString).ToArray();
                 var query = from path in paths
                             where !images.Contains(path)
@@ -259,6 +259,8 @@ namespace Beursfuif.Server.ViewModel
                     if (File.Exists(path))
                     {
                         File.Delete(path);
+                    }else if(File.Exists(PathManager.ASSETS_PATH + path)){
+                        File.Delete(PathManager.ASSETS_PATH + path);
                     }
                 }
                 SendLogMessage("Unused images removed", LogType.DRINK_VM);

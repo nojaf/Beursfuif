@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Beursfuif.Server.DataAccess;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -42,6 +43,11 @@ namespace Beursfuif.Server.Converters
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             string path = value as string;
+
+            if(!File.Exists(path))
+            {
+                path = PathManager.ASSETS_PATH + path;
+            }
 
             if (!string.IsNullOrEmpty(path) && File.Exists(path))
             {

@@ -11,11 +11,11 @@ namespace Beursfuif.BL.Extensions
 {
     public static class BeursfuifExtensions
     {
-        public static ClientInterval ToClientInterval(this Interval interval, DateTime currentTime)
+        public static ClientInterval ToClientInterval(this Interval interval, DateTime currentTime, string assetDirectory)
         {
             return new ClientInterval()
             {
-                ClientDrinks = interval.Drinks.ToClientDrinkArray(interval.Id),
+                ClientDrinks = interval.Drinks.ToClientDrinkArray(interval.Id, assetDirectory),
                 CurrentTime = currentTime,
                 Start = interval.StartTime,
                 Id = interval.Id,
@@ -23,18 +23,18 @@ namespace Beursfuif.BL.Extensions
             };
         }
 
-        public static ClientDrink[] ToClientDrinkArray(this Drink[] drinks, int intervalId)
+        public static ClientDrink[] ToClientDrinkArray(this Drink[] drinks, int intervalId, string assetDirectory)
         {
             var availableDrinks = drinks.Where(x => x.Available);
             List<ClientDrink> clDrinks = new List<ClientDrink>();
             foreach (Drink item in availableDrinks)
             {
-                clDrinks.Add(item.ToClientDrink(intervalId));
+                clDrinks.Add(item.ToClientDrink(intervalId, assetDirectory));
             }
             return clDrinks.ToArray();
         }
 
-        public static ClientDrink ToClientDrink(this Drink drink, int intervalId)
+        public static ClientDrink ToClientDrink(this Drink drink, int intervalId, string assetDirectory)
         {
             ClientDrink clientDrink = new ClientDrink()
             {
@@ -42,7 +42,7 @@ namespace Beursfuif.BL.Extensions
                 IntervalId = intervalId,
                 Name = drink.Name,
                 Price = drink.CurrentPrice,
-                Base64Image = CreateBase64Image(drink.ImageString)
+                Base64Image = CreateBase64Image(assetDirectory + drink.ImageString)
             };
             return clientDrink;
         }

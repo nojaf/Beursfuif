@@ -679,7 +679,7 @@ namespace Beursfuif.Server.ViewModel
                     {
                         CurrentInterval = next;
                         locator.Interval.SaveIntervals();
-                        _server.UpdateInterval(next.ToClientInterval(BeursfuifCurrentTime), BeursfuifCurrentTime);
+                        _server.UpdateInterval(next.ToClientInterval(BeursfuifCurrentTime, PathManager.ASSETS_PATH), BeursfuifCurrentTime);
                         _tmrMain.Change(1000, 1000);
                     }));
                     ThreadPool.QueueUserWorkItem(SaveSettings);

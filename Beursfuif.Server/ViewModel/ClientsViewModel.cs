@@ -8,6 +8,7 @@ using System.Text;
 using Beursfuif.BL.Extensions;
 using GalaSoft.MvvmLight.Command;
 using Beursfuif.Server.Services;
+using Beursfuif.Server.DataAccess;
 
 namespace Beursfuif.Server.ViewModel
 {
@@ -237,7 +238,7 @@ namespace Beursfuif.Server.ViewModel
 
             Interval currentInterval = GetCurrentInterval();
 
-            _server.SendAckInitialClientConnect(currentInterval.ToClientInterval(currentBFTime), e.Id, currentBFTime);
+            _server.SendAckInitialClientConnect(currentInterval.ToClientInterval(currentBFTime, PathManager.ASSETS_PATH), e.Id, currentBFTime);
             SendLogMessage("Repley on " + e.Name + "'s connection request", LogType.SETTINGS_VM);
         }
 

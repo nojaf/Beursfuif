@@ -1,11 +1,14 @@
-#####Beursfuif
+# Beursfuif
 =========
 
 Beursfuif program, written in C#/XAML.
 
-made by Nojaf
+Created by [Nojaf](http://nojaf.com)
 
-*Note that the program *isn't* finished yet.*
+## Running from Visual Studio
+
+Make sure you start Visual Studio (2012 or 2013) as Administrator. The server application needs is forced to run with elevate permissions. This is because the server uses Owin Selfhost.
+
 
 > Splashscreen
 ![alt-text](http://nojaf.com/BeursfuifImages/server-splash.jpg "Splashscreen")
