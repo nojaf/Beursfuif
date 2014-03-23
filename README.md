@@ -1,5 +1,5 @@
 # Beursfuif
-=========
+
 
 Beursfuif program, written in C#/XAML.
 
