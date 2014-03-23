@@ -5,29 +5,50 @@ Beursfuif program, written in C#/XAML.
 
 Created by [Nojaf](http://nojaf.com)
 
+All rights reserved.
+
 ## Running from Visual Studio
 
-Make sure you start Visual Studio (2012 or 2013) as Administrator. The server application needs is forced to run with elevate permissions. This is because the server uses Owin Selfhost.
+Make sure you start Visual Studio (2012 or 2013) as Administrator. The server application needs to run with elevated permissions. This is because the server uses Owin Selfhost.
+
+## Screenshots
+
+> Splash screen
+
+![Splash screen](http://i.imgur.com/y2GQsQK.png)
+
+> Enter drinks with images and prices.
+
+![Drinks](http://i.imgur.com/IthI3FJ.jpg)
+
+> Set up the interval, the prices always change at the beginning of a new interval.
+
+![Intervals](http://i.imgur.com/tEELPqS.jpg)
+
+> Signalr server is running and html5 clients can connect
+
+![Connected clients](http://i.imgur.com/pS2XIzs.jpg)
 
 
-> Splashscreen
-![alt-text](http://nojaf.com/BeursfuifImages/server-splash.jpg "Splashscreen")
+> Start the client application in a modern browser, hit F11 and you won't ever notice your in a browser
+
+![Client view](http://i.imgur.com/ODp332O.jpg)
 
 
-> Enter drinks
-![alt-text](http://nojaf.com/BeursfuifImages/drinks.jpg "Drinks")
+> Real time updates in nice graph
+![Stats](http://i.imgur.com/aAp8WBs.jpg)
 
+## Under the hood
 
-> When should the price change
-![alt-text](http://nojaf.com/BeursfuifImages/intervals.jpg "Intervals")
+The server uses Xaml, Mvvm light, Signalr (Owin Selfhost)
 
-> When the Alchemy Websocket Server has started, the clients can connect
-![alt-text](http://nojaf.com/BeursfuifImages/connected.jpg "Connected clients")
+The client is built with AngularJs and Typescript
 
-All modern browsers who support Websockets are supported. And also long live Bootstrap!
+## Some remarks
+- If you want to use the server in your local network, be sure to disable your Windows firewall.
+- Browser support: IE10+, Chrome, Opera and Firefox.
+- Start beamer.html to open the projection client.
+- When opening the solution, you might get an error that one project wasn't found. The setup project has been excluded in the repository.
 
-> The client can make orders
-![alt-text](http://nojaf.com/BeursfuifImages/client.jpg "Client view")
-
-> Real time stats
-![alt-text](http://nojaf.com/BeursfuifImages/stats.jpg "Stats")
+## Permission to use for a real party
+I have no problem if anyone wants to use this application in real life. However, be a gentlemen and kindly ask for permission!
