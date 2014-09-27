@@ -86,14 +86,14 @@ namespace Beursfuif.Server.Services
         }
         #endregion
 
-        public override Task OnDisconnected()
+        public override Task OnDisconnected(bool stopCalled)
         {
             OnPackageReceived(this, new Package()
             {
                 ClientContext = Context.ConnectionId,
                 Kind = ProtocolKind.CLIENT_LEAVES_SERVER
             });
-            return base.OnDisconnected();
+            return base.OnDisconnected(stopCalled);
         }
     }
 }

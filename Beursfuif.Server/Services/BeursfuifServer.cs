@@ -213,7 +213,10 @@ namespace Beursfuif.Server.Services
         public void UpdateTime(DateTime currentTime, string authenticationCode)
         {
             //SignalR Method
-            _hub.Clients.All.UpdateTime(currentTime, authenticationCode);
+            if (_hub != null)
+            {
+                _hub.Clients.All.UpdateTime(currentTime, authenticationCode);
+            }
         }
 
         public void UpdateInterval(BL.ClientInterval clientInterval, DateTime currentBFTime)

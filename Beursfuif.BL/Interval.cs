@@ -145,6 +145,8 @@ namespace Beursfuif.BL
 
         public string AuthenticationString()
         {
+            if (Drinks == null) return "No authentication string";
+
             //always sort the drink alphabetical by name
             string auth =  string.Join("", (from drink in Drinks
                                     orderby drink.Name.ToLower()

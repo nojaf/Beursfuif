@@ -13,6 +13,7 @@
 */
 
 using Beursfuif.Server.DataAccess;
+using Beursfuif.Server.Services;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
@@ -43,16 +44,44 @@ namespace Beursfuif.Server.ViewModel
             ////    SimpleIoc.Default.Register<IDataService, DataService>();
             ////}
 
-            SimpleIoc.Default.Register<IOManager>();
-            SimpleIoc.Default.Register<Services.IBeursfuifServer>(() => { return new Services.BeursfuifServer();});
-            SimpleIoc.Default.Register<MainViewModel>();
-            SimpleIoc.Default.Register<DrinkViewModel>();
-            SimpleIoc.Default.Register<IntervalViewModel>();
-            SimpleIoc.Default.Register<SettingsViewModel>();
-            SimpleIoc.Default.Register<ClientsViewModel>();
-            SimpleIoc.Default.Register<OrdersViewModel>();
-            SimpleIoc.Default.Register<LogViewModel>();
-            SimpleIoc.Default.Register<PredictionViewModel>();
+            //Blend might try to instantiate the ViewModels more then once
+            if (ViewModelBase.IsInDesignModeStatic)
+            {
+                BasicDesignTimeRegistration<IOManager>();
+                if (!SimpleIoc.Default.IsRegistered<IBeursfuifServer>())
+                {
+                    SimpleIoc.Default.Register<IBeursfuifServer>(() => { return new Services.BeursfuifServer(); });
+                }
+                BasicDesignTimeRegistration<MainViewModel>();
+                BasicDesignTimeRegistration<DrinkViewModel>();
+                BasicDesignTimeRegistration<IntervalViewModel>();
+                BasicDesignTimeRegistration<SettingsViewModel>();
+                BasicDesignTimeRegistration<ClientsViewModel>();
+                BasicDesignTimeRegistration<OrdersViewModel>();
+                BasicDesignTimeRegistration<LogViewModel>();
+                BasicDesignTimeRegistration<PredictionViewModel>();
+            }
+            else
+            {
+                SimpleIoc.Default.Register<IOManager>();
+                SimpleIoc.Default.Register<IBeursfuifServer>(() => { return new Services.BeursfuifServer(); });
+                SimpleIoc.Default.Register<MainViewModel>();
+                SimpleIoc.Default.Register<DrinkViewModel>();
+                SimpleIoc.Default.Register<IntervalViewModel>();
+                SimpleIoc.Default.Register<SettingsViewModel>();
+                SimpleIoc.Default.Register<ClientsViewModel>();
+                SimpleIoc.Default.Register<OrdersViewModel>();
+                SimpleIoc.Default.Register<LogViewModel>();
+                SimpleIoc.Default.Register<PredictionViewModel>();
+            }
+        }
+
+        private void BasicDesignTimeRegistration<T>() where T: class
+        {
+            if (!SimpleIoc.Default.IsRegistered<T>())
+            {
+                SimpleIoc.Default.Register<T>();
+            }
         }
 
         public MainViewModel Main
