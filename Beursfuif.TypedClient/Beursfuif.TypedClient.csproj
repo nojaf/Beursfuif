@@ -60,19 +60,16 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="app\app.js">
+    <Content Include="Scripts\app\app.js">
       <DependentUpon>app.ts</DependentUpon>
     </Content>
-    <Content Include="app\app.js.map">
+    <Content Include="Scripts\app\app.js.map">
       <DependentUpon>app.ts</DependentUpon>
     </Content>
-    <Content Include="app\beamer.js.map">
+    <Content Include="Scripts\app\beamer.js.map">
       <DependentUpon>beamer.ts</DependentUpon>
     </Content>
-    <None Include="app\_references.js">
-      <DependentUpon>_references.ts</DependentUpon>
-    </None>
-    <Content Include="app\beamer.js">
+    <Content Include="Scripts\app\beamer.js">
       <DependentUpon>beamer.ts</DependentUpon>
     </Content>
     <Content Include="background\wallpaper-1248778.jpg" />
@@ -94,95 +91,142 @@
     <Content Include="Content\beursfuif.min.css">
       <DependentUpon>beursfuif.less</DependentUpon>
     </Content>
-    <Content Include="controllers\beamerCtrl.js">
+    <Content Include="Content\bootstrap-theme.css" />
+    <Content Include="Content\bootstrap-theme.min.css">
+      <DependentUpon>bootstrap-theme.css</DependentUpon>
+    </Content>
+    <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\bootstrap.min.css">
+      <DependentUpon>bootstrap.css</DependentUpon>
+    </Content>
+    <Content Include="Content\style.css">
+      <DependentUpon>style.css.bundle</DependentUpon>
+    </Content>
+    <Content Include="Content\style.min.css">
+      <DependentUpon>style.css</DependentUpon>
+    </Content>
+    <Content Include="Content\toastr.css">
+      <DependentUpon>toastr.less</DependentUpon>
+    </Content>
+    <Content Include="Scripts\beamer.js">
+      <DependentUpon>beamer.js.bundle</DependentUpon>
+    </Content>
+    <Content Include="Scripts\beamer.min.js">
+      <DependentUpon>beamer.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\beursfuif.js">
+      <DependentUpon>beursfuif.js.bundle</DependentUpon>
+    </Content>
+    <Content Include="Scripts\beursfuif.min.js">
+      <DependentUpon>beursfuif.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\controllers\beamerCtrl.js">
       <DependentUpon>BeamerCtrl.ts</DependentUpon>
     </Content>
-    <Content Include="controllers\Events.js">
+    <Content Include="Scripts\controllers\Events.js">
       <DependentUpon>Events.ts</DependentUpon>
     </Content>
-    <Content Include="controllers\LoginCtrl.js">
+    <Content Include="Scripts\controllers\LoginCtrl.js">
       <DependentUpon>LoginCtrl.ts</DependentUpon>
     </Content>
-    <Content Include="controllers\MainCtrl.js">
+    <Content Include="Scripts\controllers\MainCtrl.js">
       <DependentUpon>MainCtrl.ts</DependentUpon>
     </Content>
-    <Content Include="directives\Background.js">
+    <Content Include="Scripts\directives\Background.js">
       <DependentUpon>Background.ts</DependentUpon>
     </Content>
-    <Content Include="directives\Modal.js">
+    <Content Include="Scripts\directives\Modal.js">
       <DependentUpon>Modal.ts</DependentUpon>
     </Content>
+    <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="index.html" />
-    <Content Include="models\models.js">
+    <Content Include="Scripts\models\models.js">
       <DependentUpon>models.ts</DependentUpon>
     </Content>
-    <Content Include="Scripts\angularjs\angular-animate.js" />
-    <Content Include="Scripts\angularjs\angular-animate.min.js" />
-    <Content Include="Scripts\angularjs\angular-mocks.js" />
-    <Content Include="Scripts\angularjs\angular-route.js" />
-    <Content Include="Scripts\angularjs\angular-route.min.js" />
-    <Content Include="Scripts\angularjs\angular-sanitize.js" />
-    <Content Include="Scripts\angularjs\angular-sanitize.min.js" />
-    <Content Include="Scripts\angularjs\angular.js" />
-    <Content Include="Scripts\angularjs\angular.min.js" />
-    <Content Include="Scripts\angularjs-vendors-modules\localStorage.js" />
-    <Content Include="Scripts\angularjs-vendors-modules\localStorage.min.js">
+    <Content Include="Scripts\vendor\angularjs\angular-animate.js" />
+    <Content Include="Scripts\vendor\angularjs\angular-animate.min.js">
+      <DependentUpon>angular-animate.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\vendor\angularjs\angular-mocks.js" />
+    <Content Include="Scripts\vendor\angularjs\angular-route.js" />
+    <Content Include="Scripts\vendor\angularjs\angular-route.min.js">
+      <DependentUpon>angular-route.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\vendor\angularjs\angular-sanitize.js" />
+    <Content Include="Scripts\vendor\angularjs\angular-sanitize.min.js">
+      <DependentUpon>angular-sanitize.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\vendor\angularjs\angular.js" />
+    <Content Include="Scripts\vendor\angularjs\angular.min.js">
+      <DependentUpon>angular.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\vendor\angularjs-vendors-modules\localStorage.js" />
+    <Content Include="Scripts\vendor\angularjs-vendors-modules\localStorage.min.js">
       <DependentUpon>localStorage.js</DependentUpon>
     </Content>
-    <Content Include="controllers\Events.js.map">
+    <Content Include="Scripts\controllers\Events.js.map">
       <DependentUpon>Events.ts</DependentUpon>
     </Content>
-    <Content Include="controllers\beamerCtrl.js.map">
+    <Content Include="Scripts\controllers\beamerCtrl.js.map">
       <DependentUpon>BeamerCtrl.ts</DependentUpon>
     </Content>
-    <Content Include="controllers\LoginCtrl.js.map">
+    <Content Include="Scripts\controllers\LoginCtrl.js.map">
       <DependentUpon>LoginCtrl.ts</DependentUpon>
     </Content>
-    <Content Include="controllers\MainCtrl.js.map">
+    <Content Include="Scripts\controllers\MainCtrl.js.map">
       <DependentUpon>MainCtrl.ts</DependentUpon>
     </Content>
-    <Content Include="app\_references.js.map">
-      <DependentUpon>_references.ts</DependentUpon>
-    </Content>
-    <Content Include="models\models.js.map">
+    <Content Include="Scripts\models\models.js.map">
       <DependentUpon>models.ts</DependentUpon>
     </Content>
-    <Content Include="directives\Background.js.map">
+    <Content Include="Scripts\directives\Background.js.map">
       <DependentUpon>Background.ts</DependentUpon>
     </Content>
-    <Content Include="directives\Modal.js.map">
+    <Content Include="Scripts\directives\Modal.js.map">
       <DependentUpon>Modal.ts</DependentUpon>
     </Content>
-    <None Include="Scripts\jquery\jquery-2.1.0.intellisense.js" />
-    <Content Include="Scripts\jquery\jquery-2.1.0.js" />
-    <Content Include="Scripts\jquery\jquery-2.1.0.min.js" />
-    <Content Include="Scripts\signalr\jquery.signalR-2.0.2.js" />
-    <Content Include="Scripts\signalr\jquery.signalR-2.0.2.min.js" />
-    <Content Include="Scripts\jquery\jquery.color-2.1.2.js" />
-    <Content Include="Scripts\jquery\jquery.color-2.1.2.min.js" />
-    <Content Include="Scripts\jquery\jquery.color.svg-names-2.1.2.js" />
-    <Content Include="Scripts\jquery\jquery.color.svg-names-2.1.2.min.js" />
-    <Content Include="Scripts\moment\moment-with-langs.js" />
-    <Content Include="Scripts\moment\moment-with-langs.min.js" />
-    <Content Include="Scripts\moment\moment.js" />
-    <Content Include="Scripts\moment\moment.min.js" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\toastr.less" />
+    <Content Include="Content\style.css.bundle" />
+    <Content Include="Scripts\beursfuif.js.bundle" />
+    <Content Include="Scripts\beursfuif.min.js.map">
+      <DependentUpon>beursfuif.min.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\beamer.js.bundle" />
+    <Content Include="Scripts\beamer.min.js.map">
+      <DependentUpon>beamer.min.js</DependentUpon>
+    </Content>
+    <None Include="Scripts\vendor\jquery\jquery-2.1.1.intellisense.js" />
+    <Content Include="Scripts\vendor\jquery\jquery-2.1.1.js" />
+    <Content Include="Scripts\vendor\jquery\jquery-2.1.1.min.js">
+      <DependentUpon>jquery-2.1.1.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\vendor\jquery\jquery.color-2.1.2.js" />
+    <Content Include="Scripts\vendor\jquery\jquery.color-2.1.2.min.js">
+      <DependentUpon>jquery.color-2.1.2.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\vendor\moment\moment.js" />
+    <Content Include="Scripts\vendor\moment\moment.min.js">
+      <DependentUpon>moment.js</DependentUpon>
+    </Content>
     <Content Include="Content\beursfuif.less" />
-    <Content Include="Scripts\angularjs-vendors-modules\localStorage.min.js.map">
+    <Content Include="Scripts\vendor\angularjs-vendors-modules\localStorage.min.js.map">
       <DependentUpon>localStorage.js</DependentUpon>
     </Content>
-    <Content Include="Scripts\toastr\toastr.min.js">
+    <Content Include="Scripts\vendor\signalr\jquery.signalR-2.1.2.js" />
+    <Content Include="Scripts\vendor\signalr\jquery.signalR-2.1.2.min.js">
+      <DependentUpon>jquery.signalR-2.1.2.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\vendor\toastr\toastr.min.js">
       <DependentUpon>toastr.js</DependentUpon>
     </Content>
-    <Content Include="Scripts\toastr\toastr.min.js.map">
-      <DependentUpon>toastr.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\angularjs\angular.min.js.map" />
-    <Content Include="Scripts\angularjs\angular-animate.min.js.map" />
-    <Content Include="Scripts\angularjs\angular-route.min.js.map" />
-    <Content Include="Scripts\angularjs\angular-sanitize.min.js.map" />
-    <Content Include="Scripts\jquery\jquery-2.1.0.min.map" />
-    <Content Include="services\SignalrService.js.map">
+    <Content Include="Scripts\services\SignalrService.js.map">
       <DependentUpon>SignalrService.ts</DependentUpon>
+    </Content>
+    <Content Include="Scripts\vendor\jquery\jquery-2.1.1.min.map">
+      <DependentUpon>jquery-2.1.1.js</DependentUpon>
     </Content>
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -192,28 +236,16 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\bootstrap-theme.css" />
-    <Content Include="Content\bootstrap-theme.min.css">
-      <DependentUpon>bootstrap-theme.css</DependentUpon>
-    </Content>
-    <Content Include="Content\bootstrap.css" />
-    <Content Include="Content\bootstrap.min.css">
-      <DependentUpon>bootstrap.css</DependentUpon>
-    </Content>
-    <Content Include="Content\toastr.css">
+    <Content Include="Content\toastr.min.css">
       <DependentUpon>toastr.less</DependentUpon>
     </Content>
-    <Content Include="Content\toastr.min.css" />
-    <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="packages.config" />
-    <Content Include="fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="fonts\glyphicons-halflings-regular.eot" />
-    <Content Include="Content\toastr.less" />
-    <Content Include="Scripts\bootstrap\bootstrap.js" />
-    <Content Include="Scripts\bootstrap\bootstrap.min.js" />
-    <Content Include="Scripts\toastr\toastr.js" />
-    <Content Include="services\SignalrService.js">
+    <Content Include="Scripts\vendor\bootstrap\bootstrap.js" />
+    <Content Include="Scripts\vendor\bootstrap\bootstrap.min.js">
+      <DependentUpon>bootstrap.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\vendor\toastr\toastr.js" />
+    <Content Include="Scripts\services\SignalrService.js">
       <DependentUpon>SignalrService.ts</DependentUpon>
     </Content>
     <Content Include="Web.config" />
@@ -222,16 +254,16 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="app\app.ts" />
-    <TypeScriptCompile Include="app\beamer.ts" />
-    <TypeScriptCompile Include="app\_references.ts" />
-    <TypeScriptCompile Include="controllers\BeamerCtrl.ts" />
-    <TypeScriptCompile Include="controllers\Events.ts" />
-    <TypeScriptCompile Include="controllers\LoginCtrl.ts" />
-    <TypeScriptCompile Include="controllers\MainCtrl.ts" />
-    <TypeScriptCompile Include="directives\Background.ts" />
-    <TypeScriptCompile Include="directives\Modal.ts" />
-    <TypeScriptCompile Include="models\models.ts" />
+    <TypeScriptCompile Include="Scripts\app\app.ts" />
+    <TypeScriptCompile Include="Scripts\app\beamer.ts" />
+    <TypeScriptCompile Include="Scripts\controllers\BeamerCtrl.ts" />
+    <TypeScriptCompile Include="Scripts\controllers\Events.ts" />
+    <TypeScriptCompile Include="Scripts\controllers\LoginCtrl.ts" />
+    <TypeScriptCompile Include="Scripts\controllers\MainCtrl.ts" />
+    <TypeScriptCompile Include="Scripts\directives\Background.ts" />
+    <TypeScriptCompile Include="Scripts\directives\Modal.ts" />
+    <TypeScriptCompile Include="Scripts\models\models.ts" />
+    <TypeScriptCompile Include="Scripts\typings\angularjs\angular-animate.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\angularjs\angular-cookies.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\angularjs\angular-mocks.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\angularjs\angular-resource.d.ts" />
@@ -239,15 +271,16 @@
     <TypeScriptCompile Include="Scripts\typings\angularjs\angular-sanitize.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\angularjs\angular-scenario.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\angularjs\angular.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\bootstrap\bootstrap.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\localStorage\ILocalStorageService.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\moment\moment.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\signalr\signalr.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\toastr\toastr.d.ts" />
-    <TypeScriptCompile Include="services\SignalrService.ts" />
+    <TypeScriptCompile Include="Scripts\services\SignalrService.ts" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="img\" />
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -261,7 +294,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>6292</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>

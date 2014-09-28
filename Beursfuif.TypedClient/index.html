@@ -2,55 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>Beursfuif Client</title>
-    <link href="Content/bootstrap.min.css" rel="stylesheet" />
-    <link href="Content/toastr.min.css" rel="stylesheet" />
-    <link href="Content/beursfuif.css" rel="stylesheet" />
+    <link href="Content/style.min.css" rel="stylesheet" />
+
 </head>
 <body ng-app="beursfuif">
-
     <div ng-view="" ng-class="view"></div>
-
-
-    <!-- Angular -->
-    <script src="Scripts/angularjs/angular.min.js"></script>
-    <script src="Scripts/angularjs/angular-animate.min.js"></script>
-    <script src="Scripts/angularjs/angular-route.min.js"></script>
-    <script src="Scripts/angularjs/angular-sanitize.min.js"></script>
-
-
-    <!-- Angular Vendor modules -->
-    <script src="Scripts/angularjs-vendors-modules/localStorage.min.js"></script>
-
-    <!-- Jquery and bootstrap -->
-    <script src="Scripts/jquery/jquery-2.1.0.min.js"></script>
-    <script src="Scripts/jquery/jquery.color-2.1.2.min.js"></script>
-    <script src="Scripts/bootstrap/bootstrap.min.js"></script>
-
-    <!-- moment -->
-    <script src="Scripts/moment/moment.min.js"></script>
-
-    <!-- Toastr -->
-    <script src="Scripts/toastr/toastr.min.js"></script>
-
-    <!-- signalr -->
-    <script src="Scripts/signalr/jquery.signalR-2.0.2.min.js"></script>
-
-    <!-- own code -->
-    <!-- services -->
-    <script src="services/SignalrService.js"></script>
-
-    <!-- controllers -->
-    <script src="controllers/Events.js"></script>
-    <script src="controllers/LoginCtrl.js"></script>
-    <script src="controllers/MainCtrl.js"></script>
-
-    <!-- directives -->
-    <script src="directives/Background.js"></script>
-    <script src="directives/Modal.js"></script>
-
-    <!-- app -->
-    <script src="app/app.js"></script>
-
+    <script src="Scripts/beursfuif.js"></script>
     <!-- Angular Views -->
     <!-- Would rather have separate files but it can't be done-->
     <script type="text/ng-template" id="loginView">
