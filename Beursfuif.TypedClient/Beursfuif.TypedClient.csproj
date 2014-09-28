@@ -63,12 +63,6 @@
     <Content Include="Scripts\app\app.js">
       <DependentUpon>app.ts</DependentUpon>
     </Content>
-    <Content Include="Scripts\app\app.js.map">
-      <DependentUpon>app.ts</DependentUpon>
-    </Content>
-    <Content Include="Scripts\app\beamer.js.map">
-      <DependentUpon>beamer.ts</DependentUpon>
-    </Content>
     <Content Include="Scripts\app\beamer.js">
       <DependentUpon>beamer.ts</DependentUpon>
     </Content>
@@ -164,27 +158,6 @@
     <Content Include="Scripts\vendor\angularjs-vendors-modules\localStorage.min.js">
       <DependentUpon>localStorage.js</DependentUpon>
     </Content>
-    <Content Include="Scripts\controllers\Events.js.map">
-      <DependentUpon>Events.ts</DependentUpon>
-    </Content>
-    <Content Include="Scripts\controllers\beamerCtrl.js.map">
-      <DependentUpon>BeamerCtrl.ts</DependentUpon>
-    </Content>
-    <Content Include="Scripts\controllers\LoginCtrl.js.map">
-      <DependentUpon>LoginCtrl.ts</DependentUpon>
-    </Content>
-    <Content Include="Scripts\controllers\MainCtrl.js.map">
-      <DependentUpon>MainCtrl.ts</DependentUpon>
-    </Content>
-    <Content Include="Scripts\models\models.js.map">
-      <DependentUpon>models.ts</DependentUpon>
-    </Content>
-    <Content Include="Scripts\directives\Background.js.map">
-      <DependentUpon>Background.ts</DependentUpon>
-    </Content>
-    <Content Include="Scripts\directives\Modal.js.map">
-      <DependentUpon>Modal.ts</DependentUpon>
-    </Content>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
@@ -221,9 +194,6 @@
     </Content>
     <Content Include="Scripts\vendor\toastr\toastr.min.js">
       <DependentUpon>toastr.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\services\SignalrService.js.map">
-      <DependentUpon>SignalrService.ts</DependentUpon>
     </Content>
     <Content Include="Scripts\vendor\jquery\jquery-2.1.1.min.map">
       <DependentUpon>jquery-2.1.1.js</DependentUpon>
