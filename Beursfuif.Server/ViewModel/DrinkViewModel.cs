@@ -400,7 +400,7 @@ namespace Beursfuif.Server.ViewModel
                     string destinationPath = PathManager.ASSETS_PATH + dateStamp + ".png";
                     File.Copy(filename, originalPath, true);
                     ResizeImage(originalPath, destinationPath);
-                    NewEditDrink.ImageString = destinationPath;
+                    NewEditDrink.ImageString = destinationPath.Replace(PathManager.ASSETS_PATH, string.Empty);
                     SendLogMessage("Image for drink from file added", LogType.DRINK_VM);
                 }));
             }
