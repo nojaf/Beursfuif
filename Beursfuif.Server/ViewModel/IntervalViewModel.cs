@@ -242,7 +242,6 @@ namespace Beursfuif.Server.ViewModel
                     SendLogMessage("Intervals found in data folder", LogType.INTERVAL_VM);
                 }
 
-
                 InitCommands();
                 CheckCanEdit();
             }

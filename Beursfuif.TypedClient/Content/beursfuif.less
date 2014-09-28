@@ -1,3 +1,5 @@
+@borderRadius:10px;
+
 html {
     -webkit-background-size: cover;
     -moz-background-size: cover;
@@ -41,7 +43,7 @@ body {
     width: 300px;
     margin-left: -150px;
     background-color: white;
-    border-radius: 10px;
+    border-radius: @borderRadius;
     padding: 10px;
 
     * {
@@ -100,7 +102,7 @@ body {
             min-width: 150px;
             margin: 7px;
             min-height: 100px;
-            border-radius: 12px;
+            border-radius: @borderRadius;
             position: relative;
             -moz-background-origin: content-box;
             -webkit-background-origin: content-box;
@@ -117,11 +119,11 @@ body {
                 width: 100%;
                 padding: 3px 0px;
                 background-color: rgba(0,0,0,0.50);
-                border-radius: 12px 12px 0px 0px;
+                border-radius: @borderRadius @borderRadius 0px 0px;
                 margin-bottom: 5px;
 
                 &:last-child {
-                    border-radius: 0px 0px 12px 12px;
+                    border-radius: 0px 0px @borderRadius @borderRadius;
                     position: absolute;
                     bottom: 0px;
                     margin: 0px;
@@ -145,7 +147,7 @@ body {
         height: 100%;
         background-color: black;
         color: white;
-        border-radius: 25px;
+        border-radius: @borderRadius;
         text-align: center;
 
         h2 {
@@ -227,7 +229,6 @@ body {
     &:hover {
         color: black;
         background-color: rgb(250,251,252);
-        ;
     }
 }
 
@@ -339,7 +340,7 @@ body {
             float:left;
             margin:5px 0px 0px 5%;
             border:1px solid white;
-            border-radius:10px;
+            border-radius:@borderRadius;
 
             /*&:nth-child(odd){
                 border-color:#ffd800;
@@ -351,7 +352,7 @@ body {
 
             .img{
                 float:left;
-                border-radius:10px;
+                border-radius:@borderRadius;
                 min-height:60px;
                 width:25%;
                 -moz-background-origin: content-box;
