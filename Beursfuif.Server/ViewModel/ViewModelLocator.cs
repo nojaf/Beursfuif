@@ -47,7 +47,10 @@ namespace Beursfuif.Server.ViewModel
             //Blend might try to instantiate the ViewModels more then once
             if (ViewModelBase.IsInDesignModeStatic)
             {
-                BasicDesignTimeRegistration<IOManager>();
+                if (!SimpleIoc.Default.IsRegistered<IIOManager>())
+                {
+                    SimpleIoc.Default.Register<IIOManager>(() => { return new IOManager(); });
+                }
                 if (!SimpleIoc.Default.IsRegistered<IBeursfuifServer>())
                 {
                     SimpleIoc.Default.Register<IBeursfuifServer>(() => { return new Services.BeursfuifServer(); });
@@ -63,7 +66,7 @@ namespace Beursfuif.Server.ViewModel
             }
             else
             {
-                SimpleIoc.Default.Register<IOManager>();
+                SimpleIoc.Default.Register<IIOManager>(() => { return new IOManager(); });
                 SimpleIoc.Default.Register<IBeursfuifServer>(() => { return new Services.BeursfuifServer(); });
                 SimpleIoc.Default.Register<MainViewModel>();
                 SimpleIoc.Default.Register<DrinkViewModel>();

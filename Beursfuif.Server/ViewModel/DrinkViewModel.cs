@@ -19,7 +19,7 @@ namespace Beursfuif.Server.ViewModel
     public class DrinkViewModel : BeursfuifViewModelBase
     {
         #region fields and properties
-        private IOManager _ioManager;
+        private IIOManager _ioManager;
 
         /// <summary>
         /// The <see cref="Drinks" /> property's name.
@@ -228,13 +228,14 @@ namespace Beursfuif.Server.ViewModel
         public RelayCommand<int> AvailableChangedCommand { get; set; }
         #endregion
 
-        public DrinkViewModel(IOManager iomanager)
+        public DrinkViewModel(IIOManager iomanager)
         {
             if (!IsInDesignMode)
             {
                 PointInCode("DrinkViewModel: Ctor");
                 _ioManager = iomanager;
-                Drinks = iomanager.LoadObservableCollectionFromXml<Drink>(PathManager.DRINK_XML_PATH);
+                Drinks = iomanager.Load<ObservableCollection<Drink>>(PathManager.DRINK_PATH);
+                if (Drinks == null) Drinks = new ObservableCollection<Drink>();
                 ThreadPool.QueueUserWorkItem(CleanUpImages);
 
                 InitCommands();
@@ -277,7 +278,7 @@ namespace Beursfuif.Server.ViewModel
             PointInCode("DrinkViewModel: InitCommands");
             //It shouldn't be posible to remove a drink when the party is busy
             RemoveDrinkCommand = new RelayCommand<int>(DeleteDrink, (int id) => { return (!BeursfuifBusy && Drinks.Any(x => x.Id == id)); });
-            AddNewDrinkCommand = new RelayCommand(delegate() { NewEditDrink = new Drink() { Id = (Drinks.Count > 0 ? Drinks.Max(x => x.Id) + 1 : 1) }; },
+            AddNewDrinkCommand = new RelayCommand(delegate() { NewEditDrink = new Drink() { Id = (Drinks != null && Drinks.Any() ? Drinks.Max(x => x.Id) + 1 : 1) }; },
                 () => { return (!BeursfuifBusy && NewEditDrink == null); });
             DownloadImageCommand = new RelayCommand(DownloadImage, () => { return (!string.IsNullOrEmpty(DownloadUrl) && !Downloading); });
             CancelCommand = new RelayCommand(ResetValues);
@@ -363,7 +364,7 @@ namespace Beursfuif.Server.ViewModel
 
                 ThreadPool.QueueUserWorkItem(new WaitCallback((object target) =>
                 {
-                    _ioManager.SaveObservableCollectionToXml(PathManager.DRINK_XML_PATH, Drinks);
+                    _ioManager.Save<ObservableCollection<Drink>>(PathManager.DRINK_PATH, Drinks);
                 }));
                 SendToastMessage("Dranken saved");
                 previousDrinkSaved = true;
@@ -483,7 +484,7 @@ namespace Beursfuif.Server.ViewModel
                 Drinks.Remove(drink);
                 ThreadPool.QueueUserWorkItem(new WaitCallback(delegate(object state)
                 {
-                    _ioManager.SaveObservableCollectionToXml<Drink>(PathManager.DRINK_XML_PATH, Drinks);
+                    _ioManager.Save<ObservableCollection<Drink>>(PathManager.DRINK_PATH, Drinks);
                 }), null);
                 if (NewEditDrink != null && NewEditDrink.Id == id) NewEditDrink = null;
 
@@ -542,7 +543,7 @@ namespace Beursfuif.Server.ViewModel
 
             ThreadPool.QueueUserWorkItem(new WaitCallback(delegate(object state)
             {
-                _ioManager.SaveObservableCollectionToXml<Drink>(PathManager.DRINK_XML_PATH, Drinks);
+                _ioManager.Save<ObservableCollection<Drink>>(PathManager.DRINK_PATH, Drinks);
             }), null);
 
             if (BeursfuifBusy)

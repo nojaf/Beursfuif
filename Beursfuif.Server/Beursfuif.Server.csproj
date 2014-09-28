@@ -186,6 +186,7 @@
     </ApplicationDefinition>
     <Compile Include="Converters\BitmapFrameConverter.cs" />
     <Compile Include="Converters\EnumDescriptionConverter.cs" />
+    <Compile Include="DataAccess\IIOManager.cs" />
     <Compile Include="DataAccess\IOManager.cs" />
     <Compile Include="DataAccess\LogManager.cs" />
     <Compile Include="DataAccess\PathManager.cs" />

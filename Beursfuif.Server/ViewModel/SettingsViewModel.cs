@@ -134,7 +134,7 @@ namespace Beursfuif.Server.ViewModel
 
         public RelayCommand MainActionButtonCommand { get; set; }
 
-        private IOManager _ioManager;
+        private IIOManager _ioManager;
         private System.Threading.Timer _tmrMain;
         private IBeursfuifServer _server;
 
@@ -226,7 +226,7 @@ namespace Beursfuif.Server.ViewModel
         public RelayCommand RestoreBackupCommand { get; set; }
         #endregion
 
-        public SettingsViewModel(IOManager ioManager, IBeursfuifServer server)
+        public SettingsViewModel(IIOManager ioManager, IBeursfuifServer server)
         {
             if (!IsInDesignMode)
             {
@@ -238,7 +238,7 @@ namespace Beursfuif.Server.ViewModel
                 if (System.IO.File.Exists(PathManager.BUSY_AND_TIME_PATH))
                 {
                     SendLogMessage("Beursfuif has already started", LogType.SETTINGS_VM);
-                    Beursfuif.BL.SaveSettings settings = _ioManager.LoadObjectFromXml<SaveSettings>(PathManager.BUSY_AND_TIME_PATH);
+                    Beursfuif.BL.SaveSettings settings = _ioManager.Load<SaveSettings>(PathManager.BUSY_AND_TIME_PATH);
                     BeursfuifBusy = settings.Busy;
                     BeursfuifCurrentTime = settings.CurrentTime;
                     Port = settings.Port;
@@ -273,7 +273,7 @@ namespace Beursfuif.Server.ViewModel
 
         private Interval LoadCurrentInterval()
         {
-            return _ioManager.LoadObjectFromXml<Interval>(PathManager.CURRENT_INTERVAL_XML_PATH);
+            return _ioManager.Load<Interval>(PathManager.CURRENT_INTERVAL_PATH);
         }
 
         private void InitCommands()
@@ -503,10 +503,10 @@ namespace Beursfuif.Server.ViewModel
         {
             PointInCode("SettingsViewModel: SaveSettings");
 
-            _ioManager.SaveObjectToXml<SaveSettings>(PathManager.BUSY_AND_TIME_PATH, new SaveSettings(BeursfuifBusy, BeursfuifCurrentTime, Port));
+            _ioManager.Save<SaveSettings>(PathManager.BUSY_AND_TIME_PATH, new SaveSettings(BeursfuifBusy, BeursfuifCurrentTime, Port));
 
             //CurrentInterval
-            _ioManager.SaveObjectToXml<Interval>(PathManager.CURRENT_INTERVAL_XML_PATH, CurrentInterval);
+            _ioManager.Save<Interval>(PathManager.CURRENT_INTERVAL_PATH, CurrentInterval);
 
             SendLogMessage("Beursfuifsettings and currentInterval have been saved", LogType.SETTINGS_VM);
         }
@@ -548,7 +548,7 @@ namespace Beursfuif.Server.ViewModel
 
                         Task.Factory.StartNew(() =>
                         {
-                            File.Delete(PathManager.DRINK_XML_PATH);
+                            File.Delete(PathManager.DRINK_PATH);
                         });
                     }
                 };
@@ -625,8 +625,8 @@ namespace Beursfuif.Server.ViewModel
                         Task.Factory.StartNew(() =>
                         {
                             File.Delete(PathManager.BUSY_AND_TIME_PATH);
-                            File.Delete(PathManager.CURRENT_INTERVAL_XML_PATH);
-                            File.Delete(PathManager.INTERVAL_BINARY_PATH);
+                            File.Delete(PathManager.CURRENT_INTERVAL_PATH);
+                            File.Delete(PathManager.INTERVAL_PATH);
                             File.Delete(PathManager.AUTO_SAVE_ALL_ORDERS);
                         });
 

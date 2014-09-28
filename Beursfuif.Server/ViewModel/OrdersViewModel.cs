@@ -18,7 +18,7 @@ namespace Beursfuif.Server.ViewModel
     {
         #region Fields and Properties
         private IBeursfuifServer _server;
-        private IOManager _ioManager;
+        private IIOManager _ioManager;
 
         private List<ClientDrinkOrder> _allOrderItems = new List<ClientDrinkOrder>();
         public List<ClientDrinkOrder> AllOrderItems
@@ -185,7 +185,7 @@ namespace Beursfuif.Server.ViewModel
         }
         #endregion
 
-        public OrdersViewModel(IBeursfuifServer server, IOManager ioManager)
+        public OrdersViewModel(IBeursfuifServer server, IIOManager ioManager)
         {
             if (!IsInDesignMode)
             {
@@ -217,7 +217,7 @@ namespace Beursfuif.Server.ViewModel
 
             ThreadPool.QueueUserWorkItem(new WaitCallback((object target) =>
             {
-                _ioManager.SaveObservableCollectionToBinary<ShowOrder>(PathManager.AUTO_SAVE_ALL_ORDERS, AllOrders);
+                _ioManager.Save<ObservableCollection<ShowOrder>>(PathManager.AUTO_SAVE_ALL_ORDERS, AllOrders);
             }));
             SendToastMessage("Autosaved", "Alle bestellingen werden bewaard.");
             SendLogMessage("Autosave all orders", LogType.ORDER_VM);
@@ -230,7 +230,7 @@ namespace Beursfuif.Server.ViewModel
         {
             PointInCode("OrdersViewModel: InitData");
 
-            AllOrders = _ioManager.LoadObservableCollectionFromBinary<ShowOrder>(PathManager.AUTO_SAVE_ALL_ORDERS);
+            AllOrders = _ioManager.Load<ObservableCollection<ShowOrder>>(PathManager.AUTO_SAVE_ALL_ORDERS);
             if (AllOrders == null)
             {
                 SendLogMessage("No orders where found in data folder", LogType.ORDER_VM);

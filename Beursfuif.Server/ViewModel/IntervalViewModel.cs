@@ -195,9 +195,9 @@ namespace Beursfuif.Server.ViewModel
         }
         #endregion
 
-        private IOManager _iomanager;
+        private IIOManager _iomanager;
 
-        public IntervalViewModel(IOManager iomanager)
+        public IntervalViewModel(IIOManager iomanager)
             : base()
         {
             if (IsInDesignMode)
@@ -233,7 +233,7 @@ namespace Beursfuif.Server.ViewModel
 
                 _iomanager = iomanager;
 
-                Intervals = _iomanager.LoadArrayFromBinary<Interval>(PathManager.INTERVAL_BINARY_PATH);
+                Intervals = _iomanager.Load<Interval[]>(PathManager.INTERVAL_PATH);
                 if (Intervals != null)
                 {
                     BeginTime = Intervals[0].StartTime;
@@ -320,7 +320,7 @@ namespace Beursfuif.Server.ViewModel
 
 
             ThreadPool.QueueUserWorkItem(new WaitCallback(new Action<object>((object state) => {
-                _iomanager.SaveArrayToBinary<Interval>(PathManager.INTERVAL_BINARY_PATH, Intervals);
+                _iomanager.Save<Interval[]>(PathManager.INTERVAL_PATH, Intervals);
             })));
             SendToastMessage("Intervallen saved");
             SendLogMessage("Intervallen saved", LogType.INTERVAL_VM);

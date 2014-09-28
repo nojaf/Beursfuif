@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -9,8 +10,9 @@ using System.Text;
 
 namespace Beursfuif.Server.DataAccess
 {
-    public  class IOManager
+    public class IOManager:IIOManager
     {
+        /*
         #region Load
         public  T[] LoadArrayFromXml<T>(string path) where T : class
         {
@@ -152,5 +154,27 @@ namespace Beursfuif.Server.DataAccess
             }
         }
         #endregion
+        */
+
+        public T Load<T>(string path) where T : class
+        {
+           if (System.IO.File.Exists(path))
+           {
+               string json = File.ReadAllText(path);
+               if (!string.IsNullOrEmpty(json))
+               {
+                   T entity = JsonConvert.DeserializeObject<T>(json);
+                   return entity;
+               }
+           }
+
+            return default(T);        
+        }
+
+        public void Save<T>(string path, T entity) where T : class
+        {
+            string json = JsonConvert.SerializeObject(entity);
+            File.WriteAllText(path, json);
+        }
     }
 }

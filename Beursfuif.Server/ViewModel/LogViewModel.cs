@@ -107,14 +107,10 @@ namespace Beursfuif.Server.ViewModel
 
         #endregion
 
-        private IOManager _ioManager;
-
-        public LogViewModel(IOManager ioManager)
+        public LogViewModel()
         {
             if (!IsInDesignMode)
             {
-                _ioManager = ioManager;
-
                 MessengerInstance.Register<LogMessage>(this, LogMessageReceived);
             }
         }
