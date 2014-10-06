@@ -335,6 +335,7 @@ var beursfuif;
         SignalRMethodNames.YOU_GOT_KICKED = "youGotKicked";
         SignalRMethodNames.ACK_NEW_ORDER = "ackNewOrder";
         SignalRMethodNames.UPDATE_INTERVAL = "updateInterval";
+        SignalRMethodNames.DRINK_AVAILABLE_CHANGED = "drinkAvailableChanged";
         return SignalRMethodNames;
     })();
 
@@ -397,6 +398,9 @@ var beursfuif;
                 }
                 return _this.updateInterval(msg);
             });
+            this.hub.on(SignalRMethodNames.DRINK_AVAILABLE_CHANGED, function (clientInterval) {
+                return _this.drinkAvailableChanged(clientInterval);
+            });
         };
 
         SignalrService.prototype.sendInitialData = function () {
@@ -449,6 +453,15 @@ var beursfuif;
 
             //respond to server
             this.hub.invoke(SignalRMethodNames.ACK_INTERVAL_UPDATE, this.generateAuthString());
+        };
+
+        SignalrService.prototype.drinkAvailableChanged = function (clientInterval) {
+            console.log(clientInterval);
+            this.currentTime = clientInterval.CurrentTime;
+            this.clientInterval = clientInterval;
+            this.clientInterval.ClientDrinks.sort(this.sortByLowerDrinkName);
+            this.$rootScope.$broadcast(beursfuif.EventNames.DRINK_AVAILABLE_CHANGED);
+            toastr.info("Het aantal beschikbare dranken is veranderd", "Drank beschikbaarheid aangepast.");
         };
 
         //#endregion
@@ -522,6 +535,7 @@ var beursfuif;
         EventNames.OPEN_MODAL = "OPEN_MODAL";
         EventNames.SHOW_TOAST = "SHOW_TOAST";
         EventNames.INTERVAL_UPDATE = "INTERVAL_UPDATE";
+        EventNames.DRINK_AVAILABLE_CHANGED = "DRINK_AVAILABLE_CHANGED";
         return EventNames;
     })();
     beursfuif.EventNames = EventNames;

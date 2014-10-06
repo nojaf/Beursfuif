@@ -1,13 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30110.0
+VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beursfuif.Server", "Beursfuif.Server\Beursfuif.Server.csproj", "{6A547268-E30A-40C1-8E3B-90C422F42E1D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beursfuif.BL", "Beursfuif.BL\Beursfuif.BL.csproj", "{0BB30286-2A73-4955-95D2-CFA16B012FDC}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beursfuif.Console", "Beursfuif.Console\Beursfuif.Console.csproj", "{5D6259E2-206F-41A7-A274-9920628960A6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{873E9196-7FB5-4740-A9E2-A45CA3170E46}"
 	ProjectSection(SolutionItems) = preProject
@@ -48,16 +46,6 @@ Global
 		{0BB30286-2A73-4955-95D2-CFA16B012FDC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0BB30286-2A73-4955-95D2-CFA16B012FDC}.SingleImage|Any CPU.ActiveCfg = Release|Any CPU
 		{0BB30286-2A73-4955-95D2-CFA16B012FDC}.SingleImage|Any CPU.Build.0 = Release|Any CPU
-		{5D6259E2-206F-41A7-A274-9920628960A6}.CD_ROM|Any CPU.ActiveCfg = Release|Any CPU
-		{5D6259E2-206F-41A7-A274-9920628960A6}.CD_ROM|Any CPU.Build.0 = Release|Any CPU
-		{5D6259E2-206F-41A7-A274-9920628960A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5D6259E2-206F-41A7-A274-9920628960A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5D6259E2-206F-41A7-A274-9920628960A6}.DVD-5|Any CPU.ActiveCfg = Debug|Any CPU
-		{5D6259E2-206F-41A7-A274-9920628960A6}.DVD-5|Any CPU.Build.0 = Debug|Any CPU
-		{5D6259E2-206F-41A7-A274-9920628960A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5D6259E2-206F-41A7-A274-9920628960A6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5D6259E2-206F-41A7-A274-9920628960A6}.SingleImage|Any CPU.ActiveCfg = Release|Any CPU
-		{5D6259E2-206F-41A7-A274-9920628960A6}.SingleImage|Any CPU.Build.0 = Release|Any CPU
 		{BA3F9529-0F58-4F80-A522-6D646DF5CE03}.CD_ROM|Any CPU.ActiveCfg = CD_ROM
 		{BA3F9529-0F58-4F80-A522-6D646DF5CE03}.CD_ROM|Any CPU.Build.0 = CD_ROM
 		{BA3F9529-0F58-4F80-A522-6D646DF5CE03}.Debug|Any CPU.ActiveCfg = SingleImage

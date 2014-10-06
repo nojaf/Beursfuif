@@ -13,6 +13,7 @@ module beursfuif {
         static YOU_GOT_KICKED: string = "youGotKicked";
         static ACK_NEW_ORDER: string = "ackNewOrder";
         static UPDATE_INTERVAL: string = "updateInterval"; //(clientInterval, currentBFTime);
+        static DRINK_AVAILABLE_CHANGED: string = "drinkAvailableChanged";
         //#endregion
     }
 
@@ -57,6 +58,7 @@ module beursfuif {
             this.hub.on(SignalRMethodNames.YOU_GOT_KICKED, () => this.kicked());
             this.hub.on(SignalRMethodNames.ACK_NEW_ORDER, () => this.showToast());
             this.hub.on(SignalRMethodNames.UPDATE_INTERVAL, (...msg: any[]) => this.updateInterval(msg));
+            this.hub.on(SignalRMethodNames.DRINK_AVAILABLE_CHANGED, (clientInterval: IClientInterval) => this.drinkAvailableChanged(clientInterval));
         }
 
         sendInitialData(...msg: any[]) {
@@ -97,6 +99,15 @@ module beursfuif {
 
             //respond to server
             this.hub.invoke(SignalRMethodNames.ACK_INTERVAL_UPDATE, this.generateAuthString());
+        }
+
+        drinkAvailableChanged(clientInterval: IClientInterval) {
+            console.log(clientInterval);
+            this.currentTime = clientInterval.CurrentTime;
+            this.clientInterval = clientInterval;
+            this.clientInterval.ClientDrinks.sort(this.sortByLowerDrinkName);
+            this.$rootScope.$broadcast(EventNames.DRINK_AVAILABLE_CHANGED);
+            toastr.info("Het aantal beschikbare dranken is veranderd", "Drank beschikbaarheid aangepast.");
         }
         //#endregion
 

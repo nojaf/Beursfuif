@@ -34,7 +34,7 @@ namespace Beursfuif.Server.Services
 
         void UpdateInterval(ClientInterval clientInterval, DateTime currentBFTime);
 
-        void SendDrinkAvailableChanged(int drinkId, Drink drink, int intervalId);
+        void SendDrinkAvailableChanged(ClientInterval currentInterval);
 
         void SendAckNewOrder(Guid clientId, string authCode, DateTime currentBeursfuifTime);
 

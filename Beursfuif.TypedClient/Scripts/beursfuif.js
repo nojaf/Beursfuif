@@ -367,6 +367,7 @@ var beursfuif;
         SignalRMethodNames.YOU_GOT_KICKED = "youGotKicked";
         SignalRMethodNames.ACK_NEW_ORDER = "ackNewOrder";
         SignalRMethodNames.UPDATE_INTERVAL = "updateInterval";
+        SignalRMethodNames.DRINK_AVAILABLE_CHANGED = "drinkAvailableChanged";
         return SignalRMethodNames;
     })();
 
@@ -429,6 +430,9 @@ var beursfuif;
                 }
                 return _this.updateInterval(msg);
             });
+            this.hub.on(SignalRMethodNames.DRINK_AVAILABLE_CHANGED, function (clientInterval) {
+                return _this.drinkAvailableChanged(clientInterval);
+            });
         };
 
         SignalrService.prototype.sendInitialData = function () {
@@ -481,6 +485,15 @@ var beursfuif;
 
             //respond to server
             this.hub.invoke(SignalRMethodNames.ACK_INTERVAL_UPDATE, this.generateAuthString());
+        };
+
+        SignalrService.prototype.drinkAvailableChanged = function (clientInterval) {
+            console.log(clientInterval);
+            this.currentTime = clientInterval.CurrentTime;
+            this.clientInterval = clientInterval;
+            this.clientInterval.ClientDrinks.sort(this.sortByLowerDrinkName);
+            this.$rootScope.$broadcast(beursfuif.EventNames.DRINK_AVAILABLE_CHANGED);
+            toastr.info("Het aantal beschikbare dranken is veranderd", "Drank beschikbaarheid aangepast.");
         };
 
         //#endregion
@@ -554,6 +567,7 @@ var beursfuif;
         EventNames.OPEN_MODAL = "OPEN_MODAL";
         EventNames.SHOW_TOAST = "SHOW_TOAST";
         EventNames.INTERVAL_UPDATE = "INTERVAL_UPDATE";
+        EventNames.DRINK_AVAILABLE_CHANGED = "DRINK_AVAILABLE_CHANGED";
         return EventNames;
     })();
     beursfuif.EventNames = EventNames;
@@ -626,7 +640,7 @@ var beursfuif;
             this.$timeout = $timeout;
             if (signalrService.clientInterval) {
                 //bind current data
-                this.bindData();
+                this.dataBind();
 
                 this.$scope.vm = this;
                 this.initScope();
@@ -634,7 +648,7 @@ var beursfuif;
                 $location.path("/");
             }
         }
-        MainCtrl.prototype.bindData = function () {
+        MainCtrl.prototype.dataBind = function () {
             var _this = this;
             this.$timeout(function () {
                 _this.$scope.drinks = _this.signalrService.clientInterval.ClientDrinks;
@@ -664,8 +678,15 @@ var beursfuif;
                 //So we route back to the login screen
                 setTimeout(function () {
                     _this.$location.path("/");
-                    _this.$scope.$apply();
                 }, 250);
+            });
+
+            this.$scope.$on(beursfuif.EventNames.DRINK_AVAILABLE_CHANGED, function (e) {
+                if (_this.$scope.currentOrder.length > 0) {
+                    _this.$scope.currentOrder = [];
+                }
+
+                _this.dataBind();
             });
 
             this.$scope.currentOrder = [];
@@ -675,7 +696,7 @@ var beursfuif;
                     _this.$scope.currentOrder = [];
                 }
 
-                _this.bindData();
+                _this.dataBind();
             });
         };
 

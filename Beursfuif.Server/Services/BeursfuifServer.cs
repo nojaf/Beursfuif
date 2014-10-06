@@ -225,9 +225,10 @@ namespace Beursfuif.Server.Services
             _hub.Clients.All.UpdateInterval(clientInterval, currentBFTime);
         }
 
-        public void SendDrinkAvailableChanged(int drinkId, BL.Drink drink, int intervalId)
+        public void SendDrinkAvailableChanged(ClientInterval currentInterval)
         {
-            throw new NotImplementedException();
+            //SignalR Method
+            _hub.Clients.All.DrinkAvailableChanged(currentInterval);
         }
 
         public void SendAckNewOrder(Guid clientId, string authCode, DateTime currentBeursfuifTime)

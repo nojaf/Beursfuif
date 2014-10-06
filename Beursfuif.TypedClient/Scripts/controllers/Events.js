@@ -9,6 +9,7 @@ var beursfuif;
         EventNames.OPEN_MODAL = "OPEN_MODAL";
         EventNames.SHOW_TOAST = "SHOW_TOAST";
         EventNames.INTERVAL_UPDATE = "INTERVAL_UPDATE";
+        EventNames.DRINK_AVAILABLE_CHANGED = "DRINK_AVAILABLE_CHANGED";
         return EventNames;
     })();
     beursfuif.EventNames = EventNames;

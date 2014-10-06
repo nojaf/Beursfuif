@@ -13,7 +13,7 @@ module beursfuif {
         constructor(private $scope: IMainCtrlScope, private signalrService: SignalrService, private $location: ng.ILocationService, private $timeout:ng.ITimeoutService) {
             if (signalrService.clientInterval) {
                 //bind current data
-                this.bindData();
+                this.dataBind();
 
 
                 this.$scope.vm = this;
@@ -24,7 +24,7 @@ module beursfuif {
             }
         }
 
-        bindData(): void {
+        dataBind(): void {
             this.$timeout(() => {
                 this.$scope.drinks = this.signalrService.clientInterval.ClientDrinks;
                 this.$scope.intervalStart = moment(this.signalrService.clientInterval.Start).format("HH:mm");
@@ -54,8 +54,15 @@ module beursfuif {
                 //So we route back to the login screen
                 setTimeout(() => {
                     this.$location.path("/");
-                    this.$scope.$apply();
                 }, 250);
+            });
+
+            this.$scope.$on(EventNames.DRINK_AVAILABLE_CHANGED, (e: ng.IAngularEvent) => {
+                if (this.$scope.currentOrder.length > 0) {
+                    this.$scope.currentOrder = [];
+                }
+
+                this.dataBind();
             });
 
             this.$scope.currentOrder = [];
@@ -65,7 +72,7 @@ module beursfuif {
                     this.$scope.currentOrder = [];
                 }
 
-                this.bindData();
+                this.dataBind();
             });
         }
 

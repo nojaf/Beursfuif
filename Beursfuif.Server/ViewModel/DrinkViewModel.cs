@@ -1,18 +1,16 @@
 ﻿using Beursfuif.BL;
 using Beursfuif.Server.DataAccess;
 using Beursfuif.Server.Messages;
-using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Windows;
+using Beursfuif.BL.Extensions;
 
 namespace Beursfuif.Server.ViewModel
 {
@@ -374,6 +372,7 @@ namespace Beursfuif.Server.ViewModel
             }
         }
 
+        #region Images
         private void ChooseLocalImage()
         {
             PointInCode("DrinkViewModel: ChooseLocalImage");
@@ -464,6 +463,7 @@ namespace Beursfuif.Server.ViewModel
             Uri image = new Uri(destinationPath);
             NewEditDrink.ImageString = assets.MakeRelativeUri(image).ToString();
         }
+        #endregion
 
         private void DeleteDrink(int id)
         {
@@ -530,7 +530,12 @@ namespace Beursfuif.Server.ViewModel
 
             var locator = base.GetLocator();
             Drink changed = Drinks.FirstOrDefault(x => x.Id == id);
-            Interval currentInterval = locator.Settings.CurrentInterval;
+            var settingsVM = locator.Settings;
+            Interval currentInterval = settingsVM.CurrentInterval;
+            if (currentInterval.Drinks.Any(x => x.Id == changed.Id))
+            {
+                currentInterval.Drinks.FirstOrDefault(x => x.Id == changed.Id).Available = changed.Available;
+            }
 
             var intervals = locator.Interval.Intervals;
             if(intervals != null)
@@ -551,12 +556,12 @@ namespace Beursfuif.Server.ViewModel
 
             if (BeursfuifBusy)
             {
-                //send message to SettingsViewmodel to update the clients that a drink is no longer available
-                MessengerInstance.Send<DrinkAvailableMessage>(new DrinkAvailableMessage() { Available = changed.Available, DrinkId = changed.Id });
+                //send message to clients with the current interval
+                MessengerInstance.Send<DrinkAvailableMessage>(new DrinkAvailableMessage());
             }
 
-            SendToastMessage(changed.Name + " is " + (changed.Available ? "weer" : "niet meer") + " beschikbaar");
-            SendLogMessage("Drink (" + changed.Name + ") available (" + changed.Available + ") changed", LogType.DRINK_VM);
+            SendToastMessage(string.Format("{0}  is {1} beschikbaar", changed.Name, (changed.Available ? "weer" : "niet meer")));
+            SendLogMessage(string.Format("Drink ({0}) available ({1}) changed",changed.Name ,changed.Available), LogType.DRINK_VM);
 
         }
 

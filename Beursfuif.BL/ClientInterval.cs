@@ -6,6 +6,9 @@ using System.Text;
 
 namespace Beursfuif.BL
 {
+    /// <summary>
+    /// DTO class that wraps the current interval data with ClientDrink DTOs
+    /// </summary>
     public class ClientInterval
     {
         #region properties

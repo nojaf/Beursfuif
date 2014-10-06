@@ -8,7 +8,7 @@ var beursfuif;
             this.$timeout = $timeout;
             if (signalrService.clientInterval) {
                 //bind current data
-                this.bindData();
+                this.dataBind();
 
                 this.$scope.vm = this;
                 this.initScope();
@@ -16,7 +16,7 @@ var beursfuif;
                 $location.path("/");
             }
         }
-        MainCtrl.prototype.bindData = function () {
+        MainCtrl.prototype.dataBind = function () {
             var _this = this;
             this.$timeout(function () {
                 _this.$scope.drinks = _this.signalrService.clientInterval.ClientDrinks;
@@ -46,8 +46,15 @@ var beursfuif;
                 //So we route back to the login screen
                 setTimeout(function () {
                     _this.$location.path("/");
-                    _this.$scope.$apply();
                 }, 250);
+            });
+
+            this.$scope.$on(beursfuif.EventNames.DRINK_AVAILABLE_CHANGED, function (e) {
+                if (_this.$scope.currentOrder.length > 0) {
+                    _this.$scope.currentOrder = [];
+                }
+
+                _this.dataBind();
             });
 
             this.$scope.currentOrder = [];
@@ -57,7 +64,7 @@ var beursfuif;
                     _this.$scope.currentOrder = [];
                 }
 
-                _this.bindData();
+                _this.dataBind();
             });
         };
 

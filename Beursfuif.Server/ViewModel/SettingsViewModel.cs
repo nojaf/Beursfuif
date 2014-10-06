@@ -768,14 +768,9 @@ namespace Beursfuif.Server.ViewModel
         private void DrinkAvailableMessageReceived(DrinkAvailableMessage msg)
         {
             PointInCode("SettingsViewModel: DrinkAvailableMessageReceived");
-
-            Drink changed = CurrentInterval.Drinks.FirstOrDefault(x => x.Id == msg.DrinkId);
-            if (changed != null)
-            {
-                changed.Available = msg.Available;
-                _server.SendDrinkAvailableChanged(msg.DrinkId, (msg.Available ? changed : null), CurrentInterval.Id);
-            }
             ThreadPool.QueueUserWorkItem(SaveSettings);
+            ClientInterval clientInterval = this.CurrentInterval.ToClientInterval(this.BeursfuifCurrentTime, PathManager.ASSETS_PATH);
+            _server.SendDrinkAvailableChanged(clientInterval);
         }
         #endregion
 
