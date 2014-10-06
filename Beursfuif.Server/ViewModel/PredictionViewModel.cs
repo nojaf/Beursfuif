@@ -124,6 +124,12 @@ namespace Beursfuif.Server.ViewModel
             var locator = GetLocator();
 
             Interval currentInterval = locator.Settings.CurrentInterval;
+            if (currentInterval.Id == locator.Interval.Intervals.Last().Id)
+            {
+                //The last interval is in progress, you can't recalcutate right here
+                return;
+            }
+
             Interval nextInterval = PriceCalculation.CalculatePriceUpdates(locator.Orders.AllOrderItems,
             locator.Interval.Intervals, currentInterval.Id, true, this);
 

@@ -533,12 +533,15 @@ namespace Beursfuif.Server.ViewModel
             Interval currentInterval = locator.Settings.CurrentInterval;
 
             var intervals = locator.Interval.Intervals;
-            int length = intervals.Length;
-            int index = Array.IndexOf(intervals, currentInterval);
-            for (int i = index; i < length; i++)
+            if(intervals != null)
             {
-                Drink drink = intervals[i].Drinks.FirstOrDefault(x => x.Id == id);
-                if (drink != null) drink.Available = changed.Available;
+                int length = intervals.Length;
+                int index = Array.IndexOf(intervals, currentInterval);
+                for (int i = index; i < length; i++)
+                {
+                    Drink drink = intervals[i].Drinks.FirstOrDefault(x => x.Id == id);
+                    if (drink != null) drink.Available = changed.Available;
+                }
             }
 
             ThreadPool.QueueUserWorkItem(new WaitCallback(delegate(object state)
