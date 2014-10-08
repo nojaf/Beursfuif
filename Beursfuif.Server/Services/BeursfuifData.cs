@@ -13,6 +13,30 @@ namespace Beursfuif.Server.Services
 {
     public class BeursfuifData : IBeursfuifData
     {
+        #region event
+        public event EventHandler<bool> BeursfuifBusyChanged;
+
+        public void RaiseBeursfuifBusyChanged()
+        {
+            if (BeursfuifBusyChanged != null)
+            {
+                BeursfuifBusyChanged(this, BeursfuifBusy);
+            }
+        }
+
+
+        //The boolean indicates if it's a full reset
+        public event EventHandler<bool> DataReset;
+
+        public void RaisDataReset(bool fullReset)
+        {
+            if (DataReset != null)
+            {
+                DataReset(this, fullReset);
+            }
+        }
+        #endregion
+
         #region fields and properties
         private IIOManager _ioManager;
 
@@ -133,7 +157,7 @@ namespace Beursfuif.Server.Services
 
         private void LoadOrders()
         {
-            AllOrders = _ioManager.Load<ObservableCollection<ShowOrder>>(PathManager.AUTO_SAVE_ALL_ORDERS);
+            AllOrders = _ioManager.Load<ObservableCollection<ShowOrder>>(PathManager.ALL_ORDERS);
 
             if (AllOrders != null && AllOrders.Any())
             {
@@ -190,7 +214,7 @@ namespace Beursfuif.Server.Services
 
         public void SaveAllOrders()
         {
-            _ioManager.Save<ObservableCollection<ShowOrder>>(PathManager.AUTO_SAVE_ALL_ORDERS, AllOrders);
+            _ioManager.Save<ObservableCollection<ShowOrder>>(PathManager.ALL_ORDERS, AllOrders);
         }
 
         #endregion
@@ -198,8 +222,11 @@ namespace Beursfuif.Server.Services
         #region Helper
         public void ChangeBeursfuifBusy(bool busy)
         {
-            BeursfuifBusy = busy;
-            //Will this trigger everything?
+            if (busy != BeursfuifBusy)
+            {
+                BeursfuifBusy = busy;
+            }
+            RaiseBeursfuifBusyChanged();
         }
 
         public string AuthenticationString()
@@ -226,15 +253,41 @@ namespace Beursfuif.Server.Services
         #region Reset
         public void ResetAll()
         {
-            throw new NotImplementedException();
+            ResetData();
+            Drinks = new ObservableCollection<Drink>();
+            SafeDeleteFile(PathManager.DRINK_PATH);
+            RaisDataReset(true);
         }
 
         public void ResetData()
         {
-            throw new NotImplementedException();
+            Clients = new ObservableCollection<Client>();
+            Intervals = null;
+            AllOrders = new ObservableCollection<ShowOrder>();
+            AllOrderItems = new List<ClientDrinkOrder>();
+            DateTime now = DateTime.Now;
+            BeginTime = new DateTime(now.Year, 1, 1, 21, 0, 0);
+            EndTime = new DateTime(now.Year, 1, 2, 5, 0, 0);
+            ChangeBeursfuifBusy(false);
+            BeursfuifEverStarted = false;
+            CurrentInterval = null;
+
+            //Delete json files
+            SafeDeleteFile(PathManager.INTERVAL_PATH);
+            SafeDeleteFile(PathManager.SETTINGS_PATH);
+            SafeDeleteFile(PathManager.ALL_ORDERS);
+            SafeDeleteFile(PathManager.CURRENT_INTERVAL_PATH);
+
+            RaisDataReset(false);
+        }
+
+        private void SafeDeleteFile(string path)
+        {
+            if (System.IO.File.Exists(path))
+            {
+                System.IO.File.Delete(path);
+            }
         }
         #endregion
-
-
     }
 }

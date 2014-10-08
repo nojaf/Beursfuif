@@ -238,7 +238,24 @@ namespace Beursfuif.Server.ViewModel
 
                 InitCommands();
                 CheckCanEdit();
+
+                _beursfuifData.BeursfuifBusyChanged += BeursfuifData_BeursfuifBusyChanged;
+                _beursfuifData.DataReset += BeursfuifData_DataReset;
             }
+        }
+
+        void BeursfuifData_DataReset(object sender, bool e)
+        {
+            if (e)
+            {
+                RaisePropertyChanged(DrinksPropertyName);
+            }
+        }
+
+        void BeursfuifData_BeursfuifBusyChanged(object sender, bool e)
+        {
+            RaisePropertyChanged(BeursfuifBusyPropertyName);
+            CheckCanEdit();
         }
 
         private void CleanUpImages(object state)

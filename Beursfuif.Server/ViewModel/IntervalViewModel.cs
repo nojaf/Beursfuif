@@ -243,7 +243,24 @@ namespace Beursfuif.Server.ViewModel
 
                 InitCommands();
                 CheckCanEdit();
+
+                _beursfuifData.BeursfuifBusyChanged += BeursfuifData_BeursfuifBusyChanged;
+                _beursfuifData.DataReset += BeursfuifData_DataReset;
             }
+        }
+
+        void BeursfuifData_DataReset(object sender, bool e)
+        {
+            RaisePropertyChanged(IntervalsPropertyName);
+            RaisePropertyChanged(ChosenIntervalPropertyName);
+            RaisePropertyChanged(BeginTimePropertyName);
+            RaisePropertyChanged(EndTimePropertyName);
+            CheckCanEdit();
+        }
+
+        void BeursfuifData_BeursfuifBusyChanged(object sender, bool e)
+        {
+            CheckCanEdit();
         }
 
         #region InitCommands
@@ -329,6 +346,7 @@ namespace Beursfuif.Server.ViewModel
             if (_beursfuifData.BeursfuifEverStarted)
             {
                 CanModify = false;
+                RaisePropertyChanged(CantModifyPropertyName);
             }
         }
 

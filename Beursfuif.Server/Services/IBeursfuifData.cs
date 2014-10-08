@@ -11,6 +11,12 @@ namespace Beursfuif.Server.Services
 {
     public interface IBeursfuifData
     {
+
+        event EventHandler<bool> BeursfuifBusyChanged;
+
+        event EventHandler<bool> DataReset;
+
+
         ObservableCollection<Drink> Drinks {get;set;}
 
         DateTime BeginTime { get; set; }

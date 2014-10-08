@@ -21,7 +21,7 @@ namespace Beursfuif.Server.DataAccess
 
         public static string SETTINGS_PATH = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Beursfuif\\Data\\" + "settings.json";
 
-        public static string AUTO_SAVE_ALL_ORDERS = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Beursfuif\\Data\\" + "auto_saved_all_orders.json";
+        public static string ALL_ORDERS = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Beursfuif\\Data\\" + "auto_saved_all_orders.json";
 
         public static string LOG_FOLDER = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Beursfuif\\Log\\";
     }
