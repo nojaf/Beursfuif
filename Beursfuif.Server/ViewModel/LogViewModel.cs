@@ -1,5 +1,6 @@
 ﻿using Beursfuif.BL;
 using Beursfuif.Server.DataAccess;
+using Beursfuif.Server.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -107,25 +108,12 @@ namespace Beursfuif.Server.ViewModel
 
         #endregion
 
-        public LogViewModel()
+        public LogViewModel(IBeursfuifData data) : base(data)
         {
             if (!IsInDesignMode)
             {
                 MessengerInstance.Register<LogMessage>(this, LogMessageReceived);
             }
-        }
-
-        private void LogMessageReceived(LogMessage lm)
-        {
-            App.Current.Dispatcher.BeginInvoke(new Action(() =>
-            {
-                AllLogMessages.Add(lm);
-                if (lm.Type.HasFlag(SelectedLogType))
-                {
-                    SelectedLogMessages.Add(lm);
-                }
-            }));
-            LogManager.AppendToLog(lm);
         }
 
         private void UpdateSelectedLogItems()
@@ -136,6 +124,19 @@ namespace Beursfuif.Server.ViewModel
             {
                 SelectedLogMessages.Add(item);
             }
+        }
+
+        private void LogMessageReceived(LogMessage logMessage)
+        {
+            App.Current.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                AllLogMessages.Add(logMessage);
+                if (logMessage.Type.HasFlag(SelectedLogType))
+                {
+                    SelectedLogMessages.Add(logMessage);
+                }
+            }));
+            LogManager.AppendToLog(logMessage);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Beursfuif.BL;
 using Beursfuif.Server.Messages;
+using Beursfuif.Server.Services;
 using GalaSoft.MvvmLight;
 using System;
 using System.Collections.Generic;
@@ -10,13 +11,14 @@ using System.Windows;
 
 namespace Beursfuif.Server.ViewModel
 {
-    public class BeursfuifViewModelBase:ViewModelBase
+    public abstract class BeursfuifViewModelBase:ViewModelBase
     {
         //this base class
         //implements the code to change the visible state of the view
         //Using an instance of IStateChange (View)
         //Unfortunately in WPF I can't make a base control for the views
 
+        protected IBeursfuifData _beursfuifData;
         protected IStateChange _stateChanger;
         protected const string FADE_IN = "FadeIn";
         protected const string FADE_OUT = "FadeOut";
@@ -29,8 +31,6 @@ namespace Beursfuif.Server.ViewModel
         /// </summary>
         public const string BeursfuifBusyPropertyName = "BeursfuifBusy";
 
-        private bool _beursfuifBusy = false;
-
         /// <summary>
         /// Sets and gets the BeursfuifBusy property.
         /// Changes to that property's value raise the PropertyChanged event. 
@@ -39,20 +39,7 @@ namespace Beursfuif.Server.ViewModel
         {
             get
             {
-                return _beursfuifBusy;
-            }
-
-            set
-            {
-                if (_beursfuifBusy == value) return;
-                
-                RaisePropertyChanging(BeursfuifBusyPropertyName);
-                RaisePropertyChanging("NotBeursfuifBusy");
-                _beursfuifBusy = value;
-                RaisePropertyChanged(BeursfuifBusyPropertyName);
-                RaisePropertyChanged("NotBeursfuifBusy");
-
-                MessengerInstance.Send<BeursfuifBusyMessage>(new BeursfuifBusyMessage() { Value = value });
+                return _beursfuifData.BeursfuifBusy;
             }
         }
 
@@ -61,20 +48,15 @@ namespace Beursfuif.Server.ViewModel
             get { return !BeursfuifBusy; }
         }
 
-        public BeursfuifViewModelBase()
+        public BeursfuifViewModelBase(IBeursfuifData beursfuifData)
         {
+            _beursfuifData = beursfuifData;
             InitHideShowMessage();
         }
 
         private void InitHideShowMessage()
         {
             MessengerInstance.Register<ChangeVisibilityMessage>(this, ChangeState);
-            MessengerInstance.Register<BeursfuifBusyMessage>(this, ChangePartyBusy);
-        }
-
-        protected virtual void ChangePartyBusy(BeursfuifBusyMessage obj)
-        {
-            BeursfuifBusy = obj.Value;
         }
 
         private void ChangeState(ChangeVisibilityMessage message)
@@ -97,11 +79,6 @@ namespace Beursfuif.Server.ViewModel
         public void SetStateChanger(IStateChange drinkView)
         {
             _stateChanger = drinkView;
-        }
-
-        protected ViewModelLocator GetLocator()
-        {
-            return Application.Current.Resources["Locator"] as ViewModelLocator;
         }
 
         public virtual void SendLogMessage(string msg, LogType type){

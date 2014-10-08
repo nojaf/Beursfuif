@@ -1,18 +1,15 @@
 ﻿using Beursfuif.BL;
 using Beursfuif.Server.DataAccess;
 using GalaSoft.MvvmLight.Command;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
 using System.Windows;
 using Beursfuif.BL.Extensions;
 using Beursfuif.Server.Messages;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
 using System.Net.NetworkInformation;
@@ -25,12 +22,13 @@ namespace Beursfuif.Server.ViewModel
     public class SettingsViewModel : BeursfuifViewModelBase
     {
         #region Fields and Properties
+        private System.Threading.Timer _tmrMain;
+        private IBeursfuifServer _server;
+
         /// <summary>
         /// The <see cref="CurrentInterval" /> property's name.
         /// </summary>
         public const string CurrentIntervalPropertyName = "CurrentInterval";
-
-        private Interval _currentInterval = null;
 
         /// <summary>
         /// Sets and gets the CurrentInterval property.
@@ -40,18 +38,18 @@ namespace Beursfuif.Server.ViewModel
         {
             get
             {
-                return _currentInterval;
+                return _beursfuifData.CurrentInterval;
             }
 
             set
             {
-                if (_currentInterval == value)
+                if (_beursfuifData.CurrentInterval == value)
                 {
                     return;
                 }
 
                 RaisePropertyChanging(CurrentIntervalPropertyName);
-                _currentInterval = value;
+                _beursfuifData.CurrentInterval = value;
                 RaisePropertyChanged(CurrentIntervalPropertyName);
             }
         }
@@ -106,8 +104,6 @@ namespace Beursfuif.Server.ViewModel
         /// </summary>
         public const string BeursfuifCurrentTimePropertyName = "BeursfuifCurrentTime";
 
-        private DateTime _beursfuifCurrentTime = DateTime.Now;
-
         /// <summary>
         /// Sets and gets the BeursfuifCurrentTime property.
         /// Changes to that property's value raise the PropertyChanged event. 
@@ -116,27 +112,23 @@ namespace Beursfuif.Server.ViewModel
         {
             get
             {
-                return _beursfuifCurrentTime;
+                return _beursfuifData.BeursfuifCurrentTime;
             }
 
             set
             {
-                if (_beursfuifCurrentTime == value)
+                if (_beursfuifData.BeursfuifCurrentTime == value)
                 {
                     return;
                 }
 
                 RaisePropertyChanging(BeursfuifCurrentTimePropertyName);
-                _beursfuifCurrentTime = value;
+                _beursfuifData.BeursfuifCurrentTime = value;
                 RaisePropertyChanged(BeursfuifCurrentTimePropertyName);
             }
         }
 
         public RelayCommand MainActionButtonCommand { get; set; }
-
-        private IIOManager _ioManager;
-        private System.Threading.Timer _tmrMain;
-        private IBeursfuifServer _server;
 
         /// <summary>
         /// The <see cref="BackupLocation" /> property's name.
@@ -226,24 +218,18 @@ namespace Beursfuif.Server.ViewModel
         public RelayCommand RestoreBackupCommand { get; set; }
         #endregion
 
-        public SettingsViewModel(IIOManager ioManager, IBeursfuifServer server)
+        public SettingsViewModel(IBeursfuifData data, IBeursfuifServer server):base(data)
         {
             if (!IsInDesignMode)
             {
                 PointInCode("SettingsViewModel: Ctor");
 
-                _ioManager = ioManager;
+                _beursfuifData = data;
                 _server = server;
 
-                if (System.IO.File.Exists(PathManager.BUSY_AND_TIME_PATH))
+                if (_beursfuifData.BeursfuifEverStarted)
                 {
                     SendLogMessage("Beursfuif has already started", LogType.SETTINGS_VM);
-                    Beursfuif.BL.SaveSettings settings = _ioManager.Load<SaveSettings>(PathManager.BUSY_AND_TIME_PATH);
-                    BeursfuifBusy = settings.Busy;
-                    BeursfuifCurrentTime = settings.CurrentTime;
-                    Port = settings.Port;
-                    CurrentInterval = LoadCurrentInterval();
-
                     if (BeursfuifBusy)
                     {
                         SendLogMessage("Resuming Beursfuif", LogType.SETTINGS_VM);
@@ -255,25 +241,18 @@ namespace Beursfuif.Server.ViewModel
                         SendLogMessage("Beursfuif paused", LogType.SETTINGS_VM);
                         MainActionButtonContent = RESUME_PARTY;
                     }
-
-
                 }
                 else
                 {
                     MainActionButtonContent = PARTY_NEVER_STARTED;
                     SendLogMessage("Beursfuif has never started", LogType.SETTINGS_VM);
                 }
-
+      
                 InitCommands();
                 InitServer();
                 InitMessages();
 
             }
-        }
-
-        private Interval LoadCurrentInterval()
-        {
-            return _ioManager.Load<Interval>(PathManager.CURRENT_INTERVAL_PATH);
         }
 
         private void InitCommands()
@@ -342,25 +321,7 @@ namespace Beursfuif.Server.ViewModel
 
             if (Port < 1000) return false;
 
-            var locator = GetLocator();
-            if (locator != null)
-            {
-                try
-                {
-
-                    if (locator.Drink.Drinks.Count > 0 && locator.Interval.Intervals.Length > 0)
-                    {
-                        //SendLogMessage("PartyConditions are valid", LogType.SETTINGS_VM);
-                        return true;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    //SendLogMessage("ValidatePartyConditions threw ex = " + ex.Message, LogType.ERROR | LogType.SETTINGS_VM);
-                    return false;
-                }
-            }
-            return false;
+            return (_beursfuifData.Drinks != null && _beursfuifData.Drinks.Any() && _beursfuifData.Intervals != null && _beursfuifData.Intervals.Any());
         }
 
         #region MainActionCommands
@@ -387,7 +348,7 @@ namespace Beursfuif.Server.ViewModel
             PointInCode("SettingsViewModel: PauseParty");
 
             SendLogMessage("Party paused method", LogType.SETTINGS_VM);
-            BeursfuifBusy = false;
+            _beursfuifData.ChangeBeursfuifBusy(false);
             RaisePropertyChanged(BeursfuifBusyVisibilityPropertyName);
 
             _tmrMain.Change(Timeout.Infinite, Timeout.Infinite);
@@ -405,17 +366,16 @@ namespace Beursfuif.Server.ViewModel
             PointInCode("SettingsViewModel: ResumeParty");
 
             SendLogMessage("Resuming party method", LogType.SETTINGS_VM);
-            BeursfuifBusy = true;
+            _beursfuifData.ChangeBeursfuifBusy(true);
             RaisePropertyChanged(BeursfuifBusyVisibilityPropertyName);
             _server.Active = true;
-
 
             bool succes = await _server.Start(IPAdress, Port);
             
             if(!succes)
             {
                 _server.Active = false;
-                BeursfuifBusy = false;
+                _beursfuifData.ChangeBeursfuifBusy(false);
                 RaisePropertyChanged(BeursfuifBusyVisibilityPropertyName);
                 _dm = new DialogMessage("Kon de server niet opstarten");
                 _dm.Errors.Add("Werd het programma als administrator opgestart?");
@@ -449,27 +409,26 @@ namespace Beursfuif.Server.ViewModel
 
             //initial save triggers the views (Interval & Drink) to disable controls
             SaveSettings(state);
+            _beursfuifData.ChangeBeursfuifBusy(true);
 
-            BeursfuifBusy = true;
             RaisePropertyChanged(BeursfuifBusyVisibilityPropertyName);
 
-            var locator = GetLocator();
-
             //drinks
-            var drinks = locator.Drink.Drinks.Where(x => x.Available).ToArray();
+            var drinks = _beursfuifData.Drinks.Where(x => x.Available).ToArray();
 
             //fill all intervals
-            int intervalCount = locator.Interval.Intervals.Length;
+            int intervalCount = _beursfuifData.Intervals.Length;
 
             for (int i = 0; i < intervalCount; i++)
             {
-                FillInDrinks(locator.Interval.Intervals[i], drinks);
+                FillInDrinks(_beursfuifData.Intervals[i], drinks);
             }
-            locator.Interval.SaveIntervals();
 
-            CurrentInterval = locator.Interval.Intervals[0];
+            _beursfuifData.SaveIntervals();
 
-            BeursfuifCurrentTime = CurrentInterval.StartTime;
+            _beursfuifData.CurrentInterval = _beursfuifData.Intervals[0];
+
+            _beursfuifData.BeursfuifCurrentTime = CurrentInterval.StartTime;
 
             //start timer
             _tmrMain = new System.Threading.Timer(MainTimer_Tick, null, 1000, 1000);
@@ -502,12 +461,9 @@ namespace Beursfuif.Server.ViewModel
         private void SaveSettings(object state)
         {
             PointInCode("SettingsViewModel: SaveSettings");
-
-            _ioManager.Save<SaveSettings>(PathManager.BUSY_AND_TIME_PATH, new SaveSettings(BeursfuifBusy, BeursfuifCurrentTime, Port));
-
-            //CurrentInterval
-            _ioManager.Save<Interval>(PathManager.CURRENT_INTERVAL_PATH, CurrentInterval);
-
+            SaveSettings settings = new SaveSettings(BeursfuifBusy, BeursfuifCurrentTime, Port);
+            _beursfuifData.SaveSettings(settings);
+            _beursfuifData.SaveCurrentInterval();
             SendLogMessage("Beursfuifsettings and currentInterval have been saved", LogType.SETTINGS_VM);
         }
 
@@ -536,20 +492,7 @@ namespace Beursfuif.Server.ViewModel
                 {
                     if (b.Value)
                     {
-
-                        var drinkVM = base.GetLocator().Drink;
-
-                        //drink vm
-                        drinkVM.Drinks.Clear();
-                        drinkVM.NewEditDrink = null;
-                        drinkVM.DownloadUrl = "";
-                        drinkVM.Downloading = false;
-                        drinkVM.CanModify = true;
-
-                        Task.Factory.StartNew(() =>
-                        {
-                            File.Delete(PathManager.DRINK_PATH);
-                        });
+                        _beursfuifData.ResetAll();
                     }
                 };
 
@@ -583,53 +526,7 @@ namespace Beursfuif.Server.ViewModel
                 {
                     if (b.Value)
                     {
-                        var locator = base.GetLocator();
-                        //drink vm
-                        locator.Drink.CanModify = true;
-
-                        //interval vm
-                        locator.Interval.Intervals = null;
-                        locator.Interval.BeginTime = new DateTime(1970, 1, 1, 21, 0, 0);
-                        locator.Interval.EndTime = new DateTime(1970, 1, 1, 22, 0, 0);
-                        locator.Interval.CanModify = true;
-                        locator.Interval.ChosenInterval = TimeSpan.Zero;
-
-                        //clients vm
-                        locator.Clients.Clients.Clear();
-
-                        //settings vm
-                        this.CurrentInterval = null;
-                        this.BeursfuifCurrentTime = DateTime.MinValue;
-                        this.MainActionButtonContent = PARTY_NEVER_STARTED;
-
-                        //orders vm
-                        locator.Orders.AllOrderItems.Clear();
-                        locator.Orders.ShowOrderList = null;
-                        locator.Orders.AllOrders = null;
-                        locator.Orders.SelectedInterval = null;
-                        locator.Orders.ReducedDrinks = null;
-                        locator.Orders.ReducedIntervals = null;
-
-                        //log vm
-                        locator.Log.AllLogMessages.Clear();
-                        locator.Log.SelectedLogMessages.Clear();
-                        locator.Log.SelectedLogType = LogType.ALL;
-
-                        //prediction vm
-                        locator.Prediction.PredictDrinks = null;
-                        locator.Prediction.IsDirty = false;
-
-
-
-
-                        Task.Factory.StartNew(() =>
-                        {
-                            File.Delete(PathManager.BUSY_AND_TIME_PATH);
-                            File.Delete(PathManager.CURRENT_INTERVAL_PATH);
-                            File.Delete(PathManager.INTERVAL_PATH);
-                            File.Delete(PathManager.AUTO_SAVE_ALL_ORDERS);
-                        });
-
+                        _beursfuifData.ResetData();
                         SendLogMessage("Fuifdata removed", LogType.SETTINGS_VM);
                     }
                 };
@@ -668,17 +565,16 @@ namespace Beursfuif.Server.ViewModel
 
             //TODO Update time
             SendLogMessage("Server will commence calculating new prices", LogType.SETTINGS_VM);
-            var locator = base.GetLocator();
 
             ThreadPool.QueueUserWorkItem(new WaitCallback((object target) =>
             {
-                Interval next = PriceCalculation.CalculatePriceUpdates(locator.Orders.AllOrderItems, locator.Interval.Intervals, CurrentInterval.Id, false, this);
+                Interval next = PriceCalculation.CalculatePriceUpdates(_beursfuifData.AllOrderItems, _beursfuifData.Intervals, _beursfuifData.CurrentInterval.Id, false, this);
                 if (next != null)
                 {
                     App.Current.Dispatcher.BeginInvoke(new Action(() =>
                     {
                         CurrentInterval = next;
-                        locator.Interval.SaveIntervals();
+                        _beursfuifData.SaveIntervals();
                         _server.UpdateInterval(next.ToClientInterval(BeursfuifCurrentTime, PathManager.ASSETS_PATH), BeursfuifCurrentTime);
                         _tmrMain.Change(1000, 1000);
                     }));
@@ -690,7 +586,7 @@ namespace Beursfuif.Server.ViewModel
                 {
                     //end of fuif
                     MainActionCommand();
-                    locator.Clients.KickAll(KickWasKickedReason.END_OF_FUIF);
+                    _beursfuifData.KickAllClients(KickWasKickedReason.END_OF_FUIF);
                     SendLogMessage("Beursfuif has ended", LogType.SETTINGS_VM | LogType.GOOD_NEWS);
                     SendToastMessage("Beursfuif completed", "De fuif is gedaan");
                     //TODO, disable restart fuif button
@@ -755,7 +651,7 @@ namespace Beursfuif.Server.ViewModel
         {
             PointInCode("SettingsViewModel: DrinkModifiedHandler");
 
-            var intervals = base.GetLocator().Interval.Intervals;
+            var intervals = _beursfuifData.Intervals;
             if (intervals != null && intervals.Length > 0)
             {
                 foreach (Interval interval in intervals)

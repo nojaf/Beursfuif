@@ -11,6 +11,7 @@ using Beursfuif.Server.DataAccess;
 using System.Threading.Tasks;
 using System.IO;
 using Beursfuif.Server.Services;
+using Beursfuif.BL.Event;
 
 namespace Beursfuif.Server.ViewModel
 {
@@ -18,20 +19,16 @@ namespace Beursfuif.Server.ViewModel
     {
         #region Fields and Properties
         private IBeursfuifServer _server;
-        private IIOManager _ioManager;
 
-        private List<ClientDrinkOrder> _allOrderItems = new List<ClientDrinkOrder>();
         public List<ClientDrinkOrder> AllOrderItems
         {
-            get { return _allOrderItems; }
+            get { return _beursfuifData.AllOrderItems; }
         }
 
         /// <summary>
         /// The <see cref="AllOrders" /> property's name.
         /// </summary>
         public const string AllOrdersPropertyName = "AllOrders";
-
-        private ObservableCollection<ShowOrder> _allOrders = null;
 
         /// <summary>
         /// Sets and gets the AllOrders property.
@@ -41,18 +38,18 @@ namespace Beursfuif.Server.ViewModel
         {
             get
             {
-                return _allOrders;
+                return _beursfuifData.AllOrders;
             }
 
             set
             {
-                if (_allOrders == value)
+                if (_beursfuifData.AllOrders == value)
                 {
                     return;
                 }
 
                 RaisePropertyChanging(AllOrdersPropertyName);
-                _allOrders = value;
+                _beursfuifData.AllOrders = value;
                 RaisePropertyChanged(AllOrdersPropertyName);
             }
         }
@@ -185,18 +182,17 @@ namespace Beursfuif.Server.ViewModel
         }
         #endregion
 
-        public OrdersViewModel(IBeursfuifServer server, IIOManager ioManager)
+        public OrdersViewModel(IBeursfuifServer server, IBeursfuifData beursfuifData):base(beursfuifData)
         {
             if (!IsInDesignMode)
             {
                 PointInCode("OrdersViewModel: Ctor");
 
                 _server = server;
-                _ioManager = ioManager;
                 InitServer();
                 InitMessages();
 
-                if (File.Exists(PathManager.BUSY_AND_TIME_PATH))
+                if (_beursfuifData.BeursfuifEverStarted)
                 {
                     InitData();
                 }
@@ -217,7 +213,7 @@ namespace Beursfuif.Server.ViewModel
 
             ThreadPool.QueueUserWorkItem(new WaitCallback((object target) =>
             {
-                _ioManager.Save<ObservableCollection<ShowOrder>>(PathManager.AUTO_SAVE_ALL_ORDERS, AllOrders);
+                _beursfuifData.SaveAllOrders();
             }));
             SendToastMessage("Autosaved", "Alle bestellingen werden bewaard.");
             SendLogMessage("Autosave all orders", LogType.ORDER_VM);
@@ -230,7 +226,6 @@ namespace Beursfuif.Server.ViewModel
         {
             PointInCode("OrdersViewModel: InitData");
 
-            AllOrders = _ioManager.Load<ObservableCollection<ShowOrder>>(PathManager.AUTO_SAVE_ALL_ORDERS);
             if (AllOrders == null)
             {
                 SendLogMessage("No orders where found in data folder", LogType.ORDER_VM);
@@ -239,13 +234,13 @@ namespace Beursfuif.Server.ViewModel
 
             foreach (ShowOrder sh in AllOrders)
             {
-                _allOrderItems.AddRange(sh.Orders);
+                _beursfuifData.AllOrderItems.AddRange(sh.Orders);
             }
 
             ShowOrderList = new ObservableCollection<ShowOrder>();
 
             //ReducedIntervals to populate the combobox
-            Interval[] intervals = base.GetLocator().Interval.Intervals;
+            Interval[] intervals = _beursfuifData.Intervals;
             int length = intervals.Length + 1;
             ReducedIntervals = new ReducedInterval[length];
             ReducedIntervals[0] = new ReducedInterval("Alle Intervalen");
@@ -256,7 +251,7 @@ namespace Beursfuif.Server.ViewModel
             SelectedInterval = ReducedIntervals[0];
 
             //Reduced drinks to populate the graph control
-            var drinks = base.GetLocator().Drink.Drinks;
+            var drinks = _beursfuifData.Drinks;
             int drinksLength = drinks.Count;
             ReducedDrinks = new ReducedDrink[drinksLength];
             for (int j = 0; j < drinksLength; j++)
@@ -286,15 +281,6 @@ namespace Beursfuif.Server.ViewModel
                 }
             }));
         }
-
-        protected override void ChangePartyBusy(BeursfuifBusyMessage obj)
-        {
-            base.ChangePartyBusy(obj);
-            if (BeursfuifBusy && AllOrders == null)
-            {
-                InitData();
-            }
-        }
         #endregion
 
         #region Server
@@ -305,24 +291,23 @@ namespace Beursfuif.Server.ViewModel
             _server.NewOrderEvent += Server_NewOrderEvent;
         }
 
-        void Server_NewOrderEvent(object sender, BL.Event.NewOrderEventArgs e)
+        void Server_NewOrderEvent(object sender, NewOrderEventArgs e)
         {
             PointInCode("OrdersViewModel: Server_NewOrderEvent");
 
-            var locator = base.GetLocator();
-            var currentInterval = locator.Settings.CurrentInterval;
-            if (currentInterval.AuthenticationString() == e.AuthenticationCode)
+
+            if( _beursfuifData.AuthenticationString() == e.AuthenticationCode)
             {
                 App.Current.Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    AddOrder(e, locator, currentInterval);
+                    AddOrder(e);
                 }));
                 return;
             }
             //else
             //client doesn't have a valid code
 
-            SendLogMessage("Invalid authcode from client " + locator.Clients.Clients.FirstOrDefault(x => x.Id == e.ClientId).Name,
+            SendLogMessage(string.Format("Invalid authcode from client {0}", _beursfuifData.GetClientName( e.ClientId)), 
                 LogType.ORDER_VM | LogType.CLIENT_SERVER_ERROR);
             MessengerInstance.Send<KickClientMessage>(new KickClientMessage()
             {
@@ -333,10 +318,10 @@ namespace Beursfuif.Server.ViewModel
 
         }
 
-        private void AddOrder(BL.Event.NewOrderEventArgs e, ViewModelLocator locator, Interval currentInterval)
+        private void AddOrder(NewOrderEventArgs e)
         {
             PointInCode("OrdersViewModel: AddOrder");
-
+            Interval currentInterval = _beursfuifData.CurrentInterval;
             ClientDrinkOrder[] items = e.Order;
             foreach (var drinkItem in items)
             {
@@ -345,10 +330,10 @@ namespace Beursfuif.Server.ViewModel
 
             ShowOrder newOrder = new ShowOrder()
             {
-                ClientName = locator.Clients.Clients.FirstOrDefault(x => x.Id == e.ClientId).Name,
+                ClientName = _beursfuifData.Clients.FirstOrDefault(x => x.Id == e.ClientId).Name,
                 IntervalId = currentInterval.Id,
-                OrderContent = e.Order.ToContentString(locator.Drink.Drinks),
-                Time = locator.Settings.BeursfuifCurrentTime,
+                OrderContent = e.Order.ToContentString(_beursfuifData.Drinks),
+                Time = _beursfuifData.BeursfuifCurrentTime,
                 TotalPrice = e.Order.TotalPrice(currentInterval),
                 Orders = items
             };
@@ -362,7 +347,7 @@ namespace Beursfuif.Server.ViewModel
                 ShowOrderList.Add(newOrder);
             }
 
-            _allOrderItems.AddRange(e.Order);
+            _beursfuifData.AllOrderItems.AddRange(e.Order);
         }
         #endregion
     }

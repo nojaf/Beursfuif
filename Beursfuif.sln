@@ -17,6 +17,8 @@ Project("{6141683F-8A12-4E36-9623-2EB02B2C2303}") = "Beursfuif.Setup", "Beursfui
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beursfuif.TypedClient", "Beursfuif.TypedClient\Beursfuif.TypedClient.csproj", "{8895A17A-4295-4446-A307-90BF5BB73888}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beursfuif.Tests", "Beursfuif.Tests\Beursfuif.Tests.csproj", "{367A5D34-6D7B-4390-BCFF-3DD45CB5D719}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		CD_ROM|Any CPU = CD_ROM|Any CPU
@@ -66,6 +68,16 @@ Global
 		{8895A17A-4295-4446-A307-90BF5BB73888}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8895A17A-4295-4446-A307-90BF5BB73888}.SingleImage|Any CPU.ActiveCfg = Release|Any CPU
 		{8895A17A-4295-4446-A307-90BF5BB73888}.SingleImage|Any CPU.Build.0 = Release|Any CPU
+		{367A5D34-6D7B-4390-BCFF-3DD45CB5D719}.CD_ROM|Any CPU.ActiveCfg = Release|Any CPU
+		{367A5D34-6D7B-4390-BCFF-3DD45CB5D719}.CD_ROM|Any CPU.Build.0 = Release|Any CPU
+		{367A5D34-6D7B-4390-BCFF-3DD45CB5D719}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{367A5D34-6D7B-4390-BCFF-3DD45CB5D719}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{367A5D34-6D7B-4390-BCFF-3DD45CB5D719}.DVD-5|Any CPU.ActiveCfg = Debug|Any CPU
+		{367A5D34-6D7B-4390-BCFF-3DD45CB5D719}.DVD-5|Any CPU.Build.0 = Debug|Any CPU
+		{367A5D34-6D7B-4390-BCFF-3DD45CB5D719}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{367A5D34-6D7B-4390-BCFF-3DD45CB5D719}.Release|Any CPU.Build.0 = Release|Any CPU
+		{367A5D34-6D7B-4390-BCFF-3DD45CB5D719}.SingleImage|Any CPU.ActiveCfg = Release|Any CPU
+		{367A5D34-6D7B-4390-BCFF-3DD45CB5D719}.SingleImage|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

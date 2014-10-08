@@ -22,8 +22,6 @@ namespace Beursfuif.Server.ViewModel
         /// </summary>
         public const string ClientsPropertyName = "Clients";
 
-        private ObservableCollection<Client> _clients = null;
-
         /// <summary>
         /// Sets and gets the MyProperty property.
         /// Changes to that property's value raise the PropertyChanged event. 
@@ -32,18 +30,18 @@ namespace Beursfuif.Server.ViewModel
         {
             get
             {
-                return _clients;
+                return _beursfuifData.Clients;
             }
 
             set
             {
-                if (_clients == value)
+                if (_beursfuifData.Clients == value)
                 {
                     return;
                 }
 
                 RaisePropertyChanging(ClientsPropertyName);
-                _clients = value;
+                _beursfuifData.Clients = value;
                 RaisePropertyChanged(ClientsPropertyName);
             }
         }
@@ -51,7 +49,7 @@ namespace Beursfuif.Server.ViewModel
         public RelayCommand<Guid> KickClientCommand { get; set; }
         #endregion
 
-        public ClientsViewModel(IBeursfuifServer server)
+        public ClientsViewModel(IBeursfuifServer server, IBeursfuifData data):base(data)
         {
             if (IsInDesignMode)
             {
@@ -94,7 +92,6 @@ namespace Beursfuif.Server.ViewModel
             else
             {
                 PointInCode("ClientsViewModel: Ctor");
-                Clients = new ObservableCollection<Client>();
                 _server = server;
                 InitServer();
                 InitCommands();
@@ -168,7 +165,7 @@ namespace Beursfuif.Server.ViewModel
         void Server_CurrentTimeAckEvent(object sender, BL.Event.BasicAuthAckEventArgs e)
         {
             PointInCode("ClientsViewModel: Server_CurrentTimeAckEvent");
-            if (GetCurrentInterval().AuthenticationString() != e.AuthCode)
+            if (_beursfuifData.AuthenticationString() != e.AuthCode)
             {
                 KickClient(new KickClientMessage()
                 {
@@ -203,14 +200,14 @@ namespace Beursfuif.Server.ViewModel
         {
             PointInCode("ClientsViewModel: Server_NewOrderEvent");
             Client c = Clients.FirstOrDefault(x => x.Id == e.ClientId);
-            string authString = GetCurrentInterval().AuthenticationString();
+            string authString = _beursfuifData.AuthenticationString();
             if (c != null && e.AuthenticationCode == authString)
             {
-                string msg = c.Name + ": " + e.Order.TotalPrice(GetCurrentInterval()) + " bons.";
+                string msg = string.Format("{0}: {1} bons", c.Name ,e.Order.TotalPrice(_beursfuifData.CurrentInterval));
                 SendToastMessage("Nieuwe bestelling ontvangen",msg);
                 SendLogMessage("New order: " + msg, LogType.FROM_CLIENT | LogType.CLIENT_VM);
                 c.OrderCount++;
-                _server.SendAckNewOrder(e.ClientId, authString, GetCurrentBeursfuifTime());
+                _server.SendAckNewOrder(e.ClientId, authString, _beursfuifData.BeursfuifCurrentTime);
                 ClientResponded(e.ClientId);
             }
         }
@@ -218,7 +215,7 @@ namespace Beursfuif.Server.ViewModel
         void Server_NewClientEventHandler(object sender, BL.Event.NewClientEventArgs e)
         {
             PointInCode("ClientsViewModel: Server_NewClientEventHandler");
-            DateTime currentBFTime = GetCurrentBeursfuifTime();
+            DateTime currentBFTime = _beursfuifData.BeursfuifCurrentTime;
 
             Action action = delegate()
             {
@@ -236,7 +233,7 @@ namespace Beursfuif.Server.ViewModel
             SendToastMessage("New client connected", e.Name + " heeft zich aangemeld.");
             SendLogMessage("New client connected: "+e.Name + " heeft zich aangemeld.", LogType.CLIENT_VM | LogType.FROM_CLIENT);
 
-            Interval currentInterval = GetCurrentInterval();
+            Interval currentInterval = _beursfuifData.CurrentInterval;
 
             _server.SendAckInitialClientConnect(currentInterval.ToClientInterval(currentBFTime, PathManager.ASSETS_PATH), e.Id, currentBFTime);
             SendLogMessage("Repley on " + e.Name + "'s connection request", LogType.SETTINGS_VM);
@@ -245,7 +242,7 @@ namespace Beursfuif.Server.ViewModel
         void Server_IntervalUpdateAckEvent(object sender, BL.Event.BasicAuthAckEventArgs e)
         {
             PointInCode("ClientsViewModel: Server_IntervalUpdateAckEvent");           
-            if (GetCurrentInterval().AuthenticationString() != e.AuthCode)
+            if (_beursfuifData.AuthenticationString() != e.AuthCode)
             {
                 KickClient(new KickClientMessage()
                 {
@@ -262,12 +259,7 @@ namespace Beursfuif.Server.ViewModel
         }
         #endregion
 
-        #region Helper methodes
-        private Interval GetCurrentInterval()
-        {
-            var locator = base.GetLocator();
-            return locator.Settings.CurrentInterval;
-        }
+        #region Helper methoder
 
         private string GetClientName(Guid id)
         {
@@ -276,15 +268,10 @@ namespace Beursfuif.Server.ViewModel
             return null;
         }
 
-        private DateTime GetCurrentBeursfuifTime()
-        {
-            return base.GetLocator().Settings.BeursfuifCurrentTime;
-        }
-
         private void ClientResponded(Guid id)
         {
             Client responder = Clients.FirstOrDefault(x => x.Id == id);
-            if (responder != null) responder.LastActivity = GetCurrentBeursfuifTime();
+            if (responder != null) responder.LastActivity = _beursfuifData.BeursfuifCurrentTime;
         }
         #endregion
 

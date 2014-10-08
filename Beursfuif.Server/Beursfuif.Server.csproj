@@ -199,6 +199,7 @@
     <Compile Include="Messages\ToastMessage.cs" />
     <Compile Include="Services\BeursfuifHub.cs" />
     <Compile Include="Services\BeursfuifServer.cs" />
+    <Compile Include="Services\IBeursfuifData.cs" />
     <Compile Include="Services\IBeursfuifServer.cs" />
     <Compile Include="Services\PriceCalculation.cs" />
     <Compile Include="Services\StartUp.cs" />

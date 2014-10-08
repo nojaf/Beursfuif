@@ -11,20 +11,18 @@ using System.Net;
 using System.Threading;
 using System.Windows;
 using Beursfuif.BL.Extensions;
+using Beursfuif.Server.Services;
 
 namespace Beursfuif.Server.ViewModel
 {
     public class DrinkViewModel : BeursfuifViewModelBase
     {
         #region fields and properties
-        private IIOManager _ioManager;
-
         /// <summary>
         /// The <see cref="Drinks" /> property's name.
         /// </summary>
         public const string DrinksPropertyName = "Drinks";
 
-        private ObservableCollection<Drink> _drinks = null;
 
         /// <summary>
         /// Sets and gets the Drinks property.
@@ -34,18 +32,18 @@ namespace Beursfuif.Server.ViewModel
         {
             get
             {
-                return _drinks;
+                return _beursfuifData.Drinks;
             }
 
             set
             {
-                if (_drinks == value)
+                if (_beursfuifData.Drinks == value)
                 {
                     return;
                 }
 
                 RaisePropertyChanging(DrinksPropertyName);
-                _drinks = value;
+                _beursfuifData.Drinks = value;
                 RaisePropertyChanged(DrinksPropertyName);
             }
         }
@@ -109,7 +107,7 @@ namespace Beursfuif.Server.ViewModel
             }
         }
 
-        public RelayCommand<int> RemoveDrinkCommand { get; set; }
+
 
         public const string AddOrEditMenuVisiblePropertyName = "AddOrEditMenuVisible";
         public Visibility AddOrEditMenuVisible
@@ -224,15 +222,17 @@ namespace Beursfuif.Server.ViewModel
         public RelayCommand SaveDrinkCommand { get; set; }
 
         public RelayCommand<int> AvailableChangedCommand { get; set; }
+
+        public RelayCommand<int> RemoveDrinkCommand { get; set; }
         #endregion
 
-        public DrinkViewModel(IIOManager iomanager)
+        public DrinkViewModel(IBeursfuifData beursfuifData):base(beursfuifData)
         {
             if (!IsInDesignMode)
             {
                 PointInCode("DrinkViewModel: Ctor");
-                _ioManager = iomanager;
-                Drinks = iomanager.Load<ObservableCollection<Drink>>(PathManager.DRINK_PATH);
+                _beursfuifData = beursfuifData;
+
                 if (Drinks == null) Drinks = new ObservableCollection<Drink>();
                 ThreadPool.QueueUserWorkItem(CleanUpImages);
 
@@ -362,7 +362,7 @@ namespace Beursfuif.Server.ViewModel
 
                 ThreadPool.QueueUserWorkItem(new WaitCallback((object target) =>
                 {
-                    _ioManager.Save<ObservableCollection<Drink>>(PathManager.DRINK_PATH, Drinks);
+                    _beursfuifData.SaveDrinks();
                 }));
                 SendToastMessage("Dranken saved");
                 previousDrinkSaved = true;
@@ -484,7 +484,7 @@ namespace Beursfuif.Server.ViewModel
                 Drinks.Remove(drink);
                 ThreadPool.QueueUserWorkItem(new WaitCallback(delegate(object state)
                 {
-                    _ioManager.Save<ObservableCollection<Drink>>(PathManager.DRINK_PATH, Drinks);
+                    _beursfuifData.SaveDrinks();
                 }), null);
                 if (NewEditDrink != null && NewEditDrink.Id == id) NewEditDrink = null;
 
@@ -524,11 +524,12 @@ namespace Beursfuif.Server.ViewModel
             }
         }
 
-        private void UpdateDrinkAvailability(int id)
+        protected virtual void UpdateDrinkAvailability(int id)
         {
             PointInCode("DrinkViewModel: UpdateDrinkAvailability");
 
-            var locator = base.GetLocator();
+            //TODO: Fix
+            /*
             Drink changed = Drinks.FirstOrDefault(x => x.Id == id);
             var settingsVM = locator.Settings;
             Interval currentInterval = settingsVM.CurrentInterval;
@@ -551,7 +552,7 @@ namespace Beursfuif.Server.ViewModel
 
             ThreadPool.QueueUserWorkItem(new WaitCallback(delegate(object state)
             {
-                _ioManager.Save<ObservableCollection<Drink>>(PathManager.DRINK_PATH, Drinks);
+                _beursfuifData.SaveDrinks();
             }), null);
 
             if (BeursfuifBusy)
@@ -562,18 +563,13 @@ namespace Beursfuif.Server.ViewModel
 
             SendToastMessage(string.Format("{0}  is {1} beschikbaar", changed.Name, (changed.Available ? "weer" : "niet meer")));
             SendLogMessage(string.Format("Drink ({0}) available ({1}) changed",changed.Name ,changed.Available), LogType.DRINK_VM);
-
+            */
         }
 
-        protected override void ChangePartyBusy(BeursfuifBusyMessage obj)
-        {
-            base.ChangePartyBusy(obj);
-            CheckCanEdit();
-        }
 
         private void CheckCanEdit()
         {
-            if (File.Exists(PathManager.BUSY_AND_TIME_PATH))
+            if (_beursfuifData.BeursfuifEverStarted)
             {
                 CanModify = false;
             }

@@ -1,6 +1,7 @@
 ﻿using Beursfuif.BL;
 using Beursfuif.Server.DataAccess;
 using Beursfuif.Server.Messages;
+using Beursfuif.Server.Services;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using System;
@@ -17,6 +18,8 @@ namespace Beursfuif.Server.ViewModel
     public class IntervalViewModel : BeursfuifViewModelBase
     {
         #region properties and fields
+        private IBeursfuifData _beursfuifData;
+
         private TimeSpan[] _intervalChoices = new TimeSpan[]{
             new TimeSpan(0,10,0),
             new TimeSpan(0,15,0),
@@ -69,7 +72,6 @@ namespace Beursfuif.Server.ViewModel
         /// </summary>
         public const string BeginTimePropertyName = "BeginTime";
 
-        private DateTime _beginTime = new DateTime(1970, 1, 1, 21, 0, 0);
 
         /// <summary>
         /// Sets and gets the BeginTime property.
@@ -79,18 +81,18 @@ namespace Beursfuif.Server.ViewModel
         {
             get
             {
-                return _beginTime;
+                return _beursfuifData.BeginTime;
             }
 
             set
             {
-                if (_beginTime == value)
+                if (_beursfuifData.BeginTime == value)
                 {
                     return;
                 }
 
                 RaisePropertyChanging(BeginTimePropertyName);
-                _beginTime = value;
+                _beursfuifData.BeginTime = value;
                 RaisePropertyChanged(BeginTimePropertyName);
             }
         }
@@ -100,7 +102,7 @@ namespace Beursfuif.Server.ViewModel
         /// </summary>
         public const string EndTimePropertyName = "EndTime";
 
-        private DateTime _endTime = new DateTime(1970, 1, 2, 5, 0, 0);
+
 
         /// <summary>
         /// Sets and gets the EndTime property.
@@ -110,18 +112,18 @@ namespace Beursfuif.Server.ViewModel
         {
             get
             {
-                return _endTime;
+                return _beursfuifData.EndTime;
             }
 
             set
             {
-                if (_endTime == value)
+                if (_beursfuifData.EndTime == value)
                 {
                     return;
                 }
 
                 RaisePropertyChanging(EndTimePropertyName);
-                _endTime = value;
+                _beursfuifData.EndTime = value;
                 RaisePropertyChanged(EndTimePropertyName);
             }
         }
@@ -131,7 +133,6 @@ namespace Beursfuif.Server.ViewModel
         /// </summary>
         public const string IntervalsPropertyName = "Intervals";
 
-        private Interval[] _intervals = null;
 
         /// <summary>
         /// Sets and gets the Intervals property.
@@ -141,18 +142,18 @@ namespace Beursfuif.Server.ViewModel
         {
             get
             {
-                return _intervals;
+                return _beursfuifData.Intervals;
             }
 
             set
             {
-                if (_intervals == value)
+                if (_beursfuifData.Intervals == value)
                 {
                     return;
                 }
 
                 RaisePropertyChanging(IntervalsPropertyName);
-                _intervals = value;
+                _beursfuifData.Intervals = value;
                 RaisePropertyChanged(IntervalsPropertyName);
             }
         }
@@ -195,10 +196,9 @@ namespace Beursfuif.Server.ViewModel
         }
         #endregion
 
-        private IIOManager _iomanager;
 
-        public IntervalViewModel(IIOManager iomanager)
-            : base()
+
+        public IntervalViewModel(IBeursfuifData beursfuifData): base(beursfuifData)
         {
             if (IsInDesignMode)
             {
@@ -231,9 +231,8 @@ namespace Beursfuif.Server.ViewModel
             {
                 PointInCode("IntervalViewModel: Ctor");
 
-                _iomanager = iomanager;
+                _beursfuifData = beursfuifData;
 
-                Intervals = _iomanager.Load<Interval[]>(PathManager.INTERVAL_PATH);
                 if (Intervals != null)
                 {
                     BeginTime = Intervals[0].StartTime;
@@ -319,21 +318,15 @@ namespace Beursfuif.Server.ViewModel
 
 
             ThreadPool.QueueUserWorkItem(new WaitCallback(new Action<object>((object state) => {
-                _iomanager.Save<Interval[]>(PathManager.INTERVAL_PATH, Intervals);
+                _beursfuifData.SaveIntervals();
             })));
             SendToastMessage("Intervallen saved");
             SendLogMessage("Intervallen saved", LogType.INTERVAL_VM);
         }
 
-        protected override void ChangePartyBusy(BeursfuifBusyMessage obj)
-        {
-            base.ChangePartyBusy(obj);
-            CheckCanEdit();
-        }
-
         private void CheckCanEdit()
         {
-            if (File.Exists(PathManager.BUSY_AND_TIME_PATH))
+            if (_beursfuifData.BeursfuifEverStarted)
             {
                 CanModify = false;
             }

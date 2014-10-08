@@ -78,7 +78,7 @@ namespace Beursfuif.Server.ViewModel
         public RelayCommand PersistOverrideFactorCommand { get; set; }
         #endregion
 
-        public PredictionViewModel()
+        public PredictionViewModel(IBeursfuifData data):base(data)
         {
             if (!IsInDesignMode)
             {
@@ -100,8 +100,7 @@ namespace Beursfuif.Server.ViewModel
         {
             PointInCode("PredictionViewModel: PersistAdditions");
 
-            var locator = GetLocator();
-            Interval current = locator.Interval.Intervals.FirstOrDefault(x => x.Id == locator.Settings.CurrentInterval.Id);
+            Interval current = _beursfuifData.Intervals.FirstOrDefault(x => x.Id ==  _beursfuifData.CurrentInterval.Id);
             var queryChanged = PredictDrinks.Where(x => x.OverrideFactor != 0.0);
             foreach (PredictDrink pd in queryChanged)
             {
@@ -119,19 +118,16 @@ namespace Beursfuif.Server.ViewModel
         {
             PointInCode("PredictionViewModel: Recalculate");
 
-
             IsDirty = false;
-            var locator = GetLocator();
 
-            Interval currentInterval = locator.Settings.CurrentInterval;
-            if (currentInterval.Id == locator.Interval.Intervals.Last().Id)
+            Interval currentInterval = _beursfuifData.CurrentInterval;
+            if (currentInterval.Id == _beursfuifData.Intervals.Last().Id)
             {
                 //The last interval is in progress, you can't recalcutate right here
                 return;
             }
 
-            Interval nextInterval = PriceCalculation.CalculatePriceUpdates(locator.Orders.AllOrderItems,
-            locator.Interval.Intervals, currentInterval.Id, true, this);
+            Interval nextInterval = PriceCalculation.CalculatePriceUpdates(_beursfuifData.AllOrderItems,  _beursfuifData.Intervals, currentInterval.Id, true, this);
 
             int drinkLength = nextInterval.Drinks.Length;
             PredictDrinks = new PredictDrink[drinkLength];
