@@ -233,7 +233,7 @@ namespace Beursfuif.Server.ViewModel
 
                 _beursfuifData = beursfuifData;
 
-                if (Intervals != null)
+                if (Intervals != null && Intervals.Any())
                 {
                     BeginTime = Intervals[0].StartTime;
                     EndTime = Intervals[Intervals.Length - 1].EndTime;

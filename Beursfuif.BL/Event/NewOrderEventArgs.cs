@@ -13,7 +13,6 @@ namespace Beursfuif.BL.Event
 
         public NewOrderEventArgs(Guid clientId, string auth, ClientDrinkOrder[] clientDrinkOrder)
         {
-            // TODO: Complete member initialization
             this.ClientId = clientId;
             this.Order = clientDrinkOrder;
             this.AuthenticationCode = auth;

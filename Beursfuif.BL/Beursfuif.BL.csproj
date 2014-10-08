@@ -59,27 +59,28 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BFObservableObject.cs" />
-    <Compile Include="Client.cs" />
-    <Compile Include="ClientDrink.cs" />
-    <Compile Include="ClientDrinkOrder.cs" />
-    <Compile Include="ClientInterval.cs" />
-    <Compile Include="Drink.cs" />
+    <Compile Include="Entity\BFObservableObject.cs" />
+    <Compile Include="Entity\Client.cs" />
+    <Compile Include="Entity\ClientDrink.cs" />
+    <Compile Include="Entity\ClientDrinkOrder.cs" />
+    <Compile Include="Entity\ClientInterval.cs" />
+    <Compile Include="Entity\Drink.cs" />
     <Compile Include="Event\ClientLeftEventArgs.cs" />
     <Compile Include="Event\CurrentTimeAckEventArgs.cs" />
     <Compile Include="Event\NewClientEventArgs.cs" />
     <Compile Include="Event\NewOrderEventArgs.cs" />
+    <Compile Include="Exceptions\BeursfuifException.cs" />
     <Compile Include="Extensions\BeursfuifExtensions.cs" />
-    <Compile Include="Interval.cs" />
-    <Compile Include="LogMessage.cs" />
-    <Compile Include="Package.cs" />
-    <Compile Include="PredictDrink.cs" />
+    <Compile Include="Entity\Interval.cs" />
+    <Compile Include="Entity\LogMessage.cs" />
+    <Compile Include="Entity\Package.cs" />
+    <Compile Include="Entity\PredictDrink.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ProtocolKind.cs" />
-    <Compile Include="ReducedDrink.cs" />
-    <Compile Include="ReducedInterval.cs" />
-    <Compile Include="SaveSettings.cs" />
-    <Compile Include="ShowOrder.cs" />
+    <Compile Include="Entity\ProtocolKind.cs" />
+    <Compile Include="Entity\ReducedDrink.cs" />
+    <Compile Include="Entity\ReducedInterval.cs" />
+    <Compile Include="Entity\SaveSettings.cs" />
+    <Compile Include="Entity\ShowOrder.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

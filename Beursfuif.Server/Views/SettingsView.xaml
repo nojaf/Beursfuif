@@ -138,9 +138,9 @@
                            Text="{Binding BeursfuifCurrentTime,StringFormat=HH:mm:ss}" />
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <TextBlock Style="{DynamicResource Label}">Server IP adress</TextBlock>
-                <TextBlock Style="{DynamicResource StrongText}"
-                           Text="{Binding IPAdress}"></TextBlock>
+                <TextBlock  Style="{DynamicResource Label}">Server IP adress:</TextBlock>
+                <TextBox IsReadOnly="True" Style="{DynamicResource ReadOnlyTextBox}"
+                           Text="{Binding IPAdress, Mode=OneWay}"></TextBox>
             </StackPanel>
         </StackPanel>
     </Grid>

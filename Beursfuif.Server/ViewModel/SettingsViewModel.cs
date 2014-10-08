@@ -128,14 +128,11 @@ namespace Beursfuif.Server.ViewModel
             }
         }
 
-        public RelayCommand MainActionButtonCommand { get; set; }
 
         /// <summary>
         /// The <see cref="BackupLocation" /> property's name.
         /// </summary>
         public const string BackupLocationPropertyName = "BackupLocation";
-
-        private string _backupLocation = string.Empty;
 
         /// <summary>
         /// Sets and gets the BackupLocation property.
@@ -145,18 +142,18 @@ namespace Beursfuif.Server.ViewModel
         {
             get
             {
-                return _backupLocation;
+                return _beursfuifData.BackUpLocation;
             }
 
             set
             {
-                if (_backupLocation == value)
+                if (_beursfuifData.BackUpLocation == value)
                 {
                     return;
                 }
 
                 RaisePropertyChanging(BackupLocationPropertyName);
-                _backupLocation = value;
+                _beursfuifData.BackUpLocation = value;
                 RaisePropertyChanged(BackupLocationPropertyName);
             }
         }
@@ -175,8 +172,6 @@ namespace Beursfuif.Server.ViewModel
         /// </summary>
         public const string PortPropertyName = "Port";
 
-        private int _port = 5678;
-
         /// <summary>
         /// Sets and gets the Port property.
         /// Changes to that property's value raise the PropertyChanged event. 
@@ -185,23 +180,25 @@ namespace Beursfuif.Server.ViewModel
         {
             get
             {
-                return _port;
+                return _beursfuifData.Port;
             }
 
             set
             {
                 if (value < 1000) return;
 
-                if (_port == value)
+                if (_beursfuifData.Port == value)
                 {
                     return;
                 }
 
                 RaisePropertyChanging(PortPropertyName);
-                _port = value;
+                _beursfuifData.Port = value;
                 RaisePropertyChanged(PortPropertyName);
             }
         }
+
+        public RelayCommand MainActionButtonCommand { get; set; }
 
         public RelayCommand AddOneMinute { get; set; }
 
@@ -586,7 +583,18 @@ namespace Beursfuif.Server.ViewModel
                 {
                     //end of fuif
                     MainActionCommand();
-                    _beursfuifData.KickAllClients(KickWasKickedReason.END_OF_FUIF);
+
+                    foreach (var client in _beursfuifData.Clients)
+	                {
+                        KickClientMessage kickClientMessage = new KickClientMessage()
+                        {
+                            Reason = KickWasKickedReason.END_OF_PARTY,
+                            ClientId = client.Id
+                        };
+                        base.MessengerInstance.Send<KickClientMessage>(kickClientMessage);
+	                }
+
+
                     SendLogMessage("Beursfuif has ended", LogType.SETTINGS_VM | LogType.GOOD_NEWS);
                     SendToastMessage("Beursfuif completed", "De fuif is gedaan");
                     //TODO, disable restart fuif button
@@ -599,7 +607,7 @@ namespace Beursfuif.Server.ViewModel
             PointInCode("SettingsViewModel: OneMinutePassed");
 
             ThreadPool.QueueUserWorkItem(SaveSettings);
-            //TODO save all orders (bin)
+
             MessengerInstance.Send<AutoSaveAllOrdersMessage>(new AutoSaveAllOrdersMessage());
             SendLogMessage("Auto saved has been completed", LogType.SETTINGS_VM);
 

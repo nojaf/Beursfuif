@@ -16,6 +16,6 @@ namespace Beursfuif.Server.Messages
         WRONG_AUTH_CODE = 1,
         TIME_OUT_ERROR = 2,
         I_DONT_LIKE_HIM = 4,
-        END_OF_FUIF = 8
+        END_OF_PARTY = 8
     }
 }

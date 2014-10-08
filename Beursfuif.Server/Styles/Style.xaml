@@ -136,7 +136,15 @@
 			</MultiTrigger>
 		</Style.Triggers>
 	</Style>
-    
+    <Style x:Key="ReadOnlyTextBox" TargetType="{x:Type TextBox}">
+        <Setter Property="TextWrapping" Value="Wrap"/>
+        <Setter Property="Margin" Value="5,3"/>
+        <Setter Property="Foreground" Value="#09cf41"></Setter>
+        <Setter Property="FontSize" Value="18"></Setter>
+        <Setter Property="Margin" Value="5"></Setter>
+        <Setter Property="FontFamily" Value="/Beursfuif.Server;component/Styles/#Coolvetica Rg" />
+        <Setter Property="BorderThickness" Value="0"></Setter>
+    </Style>
     
     <Style x:Key="Label" TargetType="{x:Type TextBlock}">
 		<Setter Property="TextWrapping" Value="Wrap"/>

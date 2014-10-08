@@ -19,7 +19,7 @@ namespace Beursfuif.Server.DataAccess
 
         public static string CURRENT_INTERVAL_PATH = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Beursfuif\\Data\\" + "current_intervals.json";
 
-        public static string BUSY_AND_TIME_PATH = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Beursfuif\\Data\\" + "time_and_busy.json";
+        public static string SETTINGS_PATH = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Beursfuif\\Data\\" + "settings.json";
 
         public static string AUTO_SAVE_ALL_ORDERS = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Beursfuif\\Data\\" + "auto_saved_all_orders.json";
 

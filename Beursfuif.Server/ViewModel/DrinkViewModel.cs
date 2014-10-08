@@ -527,25 +527,20 @@ namespace Beursfuif.Server.ViewModel
         protected virtual void UpdateDrinkAvailability(int id)
         {
             PointInCode("DrinkViewModel: UpdateDrinkAvailability");
-
-            //TODO: Fix
-            /*
             Drink changed = Drinks.FirstOrDefault(x => x.Id == id);
-            var settingsVM = locator.Settings;
-            Interval currentInterval = settingsVM.CurrentInterval;
+            Interval currentInterval = _beursfuifData.CurrentInterval;
             if (currentInterval.Drinks.Any(x => x.Id == changed.Id))
             {
                 currentInterval.Drinks.FirstOrDefault(x => x.Id == changed.Id).Available = changed.Available;
             }
 
-            var intervals = locator.Interval.Intervals;
-            if(intervals != null)
+            if (_beursfuifData.Intervals != null)
             {
-                int length = intervals.Length;
-                int index = Array.IndexOf(intervals, currentInterval);
+                int length = _beursfuifData.Intervals.Length;
+                int index = Array.IndexOf(_beursfuifData.Intervals, currentInterval);
                 for (int i = index; i < length; i++)
                 {
-                    Drink drink = intervals[i].Drinks.FirstOrDefault(x => x.Id == id);
+                    Drink drink = _beursfuifData.Intervals[i].Drinks.FirstOrDefault(x => x.Id == id);
                     if (drink != null) drink.Available = changed.Available;
                 }
             }
@@ -563,7 +558,6 @@ namespace Beursfuif.Server.ViewModel
 
             SendToastMessage(string.Format("{0}  is {1} beschikbaar", changed.Name, (changed.Available ? "weer" : "niet meer")));
             SendLogMessage(string.Format("Drink ({0}) available ({1}) changed",changed.Name ,changed.Available), LogType.DRINK_VM);
-            */
         }
 
 

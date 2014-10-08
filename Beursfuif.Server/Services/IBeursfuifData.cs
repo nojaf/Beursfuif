@@ -33,6 +33,10 @@ namespace Beursfuif.Server.Services
 
         List<ClientDrinkOrder> AllOrderItems { get; set; }
 
+        int Port { get; set; }
+
+        string BackUpLocation { get; set; }
+
         void ChangeBeursfuifBusy(bool busy);
 
         void LoadAllData();
@@ -54,8 +58,6 @@ namespace Beursfuif.Server.Services
         void ResetAll();
 
         void ResetData();
-
-        void KickAllClients(KickWasKickedReason kickWasKickedReason);
 
         string GetClientName(Guid guid);
     }

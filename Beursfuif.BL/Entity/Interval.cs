@@ -149,11 +149,11 @@ namespace Beursfuif.BL
 
             //always sort the drink alphabetical by name
             string auth =  string.Join("", (from drink in Drinks
+                                    where drink.Available
                                     orderby drink.Name.ToLower()
                                     select "["+drink.Id + ":" + drink.CurrentPrice+"]"
                         ));
-            //TODO: fix this temp err
-            return "("+ Id + ")"+auth;
+            return string.Format("({0}){1}",Id,auth);
         }
         #endregion
 

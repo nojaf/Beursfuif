@@ -197,6 +197,7 @@
     <Compile Include="Messages\DrinkAvailableMessage.cs" />
     <Compile Include="Messages\KickClientMessage.cs" />
     <Compile Include="Messages\ToastMessage.cs" />
+    <Compile Include="Services\BeursfuifData.cs" />
     <Compile Include="Services\BeursfuifHub.cs" />
     <Compile Include="Services\BeursfuifServer.cs" />
     <Compile Include="Services\IBeursfuifData.cs" />
