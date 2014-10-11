@@ -29,7 +29,7 @@ namespace Beursfuif.Server
             this.SetValue(Grid.RowProperty, 0);
             this.SetValue(Grid.RowSpanProperty, 2);
             this.HorizontalAlignment = System.Windows.HorizontalAlignment.Right;
-            this.VerticalAlignment = System.Windows.VerticalAlignment.Top;
+            this.VerticalAlignment = System.Windows.VerticalAlignment.Bottom;
                 //Grid.Column="2" Grid.Row="1"
 		}
 
