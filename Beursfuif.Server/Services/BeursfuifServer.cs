@@ -57,8 +57,13 @@ namespace Beursfuif.Server.Services
                 BeursfuifHub.NewPackageReceived += BeursfuifHub_NewPackageReceived;
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                GalaSoft.MvvmLight.Messaging.Messenger.Default.Send<LogMessage>(new LogMessage() { 
+                    Message = ex.Message,
+                    Time = DateTime.Now,
+                    Type = LogType.ERROR
+                });
                 return false;
             }
 
@@ -252,14 +257,12 @@ namespace Beursfuif.Server.Services
 
         public async Task<bool> Start(string ip, int port)
         {
-
-                if (string.IsNullOrEmpty(Ip))
-                {
-                    Ip = ip;
-                    Port = port;
-                    return await Task.Factory.StartNew<bool>(InitServer,null);
-                }
-                return false;
+            if (string.IsNullOrEmpty(Ip))
+            {
+                Ip = ip;
+                Port = port;
+            }
+            return await Task.Factory.StartNew<bool>(InitServer, null);
         }
     }
 }

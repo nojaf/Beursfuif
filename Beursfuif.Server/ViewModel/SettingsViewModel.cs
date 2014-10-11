@@ -355,6 +355,7 @@ namespace Beursfuif.Server.ViewModel
             _tmrMain.Change(Timeout.Infinite, Timeout.Infinite);
 
             _server.Active = false;
+            _server.DisposeConnection();
 
             MainActionButtonContent = RESUME_PARTY;
 
@@ -687,12 +688,16 @@ namespace Beursfuif.Server.ViewModel
         {
             PointInCode("SettingsViewModel: InitServer");
 
-            App.Current.MainWindow.Closing += (a, b) =>
+            if (App.Current != null)
             {
-                _server.Active = false;
-                _server.DisposeConnection();
-                SendLogMessage("Window is closing, shutdown server", LogType.SETTINGS_VM);
-            };
+                App.Current.MainWindow.Closing += (a, b) =>
+                {
+                    _server.Active = false;
+                    _server.DisposeConnection();
+                    SendLogMessage("Window is closing, shutdown server", LogType.SETTINGS_VM);
+                };
+
+            }
 
             NetworkChange.NetworkAddressChanged += new
             NetworkAddressChangedEventHandler(AddressChangedCallback);
