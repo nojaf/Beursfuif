@@ -220,9 +220,8 @@ namespace Beursfuif.Server.ViewModel
             if (!IsInDesignMode)
             {
                 PointInCode("SettingsViewModel: Ctor");
-
-                _beursfuifData = data;
                 _server = server;
+                _beursfuifData.DataReset += BeursfuifData_DataReset;
 
                 if (_beursfuifData.BeursfuifEverStarted)
                 {
@@ -250,6 +249,11 @@ namespace Beursfuif.Server.ViewModel
                 InitMessages();
 
             }
+        }
+
+        void BeursfuifData_DataReset(object sender, bool e)
+        {
+            MainActionButtonContent = PARTY_NEVER_STARTED;
         }
 
         private void InitCommands()
