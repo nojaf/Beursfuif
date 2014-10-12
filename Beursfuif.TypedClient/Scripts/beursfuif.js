@@ -392,10 +392,10 @@ var beursfuif;
             });
 
             this.connection.start(function () {
-                console.log("start");
+                _this.$log.info("start");
                 _this.hub.invoke(SignalRMethodNames.LOGIN, name);
-            }).fail(function () {
-                console.log("fail");
+            }).fail(function (e) {
+                console.log("fail", e);
                 _this.$rootScope.$broadcast(beursfuif.EventNames.OPEN_MODAL, beursfuif.ModalMessages.CONNECTION_LOST_TITLE, beursfuif.ModalMessages.CONNECTION_LOST);
             });
         };
@@ -440,6 +440,7 @@ var beursfuif;
             for (var _i = 0; _i < (arguments.length - 0); _i++) {
                 msg[_i] = arguments[_i + 0];
             }
+            console.log("initial data", msg);
             this.currentTime = msg[0][0];
             this.clientInterval = msg[0][1];
             this.clientInterval.ClientDrinks.sort(this.sortByLowerDrinkName);
@@ -463,8 +464,11 @@ var beursfuif;
         };
 
         SignalrService.prototype.kicked = function () {
-            this.connection.stop(false, true);
+            this.hub.connection.stop(false, true);
             this.$rootScope.$broadcast(beursfuif.EventNames.OPEN_MODAL, beursfuif.ModalMessages.YOU_GOT_KICKED_TITLE, beursfuif.ModalMessages.YOU_GOT_KICKED);
+
+            this.hub = null;
+            this.connection = null;
         };
 
         SignalrService.prototype.showToast = function () {
@@ -892,7 +896,7 @@ var beursfuif;
                     scope.title = args[0];
                     scope.message = args[1];
                     $(".modal-body").html(scope.message);
-                    $(element).modal();
+                    $(element).modal({ backdrop: false });
                 }
             });
         };

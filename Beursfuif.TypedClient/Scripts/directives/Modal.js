@@ -34,7 +34,7 @@ var beursfuif;
                     scope.title = args[0];
                     scope.message = args[1];
                     $(".modal-body").html(scope.message);
-                    $(element).modal();
+                    $(element).modal({ backdrop: false });
                 }
             });
         };
