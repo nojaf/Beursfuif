@@ -20,6 +20,9 @@ body {
 body > div {
   height: 100%;
 }
+body .form-control {
+  color: black;
+}
 #mask {
   width: 100%;
   height: 100%;

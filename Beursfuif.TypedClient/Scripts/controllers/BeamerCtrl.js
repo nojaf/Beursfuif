@@ -1,4 +1,4 @@
-var beursfuif;
+﻿var beursfuif;
 (function (beursfuif) {
     var BeamerCtrl = (function () {
         function BeamerCtrl($scope, localStorageService, signalrService) {
@@ -6,9 +6,10 @@ var beursfuif;
             this.$scope = $scope;
             this.localStorageService = localStorageService;
             this.signalrService = signalrService;
+            console.log(localStorage);
             this.$scope.vm = this;
-            this.$scope.ipAddress = localStorage.getItem("bIp") || "";
-            this.$scope.port = localStorage.getItem("bPort") || "";
+            this.$scope.ipAddress = localStorageService.get("bIp") || "";
+            this.$scope.port = localStorageService.get("bPort") || "";
             this.$scope.showLogin = true;
             this.$scope.showTable = false;
 
@@ -64,6 +65,7 @@ var beursfuif;
             console.log("Changed?? " + msg[0][0]);
             if (msg[0][0]) {
                 //store address and ip
+                console.log("beamer supported?", this.localStorageService.isSupported);
                 if (this.localStorageService.isSupported) {
                     console.log("opslaan?");
                     this.localStorageService.add("bIp", this.$scope.ipAddress);

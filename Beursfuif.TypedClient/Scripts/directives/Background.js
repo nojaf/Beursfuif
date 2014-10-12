@@ -1,10 +1,12 @@
 ﻿var beursfuif;
 (function (beursfuif) {
-    var Background = (function () {
-        function Background() {
-            this.restrict = "EA";
-        }
-        Background.prototype.link = function (scope, element, attrs) {
+    function Background() {
+        return {
+            restrict: "EA",
+            link: link
+        };
+
+        function link(scope, element, attrs) {
             var backgrounds = [
                 "url('background/wallpaper-1248778.jpg')",
                 "url('background/wallpaper-1346213.jpg')",
@@ -54,13 +56,9 @@
             }
 
             changeBackground();
-        };
-        return Background;
-    })();
-    beursfuif.Background = Background;
+        }
+    }
 
-    beursfuif.beursfuifModule.directive("bfBackground", [function () {
-            return new Background();
-        }]);
+    beursfuif.beursfuifModule.directive("bfBackground", [Background]);
 })(beursfuif || (beursfuif = {}));
 //# sourceMappingURL=Background.js.map

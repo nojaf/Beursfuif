@@ -13,10 +13,10 @@ module beursfuif {
 
         constructor(private $scope: IBeamerCtrlScope, private localStorageService: ILocalStorageService,
             private signalrService: SignalrService) {
-
+            console.log(localStorage);
                 this.$scope.vm = this;
-                this.$scope.ipAddress = localStorage.getItem("bIp") || "";
-                this.$scope.port = localStorage.getItem("bPort") || "";
+                this.$scope.ipAddress = localStorageService.get("bIp") || "";
+                this.$scope.port = localStorageService.get("bPort") || "";
                 this.$scope.showLogin = true;
                 this.$scope.showTable = false;
 
@@ -51,6 +51,7 @@ module beursfuif {
             console.log("Changed?? " + msg[0][0]);
             if (msg[0][0]) {
                 //store address and ip 
+                console.log("beamer supported?", this.localStorageService.isSupported);
                 if (this.localStorageService.isSupported) {
                     console.log("opslaan?");
                     this.localStorageService.add("bIp", this.$scope.ipAddress);

@@ -1,7 +1,13 @@
 ﻿module beursfuif {
-    export class Background implements ng.IDirective {
-        restrict: string = "EA";
-        link(scope: ng.IScope, element: JQuery, attrs: any) {
+
+    function Background(): ng.IDirective {
+
+        return {
+            restrict: "EA",
+            link:link
+        };
+
+        function link(scope: ng.IScope, element: JQuery, attrs: any) {
             var backgrounds: string[] = ["url('background/wallpaper-1248778.jpg')",
                 "url('background/wallpaper-1346213.jpg')",
                 "url('background/wallpaper-2143399.jpg')",
@@ -49,7 +55,7 @@
         }
     }
 
-    beursfuifModule.directive("bfBackground", [() => { return new Background(); }]);
+    beursfuifModule.directive("bfBackground", [Background]);
 }
 
 
