@@ -35,6 +35,16 @@ namespace Beursfuif.Server.Services
                 DataReset(this, fullReset);
             }
         }
+
+        public event EventHandler BeursfuifDataImported;
+
+        public void RaiseBeursfuifDataImported()
+        {
+            if(BeursfuifDataImported != null)
+            {
+                BeursfuifDataImported(this, EventArgs.Empty);
+            }
+        }
         #endregion
 
         #region fields and properties
@@ -132,6 +142,7 @@ namespace Beursfuif.Server.Services
                 BeursfuifEverStarted = true;
                 Port = settings.Port;
                 BeursfuifCurrentTime = settings.CurrentTime;
+                BackUpLocation = settings.BackupLocation;
 
                 LoadDrinksAndIntervals();
                 LoadOrders();
@@ -179,6 +190,13 @@ namespace Beursfuif.Server.Services
             }
 
             Intervals = _ioManager.Load<Interval[]>(PathManager.INTERVAL_PATH);
+        }
+
+        public void RestoreAllData()
+        {
+            LoadAllData();
+            BackUpLocation = string.Empty;
+            RaiseBeursfuifDataImported();
         }
         #endregion
 
@@ -277,6 +295,8 @@ namespace Beursfuif.Server.Services
             SafeDeleteFile(PathManager.SETTINGS_PATH);
             SafeDeleteFile(PathManager.ALL_ORDERS);
             SafeDeleteFile(PathManager.CURRENT_INTERVAL_PATH);
+            SafeDeleteFolder(PathManager.LOG_FOLDER);
+            SafeDeleteFolder(PathManager.ASSETS_PATH);
 
             RaisDataReset(false);
         }
@@ -288,6 +308,23 @@ namespace Beursfuif.Server.Services
                 System.IO.File.Delete(path);
             }
         }
+
+        private void SafeDeleteFolder(string path)
+        {
+            if (System.IO.Directory.Exists(path))
+            {
+                string[] files = System.IO.Directory.GetFiles(path);
+                foreach (var file in files)
+                {
+                    SafeDeleteFile(file);
+                }
+            }
+        }
         #endregion
+
+        public bool Directory { get; set; }
+
+
+
     }
 }

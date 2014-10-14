@@ -196,7 +196,29 @@ namespace Beursfuif.Server.ViewModel
                 {
                     InitData();
                 }
+
+                _beursfuifData.DataReset += BeursfuifData_DataReset;
+                _beursfuifData.BeursfuifDataImported += BeursfuifData_BeursfuifDataImported;
             }
+        }
+
+        void BeursfuifData_BeursfuifDataImported(object sender, EventArgs e)
+        {
+            RaisePropertyEvents();
+        }
+
+        void BeursfuifData_DataReset(object sender, bool e)
+        {
+            RaisePropertyEvents();
+        }
+
+        private void RaisePropertyEvents()
+        {
+            RaisePropertyChanged(AllOrdersPropertyName);
+            RaisePropertyChanged(ShowOrderListPropertyName);
+            RaisePropertyChanged(ReducedIntervalsPropertyName);
+            RaisePropertyChanged(SelectedIntervalPropertyName);
+            RaisePropertyChanged(ReducedDrinksPropertyName);
         }
 
         #region Messages

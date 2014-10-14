@@ -223,6 +223,11 @@ namespace Beursfuif.Server.ViewModel
                 _server = server;
                 _beursfuifData.DataReset += BeursfuifData_DataReset;
 
+                if (Directory.Exists(_beursfuifData.BackUpLocation))
+                {
+                    RaisePropertyChanged(BackupLocationPropertyName);
+                }
+
                 if (_beursfuifData.BeursfuifEverStarted)
                 {
                     SendLogMessage("Beursfuif has already started", LogType.SETTINGS_VM);
@@ -296,8 +301,7 @@ namespace Beursfuif.Server.ViewModel
                     }
 
 
-                    System.Windows.Forms.Application.Restart();
-                    System.Windows.Application.Current.Shutdown();
+                    _beursfuifData.RestoreAllData();
                 }
              
             }
@@ -463,7 +467,7 @@ namespace Beursfuif.Server.ViewModel
         private void SaveSettings(object state)
         {
             PointInCode("SettingsViewModel: SaveSettings");
-            SaveSettings settings = new SaveSettings(BeursfuifBusy, BeursfuifCurrentTime, Port);
+            SaveSettings settings = new SaveSettings(BeursfuifBusy, BeursfuifCurrentTime, Port, BackupLocation);
             _beursfuifData.SaveSettings(settings);
             _beursfuifData.SaveCurrentInterval();
             SendLogMessage("Beursfuifsettings and currentInterval have been saved", LogType.SETTINGS_VM);

@@ -13,16 +13,19 @@ namespace Beursfuif.BL
 
         public int Port { get; set; }
 
+        public string BackupLocation { get; set; }
+
         public SaveSettings()
         {
 
         }
 
-        public SaveSettings(bool busy, DateTime currentTime, int port)
+        public SaveSettings(bool busy, DateTime currentTime, int port, string backupLocation = null)
         {
             Busy = busy;
             CurrentTime = currentTime;
             Port = port;
+            BackupLocation = backupLocation;
         }
 
         

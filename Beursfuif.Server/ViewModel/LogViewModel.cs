@@ -113,7 +113,23 @@ namespace Beursfuif.Server.ViewModel
             if (!IsInDesignMode)
             {
                 MessengerInstance.Register<LogMessage>(this, LogMessageReceived);
+                _beursfuifData.BeursfuifDataImported += BeursfuifData_BeursfuifDataImported;
+                _beursfuifData.DataReset += BeursfuifData_DataReset;
             }
+        }
+
+        void BeursfuifData_DataReset(object sender, bool e)
+        {
+            RaisePropertyChanged(AllLogMessagesPropertyName);
+            RaisePropertyChanged(SelectedLogTypePropertyName);
+            RaisePropertyChanged(SelectedLogMessagesPropertyName);
+        }
+
+        void BeursfuifData_BeursfuifDataImported(object sender, EventArgs e)
+        {
+            RaisePropertyChanged(AllLogMessagesPropertyName);
+            RaisePropertyChanged(SelectedLogTypePropertyName);
+            RaisePropertyChanged(SelectedLogMessagesPropertyName);
         }
 
         private void UpdateSelectedLogItems()

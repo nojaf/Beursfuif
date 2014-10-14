@@ -1,4 +1,4 @@
-﻿var beursfuif;
+var beursfuif;
 (function (beursfuif) {
     var BeamerCtrl = (function () {
         function BeamerCtrl($scope, localStorageService, signalrService) {

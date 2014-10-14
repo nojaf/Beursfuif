@@ -28,7 +28,7 @@ namespace Beursfuif.BL
         public override string ToString()
         {
 
-            return Time.ToString("HH:MM:ss") + "::" + Type + "::" + Message;
+            return string.Format("{0}::{1}::{2}", Time.ToString("HH:MM:ss") , Type , Message);
         }
     }
 

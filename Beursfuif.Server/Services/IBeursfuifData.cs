@@ -1,11 +1,7 @@
 ﻿using Beursfuif.BL;
-using Beursfuif.Server.Messages;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Beursfuif.Server.Services
 {
@@ -16,6 +12,7 @@ namespace Beursfuif.Server.Services
 
         event EventHandler<bool> DataReset;
 
+        event EventHandler BeursfuifDataImported;
 
         ObservableCollection<Drink> Drinks {get;set;}
 
@@ -46,6 +43,8 @@ namespace Beursfuif.Server.Services
         void ChangeBeursfuifBusy(bool busy);
 
         void LoadAllData();
+
+        void RestoreAllData();
 
         void SaveAllData();
 

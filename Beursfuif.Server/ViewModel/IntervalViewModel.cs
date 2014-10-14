@@ -246,7 +246,16 @@ namespace Beursfuif.Server.ViewModel
 
                 _beursfuifData.BeursfuifBusyChanged += BeursfuifData_BeursfuifBusyChanged;
                 _beursfuifData.DataReset += BeursfuifData_DataReset;
+                _beursfuifData.BeursfuifDataImported += BeursfuifData_BeursfuifDataImported;
             }
+        }
+
+        void BeursfuifData_BeursfuifDataImported(object sender, EventArgs e)
+        {
+            RaisePropertyChanged(IntervalsPropertyName);
+            RaisePropertyChanged(BeginTimePropertyName);
+            RaisePropertyChanged(EndTimePropertyName);
+            CheckCanEdit();
         }
 
         void BeursfuifData_DataReset(object sender, bool e)

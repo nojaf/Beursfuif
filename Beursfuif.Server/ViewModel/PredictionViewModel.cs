@@ -85,7 +85,26 @@ namespace Beursfuif.Server.ViewModel
                 PointInCode("PredictionViewModel: Ctor");
 
                 InitCommands();
+
+                _beursfuifData.BeursfuifDataImported += BeursfuifData_BeursfuifDataImported;
+                _beursfuifData.DataReset += BeursfuifData_DataReset;
             }
+        }
+
+        void BeursfuifData_DataReset(object sender, bool e)
+        {
+            RaiseEvents();
+        }
+
+        void BeursfuifData_BeursfuifDataImported(object sender, EventArgs e)
+        {
+            RaiseEvents();
+        }
+
+        private void RaiseEvents()
+        {
+            RaisePropertyChanged(PredictDrinksPropertyName);
+            IsDirty = false;
         }
 
         private void InitCommands()
