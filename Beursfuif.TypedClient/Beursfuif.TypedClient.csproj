@@ -134,6 +134,9 @@
     </Content>
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="index.html" />
+    <Content Include="Scripts\models\modalMessages.js">
+      <DependentUpon>modalMessages.ts</DependentUpon>
+    </Content>
     <Content Include="Scripts\models\models.js">
       <DependentUpon>models.ts</DependentUpon>
     </Content>
@@ -170,6 +173,9 @@
     <Content Include="Scripts\beamer.js.bundle" />
     <Content Include="Scripts\beamer.min.js.map">
       <DependentUpon>beamer.min.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\models\modalMessages.js.map">
+      <DependentUpon>modalMessages.ts</DependentUpon>
     </Content>
     <None Include="Scripts\vendor\jquery\jquery-2.1.1.intellisense.js" />
     <Content Include="Scripts\vendor\jquery\jquery-2.1.1.js" />
@@ -232,6 +238,7 @@
     <TypeScriptCompile Include="Scripts\controllers\MainCtrl.ts" />
     <TypeScriptCompile Include="Scripts\directives\Background.ts" />
     <TypeScriptCompile Include="Scripts\directives\Modal.ts" />
+    <TypeScriptCompile Include="Scripts\models\modalMessages.ts" />
     <TypeScriptCompile Include="Scripts\models\models.ts" />
     <TypeScriptCompile Include="Scripts\typings\angularjs\angular-animate.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\angularjs\angular-cookies.d.ts" />

@@ -96,8 +96,19 @@ namespace Beursfuif.Server.ViewModel
                 InitServer();
                 InitCommands();
                 InitMessages();
+                _beursfuifData.BeursfuifBusyChanged += _beursfuifData_BeursfuifBusyChanged;
             }
 
+        }
+
+        void _beursfuifData_BeursfuifBusyChanged(object sender, bool e)
+        {
+            if (!e && Clients.Any())
+            {
+                //party isn't on going and there are connected clients,
+                //kick them
+                KickAll(KickWasKickedReason.PARTY_PAUSED);            
+            }
         }
 
         #region Commands
@@ -148,6 +159,7 @@ namespace Beursfuif.Server.ViewModel
                     Reason = kickWasKickedReason
                 });
             }
+            Clients.Clear();
         }
         #endregion
 
@@ -192,6 +204,7 @@ namespace Beursfuif.Server.ViewModel
                 App.Current.Dispatcher.BeginInvoke(new Action(() =>
                 {
                     Clients.Remove(c);
+                    RaisePropertyChanged(ClientsPropertyName);
                 }));
             }
         }

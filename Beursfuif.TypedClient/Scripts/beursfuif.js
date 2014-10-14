@@ -409,6 +409,7 @@ var beursfuif;
 
             this.connection.error(function () {
                 _this.connection.stop(false, false);
+                _this.unregisterCallbacks();
                 _this.$rootScope.$broadcast(beursfuif.EventNames.OPEN_MODAL, beursfuif.ModalMessages.CONNECTION_LOST_TITLE, beursfuif.ModalMessages.CONNECTION_LOST);
             });
 
@@ -422,6 +423,40 @@ var beursfuif;
         };
 
         //#region callbacks from the server
+        SignalrService.prototype.unregisterCallbacks = function () {
+            var _this = this;
+            this.hub.off(SignalRMethodNames.SEND_INITIAL_DATA, function () {
+                var msg = [];
+                for (var _i = 0; _i < (arguments.length - 0); _i++) {
+                    msg[_i] = arguments[_i + 0];
+                }
+                return _this.sendInitialData(msg);
+            });
+            this.hub.off(SignalRMethodNames.UPDATE_TIME, function () {
+                var msg = [];
+                for (var _i = 0; _i < (arguments.length - 0); _i++) {
+                    msg[_i] = arguments[_i + 0];
+                }
+                return _this.updateTime(msg);
+            });
+            this.hub.off(SignalRMethodNames.YOU_GOT_KICKED, function () {
+                return _this.kicked();
+            });
+            this.hub.off(SignalRMethodNames.ACK_NEW_ORDER, function () {
+                return _this.showToast();
+            });
+            this.hub.off(SignalRMethodNames.UPDATE_INTERVAL, function () {
+                var msg = [];
+                for (var _i = 0; _i < (arguments.length - 0); _i++) {
+                    msg[_i] = arguments[_i + 0];
+                }
+                return _this.updateInterval(msg);
+            });
+            this.hub.off(SignalRMethodNames.DRINK_AVAILABLE_CHANGED, function (clientInterval) {
+                return _this.drinkAvailableChanged(clientInterval);
+            });
+        };
+
         SignalrService.prototype.registerCallback = function () {
             var _this = this;
             this.hub.on(SignalRMethodNames.SEND_INITIAL_DATA, function () {

@@ -312,6 +312,45 @@ function(){this.$get=["$$sanitizeUri",function(a){return function(d){var b=[];G(
 if(!e)return e;for(var n,h=e,k=[],m,p;n=h.match(d);)m=n[0],n[2]==n[3]&&(m="mailto:"+m),p=n.index,l(h.substr(0,p)),f(m,n[0].replace(b,"")),h=h.substring(p+n[0].length);l(h);return a(k.join(""))}}])})(window,window.angular);
 //# sourceMappingURL=angular-sanitize.min.js.map
 
+///#source 1 1 /Scripts/models/modalMessages.js
+var beursfuif;
+(function (beursfuif) {
+    var ModalMessages = (function () {
+        function ModalMessages() {
+        }
+        ModalMessages.WRONG_AUTH_TITLE = "Verkeerde authenticatie code";
+        ModalMessages.WRONG_AUTH = "Je authenticatie code komt niet overeen met die van de server. " + "<br />Dit wil zeggen dat je niet de juiste prijzen hebt." + "<br />De connectie met de server wordt verbroken." + "<br />Gelieve opnieuw aan te melden.";
+
+        ModalMessages.YOU_GOT_KICKED_TITLE = "You got kicked";
+        ModalMessages.YOU_GOT_KICKED = "De server heeft de verbinding opzettelijk verbroken." + "<br />Dit kan zijn omdat ..." + "<br><ul>" + "<li>... je niet meer met de correcte prijzen bezig was.</li>" + "<li>... de server is gestopt en ondervindt problemen.</li>" + "<li>... de server werd gepauseerd.</li>" + "<li>...de persoon aan de serverkant doesn't like you.</li>" + "</ul>" + "<br />Gelieve opnieuw aan te melden of even te wachten.";
+
+        ModalMessages.CONNECTION_LOST_TITLE = "Verbinding weggevallen!";
+        ModalMessages.CONNECTION_LOST = "De verbinding met de server is weggevallen." + "<br />Controleer of ..." + "<br /><ul>" + "<li>... de server nog actief is.</li>" + "<li>... je nog op het netwerk zit.</li>";
+        return ModalMessages;
+    })();
+    beursfuif.ModalMessages = ModalMessages;
+})(beursfuif || (beursfuif = {}));
+//# sourceMappingURL=modalMessages.js.map
+
+///#source 1 1 /Scripts/controllers/Events.js
+var beursfuif;
+(function (beursfuif) {
+    var EventNames = (function () {
+        function EventNames() {
+        }
+        EventNames.CONNECTION_CHANGED = "CONNECTION_CHANGED";
+        EventNames.CHANGE_OPACITY = "CHANGE_OPACITY";
+        EventNames.TIME_CHANGED = "TIME_CHANGED";
+        EventNames.OPEN_MODAL = "OPEN_MODAL";
+        EventNames.SHOW_TOAST = "SHOW_TOAST";
+        EventNames.INTERVAL_UPDATE = "INTERVAL_UPDATE";
+        EventNames.DRINK_AVAILABLE_CHANGED = "DRINK_AVAILABLE_CHANGED";
+        return EventNames;
+    })();
+    beursfuif.EventNames = EventNames;
+})(beursfuif || (beursfuif = {}));
+//# sourceMappingURL=Events.js.map
+
 ///#source 1 1 /Scripts/app/beamer.js
 var beursfuif;
 (function (beursfuif) {
@@ -338,6 +377,7 @@ var beursfuif;
         SignalRMethodNames.DRINK_AVAILABLE_CHANGED = "drinkAvailableChanged";
         return SignalRMethodNames;
     })();
+    beursfuif.SignalRMethodNames = SignalRMethodNames;
 
     var SignalrService = (function () {
         //#endregion
@@ -356,19 +396,54 @@ var beursfuif;
 
             this.connection.error(function () {
                 _this.connection.stop(false, false);
+                _this.unregisterCallbacks();
                 _this.$rootScope.$broadcast(beursfuif.EventNames.OPEN_MODAL, beursfuif.ModalMessages.CONNECTION_LOST_TITLE, beursfuif.ModalMessages.CONNECTION_LOST);
             });
 
             this.connection.start(function () {
-                console.log("start");
+                _this.$log.info("start");
                 _this.hub.invoke(SignalRMethodNames.LOGIN, name);
-            }).fail(function () {
-                console.log("fail");
+            }).fail(function (e) {
+                console.log("fail", e);
                 _this.$rootScope.$broadcast(beursfuif.EventNames.OPEN_MODAL, beursfuif.ModalMessages.CONNECTION_LOST_TITLE, beursfuif.ModalMessages.CONNECTION_LOST);
             });
         };
 
         //#region callbacks from the server
+        SignalrService.prototype.unregisterCallbacks = function () {
+            var _this = this;
+            this.hub.off(SignalRMethodNames.SEND_INITIAL_DATA, function () {
+                var msg = [];
+                for (var _i = 0; _i < (arguments.length - 0); _i++) {
+                    msg[_i] = arguments[_i + 0];
+                }
+                return _this.sendInitialData(msg);
+            });
+            this.hub.off(SignalRMethodNames.UPDATE_TIME, function () {
+                var msg = [];
+                for (var _i = 0; _i < (arguments.length - 0); _i++) {
+                    msg[_i] = arguments[_i + 0];
+                }
+                return _this.updateTime(msg);
+            });
+            this.hub.off(SignalRMethodNames.YOU_GOT_KICKED, function () {
+                return _this.kicked();
+            });
+            this.hub.off(SignalRMethodNames.ACK_NEW_ORDER, function () {
+                return _this.showToast();
+            });
+            this.hub.off(SignalRMethodNames.UPDATE_INTERVAL, function () {
+                var msg = [];
+                for (var _i = 0; _i < (arguments.length - 0); _i++) {
+                    msg[_i] = arguments[_i + 0];
+                }
+                return _this.updateInterval(msg);
+            });
+            this.hub.off(SignalRMethodNames.DRINK_AVAILABLE_CHANGED, function (clientInterval) {
+                return _this.drinkAvailableChanged(clientInterval);
+            });
+        };
+
         SignalrService.prototype.registerCallback = function () {
             var _this = this;
             this.hub.on(SignalRMethodNames.SEND_INITIAL_DATA, function () {
@@ -408,6 +483,7 @@ var beursfuif;
             for (var _i = 0; _i < (arguments.length - 0); _i++) {
                 msg[_i] = arguments[_i + 0];
             }
+            console.log("initial data", msg);
             this.currentTime = msg[0][0];
             this.clientInterval = msg[0][1];
             this.clientInterval.ClientDrinks.sort(this.sortByLowerDrinkName);
@@ -431,8 +507,11 @@ var beursfuif;
         };
 
         SignalrService.prototype.kicked = function () {
-            this.connection.stop(false, true);
+            this.hub.connection.stop(false, true);
             this.$rootScope.$broadcast(beursfuif.EventNames.OPEN_MODAL, beursfuif.ModalMessages.YOU_GOT_KICKED_TITLE, beursfuif.ModalMessages.YOU_GOT_KICKED);
+
+            this.hub = null;
+            this.connection = null;
         };
 
         SignalrService.prototype.showToast = function () {
@@ -523,25 +602,6 @@ var beursfuif;
 })(beursfuif || (beursfuif = {}));
 //# sourceMappingURL=SignalrService.js.map
 
-///#source 1 1 /Scripts/controllers/Events.js
-var beursfuif;
-(function (beursfuif) {
-    var EventNames = (function () {
-        function EventNames() {
-        }
-        EventNames.CONNECTION_CHANGED = "CONNECTION_CHANGED";
-        EventNames.CHANGE_OPACITY = "CHANGE_OPACITY";
-        EventNames.TIME_CHANGED = "TIME_CHANGED";
-        EventNames.OPEN_MODAL = "OPEN_MODAL";
-        EventNames.SHOW_TOAST = "SHOW_TOAST";
-        EventNames.INTERVAL_UPDATE = "INTERVAL_UPDATE";
-        EventNames.DRINK_AVAILABLE_CHANGED = "DRINK_AVAILABLE_CHANGED";
-        return EventNames;
-    })();
-    beursfuif.EventNames = EventNames;
-})(beursfuif || (beursfuif = {}));
-//# sourceMappingURL=Events.js.map
-
 ///#source 1 1 /Scripts/controllers/beamerCtrl.js
 var beursfuif;
 (function (beursfuif) {
@@ -551,9 +611,10 @@ var beursfuif;
             this.$scope = $scope;
             this.localStorageService = localStorageService;
             this.signalrService = signalrService;
+            console.log(localStorage);
             this.$scope.vm = this;
-            this.$scope.ipAddress = localStorage.getItem("bIp") || "";
-            this.$scope.port = localStorage.getItem("bPort") || "";
+            this.$scope.ipAddress = localStorageService.get("bIp") || "";
+            this.$scope.port = localStorageService.get("bPort") || "";
             this.$scope.showLogin = true;
             this.$scope.showTable = false;
 
@@ -609,6 +670,7 @@ var beursfuif;
             console.log("Changed?? " + msg[0][0]);
             if (msg[0][0]) {
                 //store address and ip
+                console.log("beamer supported?", this.localStorageService.isSupported);
                 if (this.localStorageService.isSupported) {
                     console.log("opslaan?");
                     this.localStorageService.add("bIp", this.$scope.ipAddress);
@@ -677,123 +739,4 @@ var beursfuif;
         }]);
 })(beursfuif || (beursfuif = {}));
 //# sourceMappingURL=BeamerCtrl.js.map
-
-///#source 1 1 /Scripts/directives/Background.js
-var beursfuif;
-(function (beursfuif) {
-    var Background = (function () {
-        function Background() {
-            this.restrict = "EA";
-        }
-        Background.prototype.link = function (scope, element, attrs) {
-            var backgrounds = [
-                "url('background/wallpaper-1248778.jpg')",
-                "url('background/wallpaper-1346213.jpg')",
-                "url('background/wallpaper-2143399.jpg')",
-                "url('background/wallpaper-2155408.jpg')",
-                "url('background/wallpaper-2770643.jpg')",
-                "url('background/wallpaper-2837789.jpg')",
-                "url('background/wallpaper-2886432.jpg')",
-                "url('background/wallpaper-295035.jpg')",
-                "url('background/wallpaper-399972.png')",
-                "url('background/wallpaper-630648.jpg')",
-                "url('background/wallpaper-69099.jpg')",
-                "url('background/wallpaper-762606.jpg')"
-            ];
-            var currentIndex = Math.floor(Math.random() * backgrounds.length);
-            var $html = $("html");
-            var $mask = $(element);
-            var opacity = 0.75;
-
-            $html.keyup(function (event) {
-                if (event.which === 39) {
-                    scope.$apply(function () {
-                        changeBackground();
-                    });
-
-                    event.preventDefault();
-                }
-            });
-
-            scope.$on("CHANGE_OPACITY", changeOpacity);
-
-            function changeOpacity(e) {
-                var args = [];
-                for (var _i = 0; _i < (arguments.length - 1); _i++) {
-                    args[_i] = arguments[_i + 1];
-                }
-                opacity = parseFloat(args[0]);
-                $mask.animate({ backgroundColor: "rgba(0,0,0," + opacity + ")" }, 500);
-            }
-
-            function changeBackground() {
-                $mask.animate({ backgroundColor: "#FFF" }, 500, function () {
-                    $html.css("background-image", backgrounds[currentIndex]);
-                    $mask.animate({ backgroundColor: "rgba(0,0,0," + opacity + ")" }, 500);
-                    currentIndex = (currentIndex + 1) % backgrounds.length;
-                });
-            }
-
-            changeBackground();
-        };
-        return Background;
-    })();
-    beursfuif.Background = Background;
-
-    beursfuif.beursfuifModule.directive("bfBackground", [function () {
-            return new Background();
-        }]);
-})(beursfuif || (beursfuif = {}));
-//# sourceMappingURL=Background.js.map
-
-///#source 1 1 /Scripts/directives/Modal.js
-var beursfuif;
-(function (beursfuif) {
-    var ModalMessages = (function () {
-        function ModalMessages() {
-        }
-        ModalMessages.WRONG_AUTH_TITLE = "Verkeerde authenticatie code";
-        ModalMessages.WRONG_AUTH = "Je authenticatie code komt niet overeen met die van de server. " + "<br />Dit wil zeggen dat je niet de juiste prijzen hebt." + "<br />De connectie met de server wordt verbroken." + "<br />Gelieve opnieuw aan te melden.";
-
-        ModalMessages.YOU_GOT_KICKED_TITLE = "You got kicked";
-        ModalMessages.YOU_GOT_KICKED = "De server heeft de verbinding opzettelijk verbroken." + "<br />Dit kan zijn omdat ..." + "<br><ul>" + "<li>... je niet meer met de correcte prijzen bezig was.</li>" + "<li>... de server is gestopt en ondervindt problemen.</li>" + "<li>... de server werd gepauseerd.</li>" + "<li>...de persoon aan de serverkant doesn't like you.</li>" + "</ul>" + "<br />Gelieve opnieuw aan te melden of even te wachten.";
-
-        ModalMessages.CONNECTION_LOST_TITLE = "Verbinding weggevallen!";
-        ModalMessages.CONNECTION_LOST = "De verbinding met de server is weggevallen." + "<br />Controleer of ..." + "<br /><ul>" + "<li>... de server nog actief is.</li>" + "<li>... je nog op het netwerk zit.</li>";
-        return ModalMessages;
-    })();
-    beursfuif.ModalMessages = ModalMessages;
-
-    var Modal = (function () {
-        function Modal() {
-            this.restrict = "EA";
-            this.replace = true;
-            this.template = "<div class='modal fade'>" + "<div class='modal-dialog'>" + "<div class='modal-content'>" + "<div class='modal-header'>" + " <button type='button' class='close' data-dismiss='modal' aria-hidden ='true'>&times;</button>" + " <h4 class='modal-title'>{{title}}</h4 >" + " </div>" + "   <div class='modal-body'>" + "    </div>" + "     <div class='modal-footer' >" + "         <button type='button' class='btn btn-primary' data-ng-click='submit()'> Aight </button >" + "    </div>" + "  </div><!-- /.modal - content-- >" + "  </div><!-- /.modal - dialog-- >" + "  </div><!-- /.modal-->";
-        }
-        Modal.prototype.link = function (scope, element, attrs) {
-            scope.submit = function () {
-                $(element).modal('hide');
-            };
-            scope.$on(beursfuif.EventNames.OPEN_MODAL, function (e) {
-                var args = [];
-                for (var _i = 0; _i < (arguments.length - 1); _i++) {
-                    args[_i] = arguments[_i + 1];
-                }
-                if (args[0] && args[1]) {
-                    scope.title = args[0];
-                    scope.message = args[1];
-                    $(".modal-body").html(scope.message);
-                    $(element).modal();
-                }
-            });
-        };
-        return Modal;
-    })();
-    beursfuif.Modal = Modal;
-
-    beursfuif.beursfuifModule.directive("bfModal", [function () {
-            return new beursfuif.Modal();
-        }]);
-})(beursfuif || (beursfuif = {}));
-//# sourceMappingURL=Modal.js.map
 

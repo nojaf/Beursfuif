@@ -1,5 +1,5 @@
 module beursfuif {
-    class SignalRMethodNames {
+    export class SignalRMethodNames {
         //#region send to server
         static LOGIN: string = "logOn";
         static ACK_TIME_UPDATE: string = "ackTimeUpdate";
@@ -20,7 +20,6 @@ module beursfuif {
     export class SignalrService {
         //#region fields
         connection: HubConnection;
-
         hub: HubProxy;
 
         currentTime: Date;
@@ -31,6 +30,7 @@ module beursfuif {
         constructor(private $q: ng.IQService, private $log: ng.ILogService, private $rootScope: ng.IRootScopeService) { }
 
         initialize(url: string, name: string) {
+
             this.connection = $.hubConnection(url);
             this.hub = this.connection.createHubProxy("beursfuif");
             $.connection.hub.logging = true;
@@ -39,19 +39,30 @@ module beursfuif {
 
             this.connection.error(() => {
                 this.connection.stop(false, false);
+                this.unregisterCallbacks();
                 this.$rootScope.$broadcast(EventNames.OPEN_MODAL, ModalMessages.CONNECTION_LOST_TITLE, ModalMessages.CONNECTION_LOST);
             });
 
             this.connection.start(() => {
-                console.log("start");
+                this.$log.info("start");
                 this.hub.invoke(SignalRMethodNames.LOGIN, name);
-            }).fail(() => {
-                console.log("fail");
-                this.$rootScope.$broadcast(EventNames.OPEN_MODAL, ModalMessages.CONNECTION_LOST_TITLE, ModalMessages.CONNECTION_LOST);
-            });
+            }).fail((e) => {
+                    console.log("fail", e);
+                    this.$rootScope.$broadcast(EventNames.OPEN_MODAL, ModalMessages.CONNECTION_LOST_TITLE, ModalMessages.CONNECTION_LOST);
+                });
+            
         }
 
         //#region callbacks from the server
+        unregisterCallbacks() {
+            this.hub.off(SignalRMethodNames.SEND_INITIAL_DATA, (...msg: any[]) => this.sendInitialData(msg));
+            this.hub.off(SignalRMethodNames.UPDATE_TIME, (...msg: any[]) => this.updateTime(msg));
+            this.hub.off(SignalRMethodNames.YOU_GOT_KICKED, () => this.kicked());
+            this.hub.off(SignalRMethodNames.ACK_NEW_ORDER, () => this.showToast());
+            this.hub.off(SignalRMethodNames.UPDATE_INTERVAL, (...msg: any[]) => this.updateInterval(msg));
+            this.hub.off(SignalRMethodNames.DRINK_AVAILABLE_CHANGED, (clientInterval: IClientInterval) => this.drinkAvailableChanged(clientInterval));
+        }
+
         registerCallback(): void {
             this.hub.on(SignalRMethodNames.SEND_INITIAL_DATA, (...msg: any[]) => this.sendInitialData(msg));
             this.hub.on(SignalRMethodNames.UPDATE_TIME, (...msg: any[]) => this.updateTime(msg));
@@ -62,6 +73,7 @@ module beursfuif {
         }
 
         sendInitialData(...msg: any[]) {
+            console.log("initial data", msg);
             this.currentTime = <Date>msg[0][0];
             this.clientInterval = <IClientInterval>msg[0][1];
             this.clientInterval.ClientDrinks.sort(this.sortByLowerDrinkName);
@@ -81,8 +93,12 @@ module beursfuif {
         }
 
         kicked(): void {
-            this.connection.stop(false, true);
+
+            this.hub.connection.stop(false, true);
             this.$rootScope.$broadcast(EventNames.OPEN_MODAL, ModalMessages.YOU_GOT_KICKED_TITLE, ModalMessages.YOU_GOT_KICKED);
+
+            this.hub = null;
+            this.connection = null;
         }
 
         showToast(): void {

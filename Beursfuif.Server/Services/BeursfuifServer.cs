@@ -1,6 +1,7 @@
 ﻿using Beursfuif.BL;
 using Beursfuif.BL.Event;
 using Microsoft.AspNet.SignalR;
+using Microsoft.AspNet.SignalR.Infrastructure;
 using Microsoft.Owin.Hosting;
 using System;
 using System.Collections.Generic;
@@ -53,7 +54,7 @@ namespace Beursfuif.Server.Services
             try
             {
                 _webApp = WebApp.Start<Startup>("http://" + Ip + ":" + Port);
-                _hub = GlobalHost.ConnectionManager.GetHubContext<BeursfuifHub>();
+                _hub = Beursfuif.Server.Services.Startup.DependencyResolver.Resolve<IConnectionManager>().GetHubContext<BeursfuifHub>();
                 BeursfuifHub.NewPackageReceived += BeursfuifHub_NewPackageReceived;
                 return true;
             }
@@ -202,6 +203,7 @@ namespace Beursfuif.Server.Services
         {
             string context = Clients.FirstOrDefault(x => x.Id == clientId).ConnectionContext;
             //SignalR method
+            var client = _hub.Clients.Client(context);
             _hub.Clients.Client(context).sendInitialData(currentBeursfuifTime, currentInterval);
         }
 
@@ -251,8 +253,10 @@ namespace Beursfuif.Server.Services
         {
             if(_webApp != null)
             {
+                Beursfuif.Server.Services.Startup.DependencyResolver.Dispose();
                 _webApp.Dispose();
             }
+            BeursfuifHub.NewPackageReceived -= BeursfuifHub_NewPackageReceived;
         }
 
         public async Task<bool> Start(string ip, int port)

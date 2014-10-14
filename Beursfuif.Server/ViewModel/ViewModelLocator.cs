@@ -16,6 +16,8 @@ using Beursfuif.Server.DataAccess;
 using Beursfuif.Server.Services;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
+using Microsoft.AspNet.SignalR;
+using Microsoft.AspNet.SignalR.Hubs;
 using Microsoft.Practices.ServiceLocation;
 
 namespace Beursfuif.Server.ViewModel

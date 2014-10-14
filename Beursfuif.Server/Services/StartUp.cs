@@ -7,11 +7,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNet.SignalR.Hubs;
+using Microsoft.AspNet.SignalR.Infrastructure;
 
 namespace Beursfuif.Server.Services
 {
     public class Startup
     {
+        public static IDependencyResolver DependencyResolver
+        {
+            get;
+            set;
+        }
         public void Configuration(IAppBuilder app)
         {
             // For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=316888
@@ -23,13 +30,16 @@ namespace Beursfuif.Server.Services
                 // providing a cors options with a different policy.
                 map.UseCors(CorsOptions.AllowAll);
 
+                DependencyResolver = new DefaultDependencyResolver();
+
                 var hubConfiguration = new HubConfiguration
                 {
                     // You can enable JSONP by uncommenting line below.
                     // JSONP requests are insecure but some older browsers (and some
                     // versions of IE) require JSONP to work cross domain
-                    // EnableJSONP = true
+                    //EnableJSONP = true,
                     EnableDetailedErrors = true,
+                    Resolver = DependencyResolver
                 };
 
                 // Run the SignalR pipeline. We're not using MapSignalR
@@ -38,5 +48,7 @@ namespace Beursfuif.Server.Services
                 map.RunSignalR(hubConfiguration);
             });
         }
+
+       
     }
 }
