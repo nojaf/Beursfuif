@@ -40,112 +40,117 @@ namespace Beursfuif.Server.Services
             int numberOfDrinks = drinksForNextInterval.Length;
             for (int i = 0; i < numberOfDrinks; i++)
             {
-                Drink drink = drinksForNextInterval[i];
+                CalculateNewPrice(allOrdersItems, predict, currentInterval, previousInterval, nextInterval, previousAllDrinkCount, currentAllDrinkCount, differenceAllDrinks, drinksForNextInterval, i);
+            }
 
-                int previousDrinkCount = allOrdersItems.Where(x => x.DrinkId == drink.Id && x.IntervalId == previousInterval.Id).Sum(x => x.Count);
-                int currentDrinkCount = allOrdersItems.Where(x => x.DrinkId == drink.Id && x.IntervalId == currentInterval.Id).Sum(x => x.Count);
-                //1 in the excel
-                int differenceDrinkCount = currentDrinkCount - previousDrinkCount;
+            return nextInterval;
+        }
 
-                //3 in the excel
-                double differenceProcentage = ((double)currentDrinkCount / (double)currentAllDrinkCount)
-                                                                        -
-                                               ((double)previousDrinkCount / (double)previousAllDrinkCount);
+        private static void CalculateNewPrice(List<ClientDrinkOrder> allOrdersItems, bool predict, Interval currentInterval, Interval previousInterval, Interval nextInterval, int previousAllDrinkCount, int currentAllDrinkCount, int differenceAllDrinks, Drink[] drinksForNextInterval, int i)
+        {
+            Drink drink = drinksForNextInterval[i];
 
-                if (differenceDrinkCount >= 0)
+            int previousDrinkCount = allOrdersItems.Where(x => x.DrinkId == drink.Id && x.IntervalId == previousInterval.Id).Sum(x => x.Count);
+            int currentDrinkCount = allOrdersItems.Where(x => x.DrinkId == drink.Id && x.IntervalId == currentInterval.Id).Sum(x => x.Count);
+            //1 in the excel
+            int differenceDrinkCount = currentDrinkCount - previousDrinkCount;
+
+            //3 in the excel
+            double differenceProcentage = ((double)currentDrinkCount / (double)currentAllDrinkCount)
+                                                                    -
+                                           ((double)previousDrinkCount / (double)previousAllDrinkCount);
+
+            if (differenceDrinkCount >= 0)
+            {
+                #region 1A
+                //the drink has been drank more
+                if (differenceAllDrinks >= 0)
                 {
-                    #region 1A
-                    //the drink has been drank more
-                    if (differenceAllDrinks >= 0)
+                    #region 2AA
+                    //more drinks have been drunk in general
+                    if (differenceProcentage > 0)
                     {
-                        #region 2AA
-                        //more drinks have been drunk in general
-                        if (differenceProcentage > 0)
-                        {
-                            //the drink has been drunk more procentually
-                            drink.PriceFactor = PriceFactor.BIG_RISE;
-                        }
-                        else
-                        {
-                            //the drink has been drunk less procentually
-                            drink.PriceFactor = PriceFactor.BIG_DECREASE;
-                        }
-                        #endregion
+                        //the drink has been drunk more procentually
+                        drink.PriceFactor = PriceFactor.BIG_RISE;
                     }
                     else
                     {
-                        #region 2AB
-                        //less drinks have been drunk in general
-                        if (differenceProcentage > 0)
-                        {
-                            //the drink has been drunk more procentually
-                            drink.PriceFactor = PriceFactor.SMALL_RISE;
-                        }
-                        else
-                        {
-                            //the drink has been drunk less procentually
-                            drink.PriceFactor = PriceFactor.SMALL_DECREASE;
-                        }
-                        #endregion
+                        //the drink has been drunk less procentually
+                        drink.PriceFactor = PriceFactor.BIG_DECREASE;
                     }
                     #endregion
                 }
                 else
                 {
-                    #region 1B
-                    //the drink has been drank less
-                    if (differenceAllDrinks > 0)
+                    #region 2AB
+                    //less drinks have been drunk in general
+                    if (differenceProcentage > 0)
                     {
-                        #region 2BA
-                        //more drinks have been drunk in general
-                        if (differenceProcentage > 0)
-                        {
-                            //the drink has been drunk more procentually
-                            drink.PriceFactor = PriceFactor.BIG_DECREASE;
-                        }
-                        else
-                        {
-                            //the drink has been drunk less procentually
-                            drink.PriceFactor = PriceFactor.BIG_RISE;
-                        }
-                        #endregion
+                        //the drink has been drunk more procentually
+                        drink.PriceFactor = PriceFactor.SMALL_RISE;
                     }
                     else
                     {
-                        #region 2BB
-                        //more drinks have been drunk in general
-                        if (differenceProcentage > 0)
-                        {
-                            //the drink has been drunk more procentually
-                            drink.PriceFactor = PriceFactor.SMALL_DECREASE;
-                        }
-                        else
-                        {
-                            //the drink has been drunk less procentually
-                            drink.PriceFactor = PriceFactor.SMALL_RISE;
-                        }
-                        #endregion
+                        //the drink has been drunk less procentually
+                        drink.PriceFactor = PriceFactor.SMALL_DECREASE;
                     }
                     #endregion
                 }
-
-                //check if we need to use the override factor
-                if (drink.OverrideFactor != 0 && !predict) drink.PriceFactor = PriceFactor.OVERRIDE;
-
-
-
-                Drink nextDrink = nextInterval.Drinks.FirstOrDefault(x => x.Id == drink.Id);
-                double priceFactor = drink.GetPriceFactorValue();
-                double priceWithoutRouding = drink.CurrentPrice * priceFactor;
-                byte nextPrice = (byte)Math.Round(priceWithoutRouding);
-                if (nextPrice > nextDrink.MaximumPrice) nextPrice = nextDrink.MaximumPrice;
-                if (nextPrice < nextDrink.MiniumPrice) nextPrice = nextDrink.MiniumPrice;
-
-                nextDrink.CurrentPrice = nextPrice;
-                if (predict) nextDrink.PriceFactor = drink.PriceFactor;
+                #endregion
+            }
+            else
+            {
+                #region 1B
+                //the drink has been drank less
+                if (differenceAllDrinks > 0)
+                {
+                    #region 2BA
+                    //more drinks have been drunk in general
+                    if (differenceProcentage > 0)
+                    {
+                        //the drink has been drunk more procentually
+                        drink.PriceFactor = PriceFactor.BIG_DECREASE;
+                    }
+                    else
+                    {
+                        //the drink has been drunk less procentually
+                        drink.PriceFactor = PriceFactor.BIG_RISE;
+                    }
+                    #endregion
+                }
+                else
+                {
+                    #region 2BB
+                    //more drinks have been drunk in general
+                    if (differenceProcentage > 0)
+                    {
+                        //the drink has been drunk more procentually
+                        drink.PriceFactor = PriceFactor.SMALL_DECREASE;
+                    }
+                    else
+                    {
+                        //the drink has been drunk less procentually
+                        drink.PriceFactor = PriceFactor.SMALL_RISE;
+                    }
+                    #endregion
+                }
+                #endregion
             }
 
-            return nextInterval;
+            //check if we need to use the override factor
+            if (drink.OverrideFactor != 0 && !predict) drink.PriceFactor = PriceFactor.OVERRIDE;
+
+
+
+            Drink nextDrink = nextInterval.Drinks.FirstOrDefault(x => x.Id == drink.Id);
+            double priceFactor = drink.GetPriceFactorValue();
+            double priceWithoutRouding = drink.CurrentPrice * priceFactor;
+            byte nextPrice = (byte)Math.Round(priceWithoutRouding);
+            if (nextPrice > nextDrink.MaximumPrice) nextPrice = nextDrink.MaximumPrice;
+            if (nextPrice < nextDrink.MiniumPrice) nextPrice = nextDrink.MiniumPrice;
+
+            nextDrink.CurrentPrice = nextPrice;
+            if (predict) nextDrink.PriceFactor = drink.PriceFactor;
         }
 
     }
