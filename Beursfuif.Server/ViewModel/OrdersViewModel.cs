@@ -360,13 +360,28 @@ namespace Beursfuif.Server.ViewModel
                 Orders = items
             };
 
+            if (AllOrders == null)
+            {
+                AllOrders = new ObservableCollection<ShowOrder>();
+            }
+
             AllOrders.Add(newOrder);
             RaisePropertyChanged(AllOrdersPropertyName);
             if (SelectedInterval == null) SelectedInterval = ReducedIntervals[0];
 
             if (SelectedInterval.Id == currentInterval.Id || SelectedInterval.Id == int.MaxValue)
             {
+                if (ShowOrderList == null)
+                {
+                    ShowOrderList = new ObservableCollection<ShowOrder>();
+                }
+
                 ShowOrderList.Add(newOrder);
+            }
+
+            if (_beursfuifData.AllOrderItems == null)
+            {
+                _beursfuifData.AllOrderItems = new List<ClientDrinkOrder>();
             }
 
             _beursfuifData.AllOrderItems.AddRange(e.Order);

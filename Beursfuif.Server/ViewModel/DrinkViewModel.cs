@@ -248,6 +248,7 @@ namespace Beursfuif.Server.ViewModel
         void BeursfuifData_BeursfuifDataImported(object sender, EventArgs e)
         {
             RaisePropertyChanged(DrinksPropertyName);
+            CheckCanEdit();
         }
 
         void BeursfuifData_DataReset(object sender, bool e)
@@ -255,6 +256,7 @@ namespace Beursfuif.Server.ViewModel
             if (e)
             {
                 RaisePropertyChanged(DrinksPropertyName);
+                CheckCanEdit();
             }
         }
 
@@ -586,10 +588,7 @@ namespace Beursfuif.Server.ViewModel
 
         private void CheckCanEdit()
         {
-            if (_beursfuifData.BeursfuifEverStarted)
-            {
-                CanModify = false;
-            }
+            CanModify = !_beursfuifData.BeursfuifEverStarted;  
         }
     }
 }

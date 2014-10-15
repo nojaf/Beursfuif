@@ -274,6 +274,7 @@ namespace Beursfuif.Server.Services
             ResetData();
             Drinks = new ObservableCollection<Drink>();
             SafeDeleteFile(PathManager.DRINK_PATH);
+            SafeDeleteFolder(PathManager.ASSETS_PATH);
             RaisDataReset(true);
         }
 
@@ -296,8 +297,6 @@ namespace Beursfuif.Server.Services
             SafeDeleteFile(PathManager.ALL_ORDERS);
             SafeDeleteFile(PathManager.CURRENT_INTERVAL_PATH);
             SafeDeleteFolder(PathManager.LOG_FOLDER);
-            SafeDeleteFolder(PathManager.ASSETS_PATH);
-
             RaisDataReset(false);
         }
 

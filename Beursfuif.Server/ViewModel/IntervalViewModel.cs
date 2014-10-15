@@ -352,11 +352,8 @@ namespace Beursfuif.Server.ViewModel
 
         private void CheckCanEdit()
         {
-            if (_beursfuifData.BeursfuifEverStarted)
-            {
-                CanModify = false;
-                RaisePropertyChanged(CantModifyPropertyName);
-            }
+            CanModify = !_beursfuifData.BeursfuifEverStarted;
+            RaisePropertyChanged(CantModifyPropertyName);
         }
 
     }
