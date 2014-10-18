@@ -32,6 +32,8 @@ namespace Beursfuif.Server.Services
 
         bool BeursfuifEverStarted { get; set; }
 
+        bool IsBeursfuifCompleted { get; set; }
+
         ObservableCollection<ShowOrder> AllOrders { get; set; }
 
         List<ClientDrinkOrder> AllOrderItems { get; set; }
@@ -65,5 +67,7 @@ namespace Beursfuif.Server.Services
         void ResetData();
 
         string GetClientName(Guid guid);
+
+        void EndOfBeursfuif();
     }
 }

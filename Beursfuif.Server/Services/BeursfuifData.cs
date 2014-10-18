@@ -3,11 +3,8 @@ using Beursfuif.Server.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using Beursfuif.BL.Exceptions;
-using Beursfuif.Server.Messages;
 
 namespace Beursfuif.Server.Services
 {
@@ -123,6 +120,12 @@ namespace Beursfuif.Server.Services
         }
 
         public string BackUpLocation { get; set; }
+
+        public bool IsBeursfuifCompleted
+        {
+            get;
+            set;
+        }
         #endregion
 
         public BeursfuifData(IIOManager ioManager)
@@ -143,6 +146,7 @@ namespace Beursfuif.Server.Services
                 Port = settings.Port;
                 BeursfuifCurrentTime = settings.CurrentTime;
                 BackUpLocation = settings.BackupLocation;
+                IsBeursfuifCompleted = settings.IsBeursfuifCompleted;
 
                 LoadDrinksAndIntervals();
                 LoadOrders();
@@ -208,6 +212,7 @@ namespace Beursfuif.Server.Services
             SaveCurrentInterval();
             SaveIntervals();
             SaveAllOrders();
+            SaveSettings();
         }
 
         public void SaveDrinks()
@@ -228,6 +233,20 @@ namespace Beursfuif.Server.Services
         public void SaveSettings(SaveSettings settings)
         {
             _ioManager.Save<SaveSettings>(PathManager.SETTINGS_PATH, settings);
+        }
+
+        public void SaveSettings()
+        {
+            BL.SaveSettings saveSettings = new SaveSettings()
+            {
+                BackupLocation = this.BackUpLocation,
+                Busy = this.BeursfuifBusy,
+                CurrentTime = this.BeursfuifCurrentTime,
+                IsBeursfuifCompleted = this.IsBeursfuifCompleted,
+                Port = this.Port
+            };
+            SaveSettings(saveSettings);
+
         }
 
         public void SaveAllOrders()
@@ -321,9 +340,11 @@ namespace Beursfuif.Server.Services
         }
         #endregion
 
-        public bool Directory { get; set; }
-
-
-
+        public void EndOfBeursfuif()
+        {
+            ChangeBeursfuifBusy(false);
+            IsBeursfuifCompleted = true;
+            SaveAllData();
+        }
     }
 }

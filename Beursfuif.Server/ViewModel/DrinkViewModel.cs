@@ -256,8 +256,8 @@ namespace Beursfuif.Server.ViewModel
             if (e)
             {
                 RaisePropertyChanged(DrinksPropertyName);
-                CheckCanEdit();
             }
+            CheckCanEdit();
         }
 
         void BeursfuifData_BeursfuifBusyChanged(object sender, bool e)

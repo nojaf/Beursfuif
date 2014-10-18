@@ -326,6 +326,8 @@ namespace Beursfuif.Server.ViewModel
 
             if (Port < 1000) return false;
 
+            if (_beursfuifData.IsBeursfuifCompleted) return false;
+
             return (_beursfuifData.Drinks != null && _beursfuifData.Drinks.Any() && _beursfuifData.Intervals != null && _beursfuifData.Intervals.Any());
         }
 
@@ -467,7 +469,7 @@ namespace Beursfuif.Server.ViewModel
         private void SaveSettings(object state)
         {
             PointInCode("SettingsViewModel: SaveSettings");
-            SaveSettings settings = new SaveSettings(BeursfuifBusy, BeursfuifCurrentTime, Port, BackupLocation);
+            SaveSettings settings = new SaveSettings(BeursfuifBusy, BeursfuifCurrentTime, Port,_beursfuifData.IsBeursfuifCompleted , BackupLocation);
             _beursfuifData.SaveSettings(settings);
             _beursfuifData.SaveCurrentInterval();
             SendLogMessage("Beursfuifsettings and currentInterval have been saved", LogType.SETTINGS_VM);
@@ -546,7 +548,7 @@ namespace Beursfuif.Server.ViewModel
         public void MainTimer_Tick(object state)
         {
             _tmrMain.Change(int.MaxValue, int.MaxValue);
-            //BEGIN CODE
+
             if (BeursfuifBusy && CurrentInterval != null)
             {
                 BeursfuifCurrentTime = BeursfuifCurrentTime.AddSeconds(1);
@@ -561,7 +563,7 @@ namespace Beursfuif.Server.ViewModel
                     return;
                 }
             }
-            //END CODE
+
             _tmrMain.Change(1000, 1000);
         }
 
@@ -591,24 +593,31 @@ namespace Beursfuif.Server.ViewModel
                 else
                 {
                     //end of fuif
-                    MainActionCommand();
-
-                    foreach (var client in _beursfuifData.Clients)
-	                {
-                        KickClientMessage kickClientMessage = new KickClientMessage()
-                        {
-                            Reason = KickWasKickedReason.END_OF_PARTY,
-                            ClientId = client.Id
-                        };
-                        base.MessengerInstance.Send<KickClientMessage>(kickClientMessage);
-	                }
-
-
-                    SendLogMessage("Beursfuif has ended", LogType.SETTINGS_VM | LogType.GOOD_NEWS);
-                    SendToastMessage("Beursfuif completed", "De fuif is gedaan");
-                    //TODO, disable restart fuif button
+                    EndOfBeursfuif();
                 }
             }));
+        }
+
+        private void EndOfBeursfuif()
+        {
+            MainActionCommand();
+
+            foreach (var client in _beursfuifData.Clients)
+            {
+                KickClientMessage kickClientMessage = new KickClientMessage()
+                {
+                    Reason = KickWasKickedReason.END_OF_PARTY,
+                    ClientId = client.Id
+                };
+                base.MessengerInstance.Send<KickClientMessage>(kickClientMessage);
+            }
+
+            SendLogMessage("Beursfuif has ended", LogType.SETTINGS_VM | LogType.GOOD_NEWS);
+            SendToastMessage("Beursfuif completed", "De fuif is gedaan");
+            //TODO, disable restart fuif button
+
+            _beursfuifData.EndOfBeursfuif();
+            MainActionButtonCommand.CanExecute(true);
         }
 
         private void OneMinutePassed()
