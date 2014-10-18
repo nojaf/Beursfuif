@@ -40,7 +40,7 @@
             <div id="contentContainer">
                 <div id="drinks">
                     <div class="drink" ng-repeat="dr in drinks" ng-style="{'background-image':'url('+vm.parseImage(dr.Base64Image)+')'}">
-                        <p>{{dr.Name}}</p>
+                        <p>{{dr.Name | limitTo:15}}</p>
                         <button class="btn btn-success" ng-click="vm.addItem(dr.DrinkId, dr.Name)"><i class="glyphicon glyphicon-plus"></i></button>
                         <button class="btn btn-danger" ng-click="vm.subtractItem(dr.DrinkId)"><i class="glyphicon glyphicon-minus"></i></button>
                         <p>{{dr.Price}} bons</p>
@@ -49,7 +49,7 @@
                 <div id="order">
                     <h2>Huidige bestelling</h2>
                     <div class="tableContainer">
-                        <table>
+                        <table class="">
                             <thead>
                                 <tr>
                                     <th>Drank</th>
@@ -61,7 +61,7 @@
                             </thead>
                             <tbody>
                                 <tr ng-repeat="item in currentOrder">
-                                    <td>{{item.Name}}</td>
+                                    <td>{{item.Name | limitTo:15}}</td>
                                     <td>{{item.Count}}</td>
                                     <td><button class="btn btn-success" ng-click="vm.addItem(item.DrinkId)"><i class="glyphicon glyphicon-plus"></i></button></td>
                                     <td><button class="btn btn-danger" ng-click="vm.subtractItem(item.DrinkId)"><i class="glyphicon glyphicon-minus"></i></button></td>

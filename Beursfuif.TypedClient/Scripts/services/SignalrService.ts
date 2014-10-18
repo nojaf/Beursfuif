@@ -55,40 +55,40 @@ module beursfuif {
 
         //#region callbacks from the server
         unregisterCallbacks() {
-            this.hub.off(SignalRMethodNames.SEND_INITIAL_DATA, (...msg: any[]) => this.sendInitialData(msg));
-            this.hub.off(SignalRMethodNames.UPDATE_TIME, (...msg: any[]) => this.updateTime(msg));
-            this.hub.off(SignalRMethodNames.YOU_GOT_KICKED, () => this.kicked());
-            this.hub.off(SignalRMethodNames.ACK_NEW_ORDER, () => this.showToast());
-            this.hub.off(SignalRMethodNames.UPDATE_INTERVAL, (...msg: any[]) => this.updateInterval(msg));
-            this.hub.off(SignalRMethodNames.DRINK_AVAILABLE_CHANGED, (clientInterval: IClientInterval) => this.drinkAvailableChanged(clientInterval));
+            this.hub.off(SignalRMethodNames.SEND_INITIAL_DATA, (msg) => { this.$log.info("Off initial data")});
+            this.hub.off(SignalRMethodNames.UPDATE_TIME, (msg) => { this.$log.info("Off update time") });
+            this.hub.off(SignalRMethodNames.YOU_GOT_KICKED, (msg) => { this.$log.info("Off you got kicked") });
+            this.hub.off(SignalRMethodNames.ACK_NEW_ORDER, (msg) => { this.$log.info("Off ack new order") });
+            this.hub.off(SignalRMethodNames.UPDATE_INTERVAL, (msg) => { this.$log.info("Off update interval") });
+            this.hub.off(SignalRMethodNames.DRINK_AVAILABLE_CHANGED, (msg) => { this.$log.info("Off drink available") });
         }
 
         registerCallback(): void {
-            this.hub.on(SignalRMethodNames.SEND_INITIAL_DATA, (...msg: any[]) => this.sendInitialData(msg));
-            this.hub.on(SignalRMethodNames.UPDATE_TIME, (...msg: any[]) => this.updateTime(msg));
+            this.hub.on(SignalRMethodNames.SEND_INITIAL_DATA, (currentTime: Date, clientInterval: IClientInterval)
+                => this.sendInitialData(currentTime, clientInterval));
+            this.hub.on(SignalRMethodNames.UPDATE_TIME, (currentTime: Date, authenticationCode: string) => this.updateTime(currentTime, authenticationCode));
             this.hub.on(SignalRMethodNames.YOU_GOT_KICKED, () => this.kicked());
             this.hub.on(SignalRMethodNames.ACK_NEW_ORDER, () => this.showToast());
-            this.hub.on(SignalRMethodNames.UPDATE_INTERVAL, (...msg: any[]) => this.updateInterval(msg));
+            this.hub.on(SignalRMethodNames.UPDATE_INTERVAL, (clientInterval: IClientInterval, currentBFTime: Date) => this.updateInterval(clientInterval, currentBFTime));
             this.hub.on(SignalRMethodNames.DRINK_AVAILABLE_CHANGED, (clientInterval: IClientInterval) => this.drinkAvailableChanged(clientInterval));
         }
 
-        sendInitialData(...msg: any[]) {
-            console.log("initial data", msg);
-            this.currentTime = <Date>msg[0][0];
-            this.clientInterval = <IClientInterval>msg[0][1];
+        sendInitialData(currentTime:Date, clientInterval:IClientInterval) {
+            console.log("initial data", currentTime, clientInterval);
+            this.currentTime = currentTime;
+            this.clientInterval = clientInterval;
             this.clientInterval.ClientDrinks.sort(this.sortByLowerDrinkName);
             this.$log.log(this.currentTime);
             this.$log.log(this.clientInterval);     
             this.$rootScope.$broadcast(EventNames.CONNECTION_CHANGED, true);    
         }
 
-        updateTime(...msg: any[]) {
-            this.$log.log("time time time");
-            this.$log.log(msg);
+        updateTime(currentTime:Date, authenticationCode:string) {
+            this.$log.log("time time time", currentTime);
 
-            this.validateAuthString(msg[0][1]);
+            this.validateAuthString(authenticationCode);
 
-            this.currentTime = msg[0][0];
+            this.currentTime = currentTime;
             this.$rootScope.$broadcast(EventNames.TIME_CHANGED);
         }
 
@@ -105,10 +105,10 @@ module beursfuif {
             toastr.success("Je bestelling werd goed ontvangen.","Bestelling gelukt!");
         }
 
-        updateInterval(...msg: any[]) {
-            this.$log.log(msg);
-            this.currentTime = <Date>msg[0][1];
-            this.clientInterval = <IClientInterval>msg[0][0];
+        updateInterval(clientInterval:IClientInterval, currentBFTime:Date) {
+            this.$log.log(clientInterval, currentBFTime);
+            this.currentTime = currentBFTime;
+            this.clientInterval = clientInterval;
             this.clientInterval.ClientDrinks.sort(this.sortByLowerDrinkName);
             this.$rootScope.$broadcast(EventNames.INTERVAL_UPDATE);
             toastr.info("De prijzen werden aangepast", "Prijzen update.");

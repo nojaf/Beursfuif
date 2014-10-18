@@ -412,53 +412,33 @@ var beursfuif;
         //#region callbacks from the server
         SignalrService.prototype.unregisterCallbacks = function () {
             var _this = this;
-            this.hub.off(SignalRMethodNames.SEND_INITIAL_DATA, function () {
-                var msg = [];
-                for (var _i = 0; _i < (arguments.length - 0); _i++) {
-                    msg[_i] = arguments[_i + 0];
-                }
-                return _this.sendInitialData(msg);
+            this.hub.off(SignalRMethodNames.SEND_INITIAL_DATA, function (msg) {
+                _this.$log.info("Off initial data");
             });
-            this.hub.off(SignalRMethodNames.UPDATE_TIME, function () {
-                var msg = [];
-                for (var _i = 0; _i < (arguments.length - 0); _i++) {
-                    msg[_i] = arguments[_i + 0];
-                }
-                return _this.updateTime(msg);
+            this.hub.off(SignalRMethodNames.UPDATE_TIME, function (msg) {
+                _this.$log.info("Off update time");
             });
-            this.hub.off(SignalRMethodNames.YOU_GOT_KICKED, function () {
-                return _this.kicked();
+            this.hub.off(SignalRMethodNames.YOU_GOT_KICKED, function (msg) {
+                _this.$log.info("Off you got kicked");
             });
-            this.hub.off(SignalRMethodNames.ACK_NEW_ORDER, function () {
-                return _this.showToast();
+            this.hub.off(SignalRMethodNames.ACK_NEW_ORDER, function (msg) {
+                _this.$log.info("Off ack new order");
             });
-            this.hub.off(SignalRMethodNames.UPDATE_INTERVAL, function () {
-                var msg = [];
-                for (var _i = 0; _i < (arguments.length - 0); _i++) {
-                    msg[_i] = arguments[_i + 0];
-                }
-                return _this.updateInterval(msg);
+            this.hub.off(SignalRMethodNames.UPDATE_INTERVAL, function (msg) {
+                _this.$log.info("Off update interval");
             });
-            this.hub.off(SignalRMethodNames.DRINK_AVAILABLE_CHANGED, function (clientInterval) {
-                return _this.drinkAvailableChanged(clientInterval);
+            this.hub.off(SignalRMethodNames.DRINK_AVAILABLE_CHANGED, function (msg) {
+                _this.$log.info("Off drink available");
             });
         };
 
         SignalrService.prototype.registerCallback = function () {
             var _this = this;
-            this.hub.on(SignalRMethodNames.SEND_INITIAL_DATA, function () {
-                var msg = [];
-                for (var _i = 0; _i < (arguments.length - 0); _i++) {
-                    msg[_i] = arguments[_i + 0];
-                }
-                return _this.sendInitialData(msg);
+            this.hub.on(SignalRMethodNames.SEND_INITIAL_DATA, function (currentTime, clientInterval) {
+                return _this.sendInitialData(currentTime, clientInterval);
             });
-            this.hub.on(SignalRMethodNames.UPDATE_TIME, function () {
-                var msg = [];
-                for (var _i = 0; _i < (arguments.length - 0); _i++) {
-                    msg[_i] = arguments[_i + 0];
-                }
-                return _this.updateTime(msg);
+            this.hub.on(SignalRMethodNames.UPDATE_TIME, function (currentTime, authenticationCode) {
+                return _this.updateTime(currentTime, authenticationCode);
             });
             this.hub.on(SignalRMethodNames.YOU_GOT_KICKED, function () {
                 return _this.kicked();
@@ -466,43 +446,30 @@ var beursfuif;
             this.hub.on(SignalRMethodNames.ACK_NEW_ORDER, function () {
                 return _this.showToast();
             });
-            this.hub.on(SignalRMethodNames.UPDATE_INTERVAL, function () {
-                var msg = [];
-                for (var _i = 0; _i < (arguments.length - 0); _i++) {
-                    msg[_i] = arguments[_i + 0];
-                }
-                return _this.updateInterval(msg);
+            this.hub.on(SignalRMethodNames.UPDATE_INTERVAL, function (clientInterval, currentBFTime) {
+                return _this.updateInterval(clientInterval, currentBFTime);
             });
             this.hub.on(SignalRMethodNames.DRINK_AVAILABLE_CHANGED, function (clientInterval) {
                 return _this.drinkAvailableChanged(clientInterval);
             });
         };
 
-        SignalrService.prototype.sendInitialData = function () {
-            var msg = [];
-            for (var _i = 0; _i < (arguments.length - 0); _i++) {
-                msg[_i] = arguments[_i + 0];
-            }
-            console.log("initial data", msg);
-            this.currentTime = msg[0][0];
-            this.clientInterval = msg[0][1];
+        SignalrService.prototype.sendInitialData = function (currentTime, clientInterval) {
+            console.log("initial data", currentTime, clientInterval);
+            this.currentTime = currentTime;
+            this.clientInterval = clientInterval;
             this.clientInterval.ClientDrinks.sort(this.sortByLowerDrinkName);
             this.$log.log(this.currentTime);
             this.$log.log(this.clientInterval);
             this.$rootScope.$broadcast(beursfuif.EventNames.CONNECTION_CHANGED, true);
         };
 
-        SignalrService.prototype.updateTime = function () {
-            var msg = [];
-            for (var _i = 0; _i < (arguments.length - 0); _i++) {
-                msg[_i] = arguments[_i + 0];
-            }
-            this.$log.log("time time time");
-            this.$log.log(msg);
+        SignalrService.prototype.updateTime = function (currentTime, authenticationCode) {
+            this.$log.log("time time time", currentTime);
 
-            this.validateAuthString(msg[0][1]);
+            this.validateAuthString(authenticationCode);
 
-            this.currentTime = msg[0][0];
+            this.currentTime = currentTime;
             this.$rootScope.$broadcast(beursfuif.EventNames.TIME_CHANGED);
         };
 
@@ -518,14 +485,10 @@ var beursfuif;
             toastr.success("Je bestelling werd goed ontvangen.", "Bestelling gelukt!");
         };
 
-        SignalrService.prototype.updateInterval = function () {
-            var msg = [];
-            for (var _i = 0; _i < (arguments.length - 0); _i++) {
-                msg[_i] = arguments[_i + 0];
-            }
-            this.$log.log(msg);
-            this.currentTime = msg[0][1];
-            this.clientInterval = msg[0][0];
+        SignalrService.prototype.updateInterval = function (clientInterval, currentBFTime) {
+            this.$log.log(clientInterval, currentBFTime);
+            this.currentTime = currentBFTime;
+            this.clientInterval = clientInterval;
             this.clientInterval.ClientDrinks.sort(this.sortByLowerDrinkName);
             this.$rootScope.$broadcast(beursfuif.EventNames.INTERVAL_UPDATE);
             toastr.info("De prijzen werden aangepast", "Prijzen update.");
