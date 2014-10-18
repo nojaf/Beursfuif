@@ -21,7 +21,7 @@ body > div {
   height: 100%;
 }
 body .form-control {
-  color: black;
+  color: #000000;
 }
 #mask {
   width: 100%;
@@ -38,7 +38,7 @@ body .form-control {
   left: 50%;
   width: 300px;
   margin-left: -150px;
-  background-color: white;
+  background-color: #ffffff;
   border-radius: 10px;
   padding: 10px;
 }
@@ -101,7 +101,7 @@ body .form-control {
   background-size: cover;
 }
 #contentContainer #drinks .drink p {
-  color: white;
+  color: #ffffff;
   text-align: center;
   width: 100%;
   padding: 3px 0px;
@@ -127,8 +127,8 @@ body .form-control {
   float: right;
   width: 30%;
   height: 100%;
-  background-color: black;
-  color: white;
+  background-color: #000000;
+  color: #ffffff;
   border-radius: 10px;
   text-align: center;
 }
@@ -187,11 +187,11 @@ body .form-control {
   }
 }
 .blackAndWhite {
-  color: white;
-  background-color: black;
+  color: #ffffff;
+  background-color: #000000;
 }
 .blackAndWhite:hover {
-  color: black;
+  color: #000000;
   background-color: #fafbfc;
 }
 .view .ng-enter {
@@ -320,13 +320,103 @@ body .form-control {
 }
 #beamerContainer #beamerOverview ul li .text .price {
   font-size: 1.4em;
-  background-color: #74DB92;
+  background-color: #74db92;
   position: absolute;
   bottom: 5px;
   right: 7px;
 }
 #beamerContainer #beamerLoading {
   height: 50px;
-  background-color: white;
+  background-color: #ffffff;
   clear: both;
+}
+#preloader {
+  position: fixed;
+  margin: -25px;
+  left: 50%;
+  top: 50%;
+}
+#preloader .spinner {
+  width: 50px;
+  height: 50px;
+  position: relative;
+  text-align: center;
+  -webkit-animation: rotate 2.0s infinite linear;
+  -moz-animation: rotate 2.0s infinite linear;
+  -o-animation: rotate 2.0s infinite linear;
+  animation: rotate 2.0s infinite linear;
+}
+#preloader .dot1,
+#preloader .dot2 {
+  width: 60%;
+  height: 60%;
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  background-color: #ffffff;
+  border-radius: 100%;
+  -webkit-animation: bounce 2s infinite ease-in-out;
+  -moz-animation: bounce 2s infinite ease-in-out;
+  -o-animation: bounce 2s infinite ease-in-out;
+  animation: bounce 2s infinite ease-in-out;
+}
+#preloader .dot2 {
+  top: auto;
+  bottom: 0px;
+  -webkit-animation-delay: -1s;
+  -moz-animation-delay: -1s;
+  -o-animation-delay: -1s;
+  animation-delay: -1s;
+}
+@-webkit-keyframes rotate {
+  100% {
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes rotate {
+  100% {
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes bounce {
+  0%,
+  100% {
+    -moz-transform: scale(0);
+    -ms-transform: scale(0);
+    -o-transform: scale(0);
+    -webkit-transform: scale(0);
+    transform: scale(0);
+  }
+  50% {
+    -moz-transform: scale(1);
+    -ms-transform: scale(1);
+    -o-transform: scale(1);
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+}
+@keyframes bounce {
+  0%,
+  100% {
+    -moz-transform: scale(0);
+    -ms-transform: scale(0);
+    -o-transform: scale(0);
+    -webkit-transform: scale(0);
+    transform: scale(0);
+  }
+  50% {
+    -moz-transform: scale(1);
+    -ms-transform: scale(1);
+    -o-transform: scale(1);
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
 }

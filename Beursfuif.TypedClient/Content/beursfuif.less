@@ -1,4 +1,9 @@
-@borderRadius:10px;
+//Variables
+@borderRadius: 10px;
+@green: #74DB92;
+@black: black;
+@white: white;
+@whiteGrey:rgb(250,251,252);
 
 html {
     -webkit-background-size: cover;
@@ -25,20 +30,21 @@ body {
     user-select: none;
     cursor: default;
 
-    .form-control{
-        color:black;
+    .form-control {
+        color: @black;
     }
 }
 
 #mask {
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.75);
+    background-color: fade(@black, 75%);
     position: fixed;
     top: 0px;
     display: block;
     z-index: -1;
 }
+
 
 #loginContainer {
     position: fixed;
@@ -46,7 +52,7 @@ body {
     left: 50%;
     width: 300px;
     margin-left: -150px;
-    background-color: white;
+    background-color: @white;
     border-radius: @borderRadius;
     padding: 10px;
 
@@ -118,11 +124,11 @@ body {
             background-size: cover;
 
             p {
-                color: white;
+                color: @white;
                 text-align: center;
                 width: 100%;
                 padding: 3px 0px;
-                background-color: rgba(0,0,0,0.50);
+                background-color: fade(@black, 50%);
                 border-radius: @borderRadius @borderRadius 0px 0px;
                 margin-bottom: 5px;
 
@@ -149,8 +155,8 @@ body {
         float: right;
         width: 30%;
         height: 100%;
-        background-color: black;
-        color: white;
+        background-color: @black;
+        color: @white;
         border-radius: @borderRadius;
         text-align: center;
 
@@ -167,7 +173,7 @@ body {
             display: block;
             margin-left: 1%;
             text-align: center;
-            overflow-y:auto;
+            overflow-y: auto;
 
             table {
                 margin: auto;
@@ -226,19 +232,21 @@ body {
     }
 }
 
+
+
 .blackAndWhite {
-    color: white;
-    background-color: black;
+    color: @white;
+    background-color: @black;
 
     &:hover {
-        color: black;
-        background-color: rgb(250,251,252);
+        color: @black;
+        background-color: @whiteGrey;
     }
 }
 
 //#region animations
 .view .ng-enter {
-    opacity:0;
+    opacity: 0;
     -moz-animation: enterAnimation 10s ease;
     -o-animation: enterAnimation 10s ease;
     -webkit-animation: enterAnimation 10s ease;
@@ -304,104 +312,191 @@ body {
 //#endregion
 
 //#region beamer
-#beamerContainer{
-    width:100%;
-    padding: 1% 20% 5% 20%;
-    margin:auto;
-    height:100%;
-    background-color:#000;
-    color:white;
 
-    h1{
-        font-size:4em;
-        text-align:center;
-        margin:0px;
-        padding:0px;
-        margin-bottom:15px;
+
+#beamerContainer {
+    width: 100%;
+    padding: 1% 20% 5% 20%;
+    margin: auto;
+    height: 100%;
+    background-color: #000;
+    color: white;
+
+    h1 {
+        font-size: 4em;
+        text-align: center;
+        margin: 0px;
+        padding: 0px;
+        margin-bottom: 15px;
     }
 
-    #beamerLogin{
-        width:250px;
-        margin:50px auto;
-        
-        *{
-            margin:7px 0px;
+    #beamerLogin {
+        width: 250px;
+        margin: 50px auto;
+
+        * {
+            margin: 7px 0px;
         }
     }
 
-    #beamerOverview{
-        height:85%;
+    #beamerOverview {
+        height: 85%;
 
-            ul{
-        width:90%;
-        height:100%;
-        list-style-type:none;
+        ul {
+            width: 90%;
+            height: 100%;
+            list-style-type: none;
 
-        li{
-
-            width:45%;
-            min-height:60px;
-            float:left;
-            margin:5px 0px 0px 5%;
-            border:1px solid white;
-            border-radius:@borderRadius;
-
-            /*&:nth-child(odd){
+            li {
+                width: 45%;
+                min-height: 60px;
+                float: left;
+                margin: 5px 0px 0px 5%;
+                border: 1px solid white;
+                border-radius: @borderRadius;
+                /*&:nth-child(odd){
                 border-color:#ffd800;
             }
 
             &:nth-child(even){
                 border-color:#b6ff00;
             }*/
-
-            .img{
-                float:left;
-                border-radius:@borderRadius;
-                min-height:60px;
-                width:25%;
-                -moz-background-origin: content-box;
-                -webkit-background-origin: content-box;
-                background-origin: content-box;
-                background-position: center;
-                -moz-background-size: cover;
-                -o-background-size: cover;
-                -webkit-background-size: cover;
-                background-size: cover;
-            }
-
-            .text{
-                float:left;
-                position:relative;
-                padding-left:10px;
-                width:75%;
-                min-height:60px;
-
-                .name{
-                    position:absolute;
-                    top:7px;
-                    left:7px;
+                .img {
+                    float: left;
+                    border-radius: @borderRadius;
+                    min-height: 60px;
+                    width: 25%;
+                    -moz-background-origin: content-box;
+                    -webkit-background-origin: content-box;
+                    background-origin: content-box;
+                    background-position: center;
+                    -moz-background-size: cover;
+                    -o-background-size: cover;
+                    -webkit-background-size: cover;
+                    background-size: cover;
                 }
 
-                .price{
-                    font-size:1.4em;
-                    background-color:#74DB92;
-                    position:absolute;
-                    bottom:5px;
-                    right:7px;
+                .text {
+                    float: left;
+                    position: relative;
+                    padding-left: 10px;
+                    width: 75%;
+                    min-height: 60px;
+
+                    .name {
+                        position: absolute;
+                        top: 7px;
+                        left: 7px;
+                    }
+
+                    .price {
+                        font-size: 1.4em;
+                        background-color:@green;
+                        position: absolute;
+                        bottom: 5px;
+                        right: 7px;
+                    }
                 }
             }
-
-
         }
-
-        
-    }
     }
 
-    #beamerLoading{
+    #beamerLoading {
         height: 50px;
-        background-color: white;
+        background-color: @white;
         clear: both;
     }
 }
 //#endregion
+
+#preloader {
+    position:fixed;
+    margin:-25px;
+    left:50%;
+    top:50%;
+
+    .spinner {
+        width: 50px;
+        height: 50px;
+        position: relative;
+        text-align: center;
+        -webkit-animation: rotate 2.0s infinite linear;
+        -moz-animation: rotate 2.0s infinite linear;
+        -o-animation: rotate 2.0s infinite linear;
+        animation: rotate 2.0s infinite linear;
+    }
+
+    .dot1, .dot2 {
+        width: 60%;
+        height: 60%;
+        display: inline-block;
+        position: absolute;
+        top: 0;
+        background-color: @white;
+        border-radius: 100%;
+        -webkit-animation: bounce 2.0s infinite ease-in-out;
+        -moz-animation: bounce 2.0s infinite ease-in-out;
+        -o-animation: bounce 2.0s infinite ease-in-out;
+        animation: bounce 2.0s infinite ease-in-out;
+    }
+
+    .dot2 {
+        top: auto;
+        bottom: 0px;
+        -webkit-animation-delay: -1.0s;
+        -moz-animation-delay: -1.0s;
+        -o-animation-delay: -1.0s;
+        animation-delay: -1.0s;
+    }
+
+
+}
+
+//Keyframe animations
+@-webkit-keyframes rotate {
+    100% {
+        .transform(rotate(360deg));
+    }
+}
+
+@keyframes rotate {
+    100% {
+        .transform(rotate(360deg));
+    }
+}
+
+@-webkit-keyframes bounce {
+    0%, 100% {
+        .transform(scale(0.0));
+    }
+
+    50% {
+        .transform(scale(1.0))
+    }
+}
+
+@keyframes bounce {
+    0%, 100% {
+        .transform(scale(0.0));
+    }
+
+    50% {
+        .transform(scale(1.0))
+    }
+}
+
+//Mixins
+.animation(@animation) {
+    -moz-animation: @animation;
+    -o-animation: @animation;
+    -webkit-animation: @animation;
+    animation: @animation;
+}
+
+.transform(@transformation) {
+    -moz-transform: @transformation;
+    -ms-transform: @transformation;
+    -o-transform: @transformation;
+    -webkit-transform: @transformation;
+    transform: @transformation;
+}

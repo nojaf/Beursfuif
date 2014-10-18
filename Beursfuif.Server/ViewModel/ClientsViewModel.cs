@@ -96,12 +96,12 @@ namespace Beursfuif.Server.ViewModel
                 InitServer();
                 InitCommands();
                 InitMessages();
-                _beursfuifData.BeursfuifBusyChanged += _beursfuifData_BeursfuifBusyChanged;
+                _beursfuifData.BeursfuifBusyChanged += BeursfuifData_BeursfuifBusyChanged;
             }
 
         }
 
-        void _beursfuifData_BeursfuifBusyChanged(object sender, bool e)
+        void BeursfuifData_BeursfuifBusyChanged(object sender, bool e)
         {
             if (!e && Clients.Any())
             {

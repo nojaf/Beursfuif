@@ -12,15 +12,24 @@
     <!-- Would rather have separate files but it can't be done-->
     <script type="text/ng-template" id="loginView">
         <!-- #region loginView-->
-        <form id="loginContainer" ng-submit="vm.submit()">
-            <label>Naam</label>
-            <input type="text" class="form-control" ng-model="name" placeholder="bv. Jimmy Frey" autofocus="" />
-            <label>Server adres</label>
-            <input type="text" class="form-control" ng-model="ipAddress" placeholder="bv. 192.168.1.1" required="">
-            <label>Poort</label>
-            <input type="text" class="form-control" ng-model="port" placeholder="bv. 5678" required="">
-            <button class="btn btn-primary pull-right" type="submit">Aanmelden</button>
-        </form>
+        <div>
+            <form id="loginContainer" ng-submit="vm.submit()" ng-class="{'hide':isLoading}">
+                <label>Naam</label>
+                <input type="text" class="form-control" ng-model="name" placeholder="bv. Jimmy Frey" autofocus="" />
+                <label>Server adres</label>
+                <input type="text" class="form-control" ng-model="ipAddress" placeholder="bv. 192.168.1.1" required="">
+                <label>Poort</label>
+                <input type="text" class="form-control" ng-model="port" placeholder="bv. 5678" required="">
+                <button class="btn btn-primary pull-right" type="submit">Aanmelden</button>
+            </form>
+            <div id="preloader" ng-class="{'hide':!isLoading}">
+                <div class="spinner">
+                    <div class="dot1"></div>
+                    <div class="dot2"></div>
+                </div>
+            </div>
+        </div>
+     
         <!-- #endregion -->
     </script>
     <script type="text/ng-template" id="mainView">

@@ -5,12 +5,14 @@
         name: string;
         vm: LoginCtrl;
         connectionEstablished: any;
+        isLoading: boolean;
 
     }
     //localStorageService
     export class LoginCtrl {
 
-        constructor(private $scope: ILoginCtrlScope, private localStorageService: ILocalStorageService, private signalrService:SignalrService, private $location:ng.ILocationService) {
+        constructor(private $scope: ILoginCtrlScope, private localStorageService: ILocalStorageService,
+            private signalrService: SignalrService, private $location: ng.ILocationService, private $timeout:ng.ITimeoutService) {
             $scope.ipAddress = this.localStorageService.get("ipAddress") || "";
             $scope.port = this.localStorageService.get("port") || "";
             $scope.name = this.localStorageService.get("name") || "";
@@ -27,9 +29,9 @@
 
                     $scope.$emit(EventNames.CHANGE_OPACITY, 0.50);
                     //connection has been made so the view can be changed
-                    setTimeout(() => {
+                    $timeout(() => {
+                        this.$scope.isLoading = false;
                         this.$location.path("/main");
-                        this.$scope.$apply();
                     }, 250);
                 }
             });
@@ -38,14 +40,16 @@
         submit(): void {
             console.log("address : " + "http://" + this.$scope.ipAddress + ":" + this.$scope.port);
             this.signalrService.initialize("http://" + this.$scope.ipAddress + ":" + this.$scope.port, this.$scope.name);
+            this.$scope.isLoading = true;
         }
 
     }
 
-    beursfuifModule.controller("LoginCtrl", ["$scope", "localStorageService", "SignalrService", "$location",
+    beursfuifModule.controller("LoginCtrl", ["$scope", "localStorageService", "SignalrService", "$location","$timeout",
         ($scope: ILoginCtrlScope, localStorageService: ILocalStorageService,
-            signalrService: SignalrService, $location: ng.ILocationService) => {
-            return new LoginCtrl($scope, localStorageService, signalrService, $location);
+            signalrService: SignalrService, $location: ng.ILocationService,
+            $timeout:ng.ITimeoutService) => {
+            return new LoginCtrl($scope, localStorageService, signalrService, $location, $timeout);
         }]);
 }
 
