@@ -636,6 +636,11 @@ var beursfuif;
                     }, 250);
                 }
             });
+
+            this.$scope.$on(beursfuif.EventNames.OPEN_MODAL, function (e) {
+                //something went wrong (most likely wrong ip)
+                _this.$scope.isLoading = false;
+            });
         }
         LoginCtrl.prototype.submit = function () {
             console.log("address : " + "http://" + this.$scope.ipAddress + ":" + this.$scope.port);

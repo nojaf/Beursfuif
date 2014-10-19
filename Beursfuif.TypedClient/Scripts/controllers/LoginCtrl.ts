@@ -35,6 +35,11 @@
                     }, 250);
                 }
             });
+
+            this.$scope.$on(EventNames.OPEN_MODAL, (e: ng.IAngularEvent) => {
+                //something went wrong (most likely wrong ip)
+                this.$scope.isLoading = false;
+            });
         }
 
         submit(): void {
