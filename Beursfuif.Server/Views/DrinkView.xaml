@@ -112,8 +112,7 @@
                         Height="695">
                 <TextBlock Style="{DynamicResource Label}"><Run Language="nl-be"
                                                                 Text="Naam:" /></TextBlock>
-                <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                         IsEnabled="{Binding DataContext.CanModify, ElementName=drinkView}" />                     
+                <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />                     
                 <TextBlock Style="{DynamicResource Label}"><Run Language="nl-be"
                                                                 Text="Startprijs:" /></TextBlock>
                 <t:ByteUpDown Value="{Binding InitialPrice, Mode=TwoWay}"

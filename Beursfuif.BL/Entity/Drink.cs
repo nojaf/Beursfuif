@@ -495,6 +495,24 @@ namespace Beursfuif.BL
 
             return 1.0;
         }
+
+        /// <summary>
+        /// Updates properties that are allowed to be changed when the party is started
+        /// </summary>
+        /// <param name="changed"></param>
+        public void UpdateProperties(Drink changed)
+        {
+            Name = changed.Name;
+
+            Available = changed.Available;
+            BigDecrease = changed.BigDecrease;
+            BigRise = changed.BigRise;
+            SmallDecrease = changed.SmallDecrease;
+            SmallRise = changed.SmallRise;
+
+            MiniumPrice = changed.MiniumPrice;
+            MaximumPrice = changed.MaximumPrice;
+        }
     }
 
     public enum PriceFactor

@@ -83,6 +83,7 @@ namespace Beursfuif.Server.ViewModel
                     _newEditDrink.MiniumPrice = _previousValuesOfEditDrink.MiniumPrice;
                     _newEditDrink.MaximumPrice = _previousValuesOfEditDrink.MaximumPrice;
                     _newEditDrink.ImageString = _previousValuesOfEditDrink.ImageString;
+                    _newEditDrink.PropertyChanged -= NewEditDrink_PropertyChanged;
                     _newEditDrink = null;
                     DownloadUrl = string.Empty;
                     RaisePropertyChanged(NewEditDrinkPropertyName);
@@ -90,7 +91,19 @@ namespace Beursfuif.Server.ViewModel
 
                 RaisePropertyChanging(NewEditDrinkPropertyName);
 
+         
+                if (value != null)
+                {
+                    value.PropertyChanged += NewEditDrink_PropertyChanged;
+                }
+                else if(_newEditDrink != null)
+                {
+                    _newEditDrink.PropertyChanged -= NewEditDrink_PropertyChanged;
+                }
+
+
                 _newEditDrink = value;
+
                 //previous values
                 if (_newEditDrink != null)
                 {
@@ -308,6 +321,15 @@ namespace Beursfuif.Server.ViewModel
             ChooseLocalImageCommand = new RelayCommand(ChooseLocalImage);
             SaveDrinkCommand = new RelayCommand(SaveDrink);
             AvailableChangedCommand = new RelayCommand<int>(UpdateDrinkAvailability);
+
+        }
+
+        void NewEditDrink_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (NewEditDrink != null && NewEditDrink.Id != 0)
+            {
+                UpdateDrink(NewEditDrink);
+            }
         }
 
         private bool ValidateDrink()
@@ -554,9 +576,24 @@ namespace Beursfuif.Server.ViewModel
             PointInCode("DrinkViewModel: UpdateDrinkAvailability");
             Drink changed = Drinks.FirstOrDefault(x => x.Id == id);
             Interval currentInterval = _beursfuifData.CurrentInterval;
-            if (currentInterval.Drinks.Any(x => x.Id == changed.Id))
+
+            UpdateDrink(changed);
+
+            SendToastMessage(string.Format("{0}  is {1} beschikbaar", changed.Name, (changed.Available ? "weer" : "niet meer")));
+            SendLogMessage(string.Format("Drink ({0}) available ({1}) changed",changed.Name ,changed.Available), LogType.DRINK_VM);
+        }
+
+        private void UpdateDrink(Drink changed)
+        {
+            Interval currentInterval = _beursfuifData.CurrentInterval;
+
+            if (currentInterval != null && currentInterval.Drinks != null)
             {
-                currentInterval.Drinks.FirstOrDefault(x => x.Id == changed.Id).Available = changed.Available;
+                if (currentInterval.Drinks.Any(x => x.Id == changed.Id))
+                {
+                    Drink currentIntervalDrink = currentInterval.Drinks.FirstOrDefault(x => x.Id == changed.Id);
+                    currentIntervalDrink.UpdateProperties(changed);
+                }
             }
 
             if (_beursfuifData.Intervals != null)
@@ -565,8 +602,11 @@ namespace Beursfuif.Server.ViewModel
                 int index = Array.IndexOf(_beursfuifData.Intervals, currentInterval);
                 for (int i = index; i < length; i++)
                 {
-                    Drink drink = _beursfuifData.Intervals[i].Drinks.FirstOrDefault(x => x.Id == id);
-                    if (drink != null) drink.Available = changed.Available;
+                    Drink drink = _beursfuifData.Intervals[i].Drinks.FirstOrDefault(x => x.Id == changed.Id);
+                    if (drink != null)
+                    {
+                        drink.UpdateProperties(changed);
+                    }
                 }
             }
 
@@ -580,9 +620,6 @@ namespace Beursfuif.Server.ViewModel
                 //send message to clients with the current interval
                 MessengerInstance.Send<DrinkAvailableMessage>(new DrinkAvailableMessage());
             }
-
-            SendToastMessage(string.Format("{0}  is {1} beschikbaar", changed.Name, (changed.Available ? "weer" : "niet meer")));
-            SendLogMessage(string.Format("Drink ({0}) available ({1}) changed",changed.Name ,changed.Available), LogType.DRINK_VM);
         }
 
 
