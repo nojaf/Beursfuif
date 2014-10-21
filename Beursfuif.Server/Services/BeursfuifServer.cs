@@ -9,6 +9,9 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.ObjectModel;
+using Beursfuif.Server.DataAccess;
+using Beursfuif.BL.Extensions;
 
 namespace Beursfuif.Server.Services
 {
@@ -18,13 +21,19 @@ namespace Beursfuif.Server.Services
         #region Fields and properties
         private IDisposable _webApp;
         private IHubContext _hub;
+        private IBeursfuifData _beursfuifData;
 
-        public List<BL.Client> Clients
+        public ObservableCollection<Client> Clients
         {
-            get;
-            set;
+            get
+            {
+                return _beursfuifData.Clients;
+            }
+            set
+            {
+                _beursfuifData.Clients = value;
+            }
         }
-
         public int Port
         {
             get;
@@ -44,9 +53,9 @@ namespace Beursfuif.Server.Services
         }
         #endregion
 
-        public BeursfuifServer()
+        public BeursfuifServer(IBeursfuifData beursfuifData)
         {
-            Clients = new List<BL.Client>();
+            this._beursfuifData = beursfuifData;
         }
 
         private bool InitServer(object state)
@@ -173,21 +182,46 @@ namespace Beursfuif.Server.Services
             if(client != null)
             {
                 OnClientLeftEvent(this, new ClientLeftEventArgs(client.Id));
-                Clients.Remove(client);
+                Action action = () =>
+                {
+                    if (Clients.Contains(client))
+                    {
+                        Clients.Remove(client);
+                    }
+                };
+
+                if (App.Current != null && App.Current.Dispatcher != null)
+                {
+                    App.Current.Dispatcher.BeginInvoke(action);
+                }
             }
         }
 
         private void AddNewClient(BL.Package e)
         {
+            DateTime currentBFTime = _beursfuifData.BeursfuifCurrentTime;
+
             Client newClient = new Client(Guid.NewGuid())
             {
                 Name = e.Name,
                 ConnectionContext  = e.ClientContext,
-                Ip = e.Ip
+                Ip = e.Ip,
+                LastActivity = currentBFTime,
             };
 
-            Clients.Add(newClient);
+            Action action = () =>
+            {
+                Clients.Add(newClient);
+            };
 
+            if(App.Current != null && App.Current.Dispatcher != null){
+                App.Current.Dispatcher.BeginInvoke(action);
+            }
+        
+ 
+            Interval currentInterval = _beursfuifData.CurrentInterval;
+            ClientInterval clientInterval = currentInterval.ToClientInterval(currentBFTime, PathManager.ASSETS_PATH);
+            SendAckInitialClientConnect(clientInterval, newClient.Id, currentBFTime);
             OnNewClient(this, new NewClientEventArgs(newClient.Name, newClient.Ip, newClient.Id));
         }
 
@@ -268,5 +302,8 @@ namespace Beursfuif.Server.Services
             }
             return await Task.Factory.StartNew<bool>(InitServer, null);
         }
+
+
+
     }
 }

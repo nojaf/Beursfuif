@@ -173,8 +173,20 @@ namespace Beursfuif.Server.DataAccess
 
         public void Save<T>(string path, T entity) where T : class
         {
-            string json = JsonConvert.SerializeObject(entity);
-            File.WriteAllText(path, json);
+            try
+            {
+                string json = JsonConvert.SerializeObject(entity);
+                File.WriteAllText(path, json);     
+            }
+            catch (Exception ex)
+            {
+                LogManager.AppendToLog(new BL.LogMessage()
+                {
+                    Message = string.Format("Couldn't write to {0}", ex.Message),
+                    Type = BL.LogType.ERROR
+                });
+            }
+   
         }
     }
 }

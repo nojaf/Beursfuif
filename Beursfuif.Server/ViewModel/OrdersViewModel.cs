@@ -350,41 +350,51 @@ namespace Beursfuif.Server.ViewModel
                 drinkItem.IntervalId = currentInterval.Id;
             }
 
-            ShowOrder newOrder = new ShowOrder()
-            {
-                ClientName = _beursfuifData.Clients.FirstOrDefault(x => x.Id == e.ClientId).Name,
-                IntervalId = currentInterval.Id,
-                OrderContent = e.Order.ToContentString(_beursfuifData.Drinks),
-                Time = _beursfuifData.BeursfuifCurrentTime,
-                TotalPrice = e.Order.TotalPrice(currentInterval),
-                Orders = items
-            };
+            Client client = _beursfuifData.Clients.FirstOrDefault(x => x.Id == e.ClientId);
 
-            if (AllOrders == null)
+            if (client != null)
             {
-                AllOrders = new ObservableCollection<ShowOrder>();
-            }
-
-            AllOrders.Add(newOrder);
-            RaisePropertyChanged(AllOrdersPropertyName);
-            if (SelectedInterval == null) SelectedInterval = ReducedIntervals[0];
-
-            if (SelectedInterval.Id == currentInterval.Id || SelectedInterval.Id == int.MaxValue)
-            {
-                if (ShowOrderList == null)
+                ShowOrder newOrder = new ShowOrder()
                 {
-                    ShowOrderList = new ObservableCollection<ShowOrder>();
+                    ClientName = client.Name,
+                    IntervalId = currentInterval.Id,
+                    OrderContent = e.Order.ToContentString(_beursfuifData.Drinks),
+                    Time = _beursfuifData.BeursfuifCurrentTime,
+                    TotalPrice = e.Order.TotalPrice(currentInterval),
+                    Orders = items
+                };
+
+                if (AllOrders == null)
+                {
+                    AllOrders = new ObservableCollection<ShowOrder>();
                 }
 
-                ShowOrderList.Add(newOrder);
-            }
+                if (ReducedIntervals == null)
+                {
+                    InitData();
+                }
 
-            if (_beursfuifData.AllOrderItems == null)
-            {
-                _beursfuifData.AllOrderItems = new List<ClientDrinkOrder>();
-            }
+                AllOrders.Add(newOrder);
+                RaisePropertyChanged(AllOrdersPropertyName);
+                if (SelectedInterval == null) SelectedInterval = ReducedIntervals[0];
 
-            _beursfuifData.AllOrderItems.AddRange(e.Order);
+                if (SelectedInterval.Id == currentInterval.Id || SelectedInterval.Id == int.MaxValue)
+                {
+                    if (ShowOrderList == null)
+                    {
+                        ShowOrderList = new ObservableCollection<ShowOrder>();
+                    }
+
+                    ShowOrderList.Add(newOrder);
+                }
+
+                if (_beursfuifData.AllOrderItems == null)
+                {
+                    _beursfuifData.AllOrderItems = new List<ClientDrinkOrder>();
+                }
+
+                _beursfuifData.AllOrderItems.AddRange(e.Order);
+            }         
         }
         #endregion
     }

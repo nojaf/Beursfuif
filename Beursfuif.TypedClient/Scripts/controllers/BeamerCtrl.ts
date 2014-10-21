@@ -7,13 +7,13 @@ module beursfuif {
         showTable: boolean
         drinks: Array<IClientDrink>;
         progress: number;
+        isLoading: boolean;
     }
 
     export class BeamerCtrl {
 
         constructor(private $scope: IBeamerCtrlScope, private localStorageService: ILocalStorageService,
             private signalrService: SignalrService) {
-            console.log(localStorage);
                 this.$scope.vm = this;
                 this.$scope.ipAddress = localStorageService.get("bIp") || "";
                 this.$scope.port = localStorageService.get("bPort") || "";
@@ -51,12 +51,12 @@ module beursfuif {
             console.log("Changed?? " + msg[0][0]);
             if (msg[0][0]) {
                 //store address and ip 
-                console.log("beamer supported?", this.localStorageService.isSupported);
                 if (this.localStorageService.isSupported) {
-                    console.log("opslaan?");
                     this.localStorageService.add("bIp", this.$scope.ipAddress);
                     this.localStorageService.add("bPort", this.$scope.port);
                 }
+
+                this.$scope.isLoading = false;
 
                 this.bindDrinks();
 
@@ -101,19 +101,17 @@ module beursfuif {
             console.log("submit");
             var fullAddress: string = "http://" + this.$scope.ipAddress + ":" + this.$scope.port;
             this.signalrService.initialize(fullAddress, "Beamer");
+            this.$scope.isLoading = true;
         }
 
         errorHappened(msg: any[]) {
             console.log(msg);
             this.$scope.showLogin = true;
             this.$scope.showTable = false;
+            this.$scope.isLoading = false;
             this.$scope.$apply();
         }
     }
 
-    beamerModule.controller("BeamerCtrl", ["$scope", "localStorageService", "SignalrService",
-        ($scope: IBeamerCtrlScope, localStorageService: ILocalStorageService,
-            signalrService: SignalrService) => {
-            return new BeamerCtrl($scope, localStorageService, signalrService);
-        }]);
+    beamerModule.controller("BeamerCtrl", ["$scope", "localStorageService", "SignalrService",BeamerCtrl]);
 } 

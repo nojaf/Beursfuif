@@ -309,6 +309,7 @@ namespace Beursfuif.Server.Services
             ChangeBeursfuifBusy(false);
             BeursfuifEverStarted = false;
             CurrentInterval = null;
+            IsBeursfuifCompleted = false;
 
             //Delete json files
             SafeDeleteFile(PathManager.INTERVAL_PATH);

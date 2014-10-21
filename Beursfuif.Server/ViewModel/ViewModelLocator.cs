@@ -59,7 +59,7 @@ namespace Beursfuif.Server.ViewModel
                 }
                 if (!SimpleIoc.Default.IsRegistered<IBeursfuifServer>())
                 {
-                    SimpleIoc.Default.Register<IBeursfuifServer>(() => { return new Services.BeursfuifServer(); });
+                    SimpleIoc.Default.Register<IBeursfuifServer>(() => { return new Services.BeursfuifServer(BeursfuifData); });
                 }
 
                 BasicDesignTimeRegistration<MainViewModel>();
@@ -75,7 +75,7 @@ namespace Beursfuif.Server.ViewModel
             {
                 SimpleIoc.Default.Register<IIOManager>(() => { return new IOManager(); });
                 SimpleIoc.Default.Register<IBeursfuifData>(() => { return new BeursfuifData(IOManager); },true);
-                SimpleIoc.Default.Register<IBeursfuifServer>(() => { return new Services.BeursfuifServer(); });
+                SimpleIoc.Default.Register<IBeursfuifServer>(() => { return new Services.BeursfuifServer(BeursfuifData); });
                 SimpleIoc.Default.Register<MainViewModel>();
                 SimpleIoc.Default.Register<DrinkViewModel>();
                 SimpleIoc.Default.Register<IntervalViewModel>();
@@ -100,6 +100,14 @@ namespace Beursfuif.Server.ViewModel
             get
             {
                 return ServiceLocator.Current.GetInstance<IIOManager>();
+            }
+        }
+
+        public IBeursfuifData BeursfuifData
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<IBeursfuifData>();
             }
         }
 

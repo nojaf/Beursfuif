@@ -138,6 +138,8 @@ namespace Beursfuif.Server.UserControls
         {
             List<ClientDrinkOrder> allOrderItems = new List<ClientDrinkOrder>();
 
+            if (AllOrders == null || Drinks == null) return;
+
             var query = from showOrder in AllOrders
                         select showOrder.Orders;
 

@@ -126,6 +126,10 @@ namespace Beursfuif.Server.ViewModel
             {
                 _server.KickClient(id);
                 SendLogMessage("Client kicked: " + client.Name, LogType.CLIENT_VM);
+
+                //Remove client anyway
+                //If he fails to respond 
+                _beursfuifData.Clients.Remove(client);
             }
         }
         #endregion
@@ -151,15 +155,23 @@ namespace Beursfuif.Server.ViewModel
         public void KickAll(KickWasKickedReason kickWasKickedReason)
         {
             PointInCode("ClientsViewModel: KickAll");
-            foreach (var client in Clients)
+            Action action = () =>
             {
-                KickClient(new KickClientMessage()
+                foreach (var client in Clients)
                 {
-                    ClientId = client.Id,
-                    Reason = kickWasKickedReason
-                });
+                    KickClient(new KickClientMessage()
+                    {
+                        ClientId = client.Id,
+                        Reason = kickWasKickedReason
+                    });
+                }
+                Clients.Clear();
+            };
+
+            if (App.Current != null && App.Current.Dispatcher != null)
+            {
+                App.Current.Dispatcher.BeginInvoke(action);
             }
-            Clients.Clear();
         }
         #endregion
 
@@ -228,28 +240,11 @@ namespace Beursfuif.Server.ViewModel
         void Server_NewClientEventHandler(object sender, BL.Event.NewClientEventArgs e)
         {
             PointInCode("ClientsViewModel: Server_NewClientEventHandler");
-            DateTime currentBFTime = _beursfuifData.BeursfuifCurrentTime;
+            RaisePropertyChanged(ClientsPropertyName);
 
-            Action action = delegate()
-            {
-                Clients.Add(new Client()
-                {
-                    Id = e.Id,
-                    Ip = e.Ip,
-                    LastActivity = currentBFTime,
-                    Name = e.Name,
-                    OrderCount = 0
-                });
-            };
-
-            App.Current.Dispatcher.BeginInvoke(action, System.Windows.Threading.DispatcherPriority.Normal);
             SendToastMessage("New client connected", e.Name + " heeft zich aangemeld.");
-            SendLogMessage("New client connected: "+e.Name + " heeft zich aangemeld.", LogType.CLIENT_VM | LogType.FROM_CLIENT);
+            SendLogMessage("New client connected: " + e.Name + " heeft zich aangemeld.", LogType.CLIENT_VM | LogType.FROM_CLIENT);
 
-            Interval currentInterval = _beursfuifData.CurrentInterval;
-
-            _server.SendAckInitialClientConnect(currentInterval.ToClientInterval(currentBFTime, PathManager.ASSETS_PATH), e.Id, currentBFTime);
-            SendLogMessage("Repley on " + e.Name + "'s connection request", LogType.SETTINGS_VM);
         }
 
         void Server_IntervalUpdateAckEvent(object sender, BL.Event.BasicAuthAckEventArgs e)

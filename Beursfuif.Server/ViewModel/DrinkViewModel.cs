@@ -610,11 +610,6 @@ namespace Beursfuif.Server.ViewModel
                 }
             }
 
-            ThreadPool.QueueUserWorkItem(new WaitCallback(delegate(object state)
-            {
-                _beursfuifData.SaveDrinks();
-            }), null);
-
             if (BeursfuifBusy)
             {
                 //send message to clients with the current interval

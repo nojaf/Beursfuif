@@ -7,12 +7,18 @@
 <body ng-app="beamer">
     <div id="beamerContainer" ng-controller="BeamerCtrl">
         <h1>Beursfuif prijslijst</h1>
-        <div id="beamerLogin" ng-show="showLogin">
+        <form id="beamerLogin" ng-show="showLogin" ng-submit="vm.submit()" ng-class="{'hide':isLoading}">
             <label>Server adres</label>
             <input type="text" class="form-control" ng-model="ipAddress" placeholder="bv. 192.168.1.1" required="">
             <label>Poort</label>
             <input type="text" class="form-control" ng-model="port" placeholder="bv. 5678" required="">
-            <button class="btn btn-primary pull-right" ng-click="vm.submit()" type="submit">Aanmelden</button>
+            <button class="btn btn-primary pull-right"  type="submit">Aanmelden</button>
+        </form>
+        <div id="preloader" ng-class="{'hide':!isLoading}">
+            <div class="spinner">
+                <div class="dot1"></div>
+                <div class="dot2"></div>
+            </div>
         </div>
         <div id="beamerOverview" ng-show="showTable">
             <ul>

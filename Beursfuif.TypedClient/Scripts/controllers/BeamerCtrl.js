@@ -6,7 +6,6 @@ var beursfuif;
             this.$scope = $scope;
             this.localStorageService = localStorageService;
             this.signalrService = signalrService;
-            console.log(localStorage);
             this.$scope.vm = this;
             this.$scope.ipAddress = localStorageService.get("bIp") || "";
             this.$scope.port = localStorageService.get("bPort") || "";
@@ -65,12 +64,12 @@ var beursfuif;
             console.log("Changed?? " + msg[0][0]);
             if (msg[0][0]) {
                 //store address and ip
-                console.log("beamer supported?", this.localStorageService.isSupported);
                 if (this.localStorageService.isSupported) {
-                    console.log("opslaan?");
                     this.localStorageService.add("bIp", this.$scope.ipAddress);
                     this.localStorageService.add("bPort", this.$scope.port);
                 }
+
+                this.$scope.isLoading = false;
 
                 this.bindDrinks();
 
@@ -115,22 +114,20 @@ var beursfuif;
             console.log("submit");
             var fullAddress = "http://" + this.$scope.ipAddress + ":" + this.$scope.port;
             this.signalrService.initialize(fullAddress, "Beamer");
+            this.$scope.isLoading = true;
         };
 
         BeamerCtrl.prototype.errorHappened = function (msg) {
             console.log(msg);
             this.$scope.showLogin = true;
             this.$scope.showTable = false;
+            this.$scope.isLoading = false;
             this.$scope.$apply();
         };
         return BeamerCtrl;
     })();
     beursfuif.BeamerCtrl = BeamerCtrl;
 
-    beursfuif.beamerModule.controller("BeamerCtrl", [
-        "$scope", "localStorageService", "SignalrService",
-        function ($scope, localStorageService, signalrService) {
-            return new BeamerCtrl($scope, localStorageService, signalrService);
-        }]);
+    beursfuif.beamerModule.controller("BeamerCtrl", ["$scope", "localStorageService", "SignalrService", BeamerCtrl]);
 })(beursfuif || (beursfuif = {}));
 //# sourceMappingURL=BeamerCtrl.js.map
