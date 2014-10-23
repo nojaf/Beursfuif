@@ -60,6 +60,16 @@
                       Height="30"
                       VerticalAlignment="Top"
                       Margin="1.2,5,0.2,0"></ComboBox>
+            <ListView Grid.Column="1" 
+                      Grid.ColumnSpan="2"
+                      ItemsSource="{Binding DrinkStats, UpdateSourceTrigger=PropertyChanged}"
+                      Margin="0,50,0,0">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}"></TextBlock>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
             <ListView Grid.Row="1"
                       ItemsSource="{Binding ShowOrderList}"
                       Grid.ColumnSpan="3" Margin="5">

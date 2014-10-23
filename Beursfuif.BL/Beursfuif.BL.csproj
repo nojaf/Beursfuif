@@ -65,6 +65,7 @@
     <Compile Include="Entity\ClientDrinkOrder.cs" />
     <Compile Include="Entity\ClientInterval.cs" />
     <Compile Include="Entity\Drink.cs" />
+    <Compile Include="Entity\DrinkStatistics.cs" />
     <Compile Include="Event\ClientLeftEventArgs.cs" />
     <Compile Include="Event\CurrentTimeAckEventArgs.cs" />
     <Compile Include="Event\NewClientEventArgs.cs" />

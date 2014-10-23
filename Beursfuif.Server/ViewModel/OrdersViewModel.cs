@@ -12,12 +12,14 @@ using System.Threading.Tasks;
 using System.IO;
 using Beursfuif.Server.Services;
 using Beursfuif.BL.Event;
+using Beursfuif.BL.Entity;
 
 namespace Beursfuif.Server.ViewModel
 {
     public class OrdersViewModel : BeursfuifViewModelBase
     {
         #region Fields and Properties
+        private const string AllIntervals = "Alle intervallen";
         private IBeursfuifServer _server;
 
         public List<ClientDrinkOrder> AllOrderItems
@@ -145,10 +147,47 @@ namespace Beursfuif.Server.ViewModel
                 RaisePropertyChanging(SelectedIntervalPropertyName);
                 _selectedInterval = value;
                 UpdateShowOrderList();
+                UpdateDrinkStats();
                 RaisePropertyChanged(SelectedIntervalPropertyName);
             }
         }
 
+        private void UpdateDrinkStats()
+        {
+            DrinkStats = null;
+            DrinkStats = CreateDrinkStatistics();
+        }
+
+
+        /// <summary>
+        /// The <see cref="DrinkStats" /> property's name.
+        /// </summary>
+        public const string DrinkStatsPropertyName = "DrinkStats";
+
+        private IEnumerable<DrinkStatistic> _drinkStats;
+
+        /// <summary>
+        /// Sets and gets the DrinkStats property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public IEnumerable<DrinkStatistic> DrinkStats
+        {
+            get
+            {
+                return _drinkStats;
+            }
+            set
+            {
+                if (_drinkStats == value)
+                {
+                    return;
+                }
+
+                RaisePropertyChanging(DrinkStatsPropertyName);
+                _drinkStats = value;
+                RaisePropertyChanged(DrinkStatsPropertyName);
+            }
+        }
 
         /// <summary>
         /// The <see cref="ReducedDrinks" /> property's name.
@@ -182,7 +221,8 @@ namespace Beursfuif.Server.ViewModel
         }
         #endregion
 
-        public OrdersViewModel(IBeursfuifServer server, IBeursfuifData beursfuifData):base(beursfuifData)
+        public OrdersViewModel(IBeursfuifServer server, IBeursfuifData beursfuifData)
+            : base(beursfuifData)
         {
             if (!IsInDesignMode)
             {
@@ -219,6 +259,7 @@ namespace Beursfuif.Server.ViewModel
             RaisePropertyChanged(ReducedIntervalsPropertyName);
             RaisePropertyChanged(SelectedIntervalPropertyName);
             RaisePropertyChanged(ReducedDrinksPropertyName);
+            RaisePropertyChanged(DrinkStatsPropertyName);
         }
 
         #region Messages
@@ -265,7 +306,7 @@ namespace Beursfuif.Server.ViewModel
             Interval[] intervals = _beursfuifData.Intervals;
             int length = intervals.Length + 1;
             ReducedIntervals = new ReducedInterval[length];
-            ReducedIntervals[0] = new ReducedInterval("Alle Intervalen");
+            ReducedIntervals[0] = new ReducedInterval(AllIntervals);
             for (int i = 1; i < length; i++)
             {
                 ReducedIntervals[i] = new ReducedInterval(intervals[i - 1]);
@@ -280,7 +321,9 @@ namespace Beursfuif.Server.ViewModel
             {
                 ReducedDrinks[j] = new ReducedDrink() { Id = drinks[j].Id, Name = drinks[j].Name };
             }
-            
+
+            UpdateDrinkStats();
+
         }
 
         private void UpdateShowOrderList()
@@ -303,6 +346,41 @@ namespace Beursfuif.Server.ViewModel
                 }
             }));
         }
+
+        private IEnumerable<DrinkStatistic> CreateDrinkStatistics()
+        {
+            if (ReducedDrinks == null || SelectedInterval == null || _beursfuifData.AllOrderItems == null) return null;
+
+            Interval interval = _beursfuifData.Intervals.FirstOrDefault(x => x.Id == SelectedInterval.Id);
+
+
+            DrinkStatistic[] drinkStatistics = new DrinkStatistic[ReducedDrinks.Length];
+            for (int i = 0; i < ReducedDrinks.Length; i++)
+            {
+                int drinkId = ReducedDrinks[i].Id;
+                DrinkStatistic drinkStatistic = new DrinkStatistic()
+                {
+                    DrinkId = drinkId,
+                    DrinkName = ReducedDrinks[i].Name
+                };
+
+
+                drinkStatistic.OrderCount = (interval == null ?
+                    _beursfuifData.AllOrderItems.Where(x => x.DrinkId == drinkId).Sum(x => x.Count) :
+                    _beursfuifData.AllOrderItems.Where(x => x.DrinkId == drinkId
+                        && x.IntervalId == interval.Id).Sum(x => x.Count));
+
+                if (interval != null)
+                {
+                    drinkStatistic.Price = interval.Drinks.FirstOrDefault(x => x.Id == drinkId).CurrentPrice;
+                }
+
+                drinkStatistics[i] = drinkStatistic;
+            }
+
+            return drinkStatistics.OrderByDescending(x => x.OrderCount);
+        }
+
         #endregion
 
         #region Server
@@ -318,7 +396,7 @@ namespace Beursfuif.Server.ViewModel
             PointInCode("OrdersViewModel: Server_NewOrderEvent");
 
 
-            if( _beursfuifData.AuthenticationString() == e.AuthenticationCode)
+            if (_beursfuifData.AuthenticationString() == e.AuthenticationCode)
             {
                 App.Current.Dispatcher.BeginInvoke(new Action(() =>
                 {
@@ -329,7 +407,7 @@ namespace Beursfuif.Server.ViewModel
             //else
             //client doesn't have a valid code
 
-            SendLogMessage(string.Format("Invalid authcode from client {0}", _beursfuifData.GetClientName( e.ClientId)), 
+            SendLogMessage(string.Format("Invalid authcode from client {0}", _beursfuifData.GetClientName(e.ClientId)),
                 LogType.ORDER_VM | LogType.CLIENT_SERVER_ERROR);
             MessengerInstance.Send<KickClientMessage>(new KickClientMessage()
             {
@@ -394,7 +472,9 @@ namespace Beursfuif.Server.ViewModel
                 }
 
                 _beursfuifData.AllOrderItems.AddRange(e.Order);
-            }         
+
+                UpdateDrinkStats();
+            }
         }
         #endregion
     }
