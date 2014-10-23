@@ -260,7 +260,7 @@ namespace Beursfuif.Server.UserControls
 
         public void CheckForCreation()
         {
-            if (Drinks != null && AllOrders != null && IntervalId != 0)
+            if (Drinks != null && AllOrders != null && IntervalId != 0 && !Drinks.Any(x => x == null))
             {
                CreateGraph();
             }
@@ -268,6 +268,7 @@ namespace Beursfuif.Server.UserControls
 
         private void CreateTitles()
         {
+
             titleGrid.Children.Clear();
             titleGrid.ColumnDefinitions.Clear();
 
