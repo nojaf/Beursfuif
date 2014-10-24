@@ -267,7 +267,10 @@ namespace Beursfuif.Server.ViewModel
 
             MainActionButtonCommand = new RelayCommand(MainActionCommand, ValidatePartyConditions);
             AddOneMinute = new RelayCommand(() => { BeursfuifCurrentTime = BeursfuifCurrentTime.AddMinutes(1); OneMinutePassed(); });
-            ForceAutoSaveAllOrders = new RelayCommand(() => { MessengerInstance.Send<AutoSaveAllOrdersMessage>(new AutoSaveAllOrdersMessage()); });
+            ForceAutoSaveAllOrders = new RelayCommand(() => {
+                ThreadPool.QueueUserWorkItem(BackupData);
+                MessengerInstance.Send<AutoSaveAllOrdersMessage>(new AutoSaveAllOrdersMessage()); 
+            });
             ResetFuifCommand = new RelayCommand(ResetFuifData);
             ResetAllCommand = new RelayCommand(ResetAll);
             ChangeBackupLocationCommand = new RelayCommand(ChangeBackupLocation);
@@ -570,6 +573,10 @@ namespace Beursfuif.Server.ViewModel
         private void EndOfInterval()
         {
             PointInCode("SettingsViewModel: EndOfInterval");
+            //Save all data first just in case
+            ThreadPool.QueueUserWorkItem(BackupData);
+            ThreadPool.QueueUserWorkItem(SaveSettings);
+            ThreadPool.QueueUserWorkItem(_beursfuifData.SaveAllData);
 
             //TODO Update time
             SendLogMessage("Server will commence calculating new prices", LogType.SETTINGS_VM);

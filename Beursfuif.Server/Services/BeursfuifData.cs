@@ -215,6 +215,11 @@ namespace Beursfuif.Server.Services
             SaveSettings();
         }
 
+        public void SaveAllData(object state)
+        {
+            SaveAllData();
+        }
+
         public void SaveDrinks()
         {
             _ioManager.Save<ObservableCollection<Drink>>(PathManager.DRINK_PATH, Drinks);

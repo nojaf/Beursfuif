@@ -69,5 +69,7 @@ namespace Beursfuif.Server.Services
         string GetClientName(Guid guid);
 
         void EndOfBeursfuif();
+
+        void SaveAllData(object state);
     }
 }
