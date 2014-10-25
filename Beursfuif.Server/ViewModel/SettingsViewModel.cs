@@ -305,6 +305,15 @@ namespace Beursfuif.Server.ViewModel
 
 
                     _beursfuifData.RestoreAllData();
+
+                    SendLogMessage("Beursfuif has already started", LogType.SETTINGS_VM);
+                    if (BeursfuifBusy)
+                    {
+                        SendLogMessage("Resuming Beursfuif", LogType.SETTINGS_VM);
+                        MainActionButtonContent = PAUSE_PARTY;
+                        ResumeParty();
+                    }
+
                 }
              
             }
