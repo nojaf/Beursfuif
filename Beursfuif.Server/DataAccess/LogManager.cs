@@ -30,7 +30,6 @@ namespace Beursfuif.Server.DataAccess
             {
                 try
                 {
-
                     using (StreamWriter sw = File.AppendText(_logFile))
                     {
                         sw.WriteLine(line);

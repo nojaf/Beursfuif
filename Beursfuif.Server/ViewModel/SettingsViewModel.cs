@@ -659,12 +659,25 @@ namespace Beursfuif.Server.ViewModel
                 return;
             }
 
-            using (ZipFile zip = new ZipFile())
+            try
             {
-                // add this map file into the "images" directory in the zip archive
-                zip.AddDirectory(PathManager.BEURSFUIF_FOLDER);
-                zip.Save(BackupLocation + "\\beursfuif_back_up.zip");
+
+                using (ZipFile zip = new ZipFile())
+                {
+                    // add this map file into the "images" directory in the zip archive
+                    zip.AddDirectory(PathManager.BEURSFUIF_FOLDER);
+                    zip.Save(BackupLocation + "\\beursfuif_back_up.zip");
+                }
             }
+            catch (Exception ex)
+            {
+                LogManager.AppendToLog(new LogMessage()
+                {
+                    Message = string.Format("Failed to create zip, ex = {0}", ex.Message),
+                    Type = LogType.ERROR
+                });
+            }
+
 
           
         }
