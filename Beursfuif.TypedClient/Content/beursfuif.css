@@ -253,14 +253,14 @@ body .form-control {
   padding: 1% 20% 5% 20%;
   margin: auto;
   height: 100%;
-  background-color: #000;
+  background-color: #000000;
   color: white;
 }
 #beamerContainer h1 {
   font-size: 4em;
   text-align: center;
-  margin: 0px;
-  padding: 0px;
+  margin: 0;
+  padding: 0;
   margin-bottom: 15px;
 }
 #beamerContainer #beamerLogin {
@@ -268,7 +268,7 @@ body .form-control {
   margin: 50px auto;
 }
 #beamerContainer #beamerLogin * {
-  margin: 7px 0px;
+  margin: 7px 0;
 }
 #beamerContainer #beamerOverview {
   height: 85%;
@@ -282,7 +282,7 @@ body .form-control {
   width: 45%;
   min-height: 60px;
   float: left;
-  margin: 5px 0px 0px 5%;
+  margin: 5px 0 0 5%;
   border: 1px solid white;
   border-radius: 10px;
   /*&:nth-child(odd){
@@ -321,7 +321,8 @@ body .form-control {
 }
 #beamerContainer #beamerOverview ul li .text .price {
   font-size: 1.4em;
-  background-color: #74db92;
+  background-color: #ffffff;
+  color: #000000;
   position: absolute;
   bottom: 5px;
   right: 7px;
@@ -421,3 +422,4 @@ body .form-control {
     transform: scale(1);
   }
 }
+/*# sourceMappingURL=beursfuif.css.map */

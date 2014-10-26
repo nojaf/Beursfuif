@@ -61,7 +61,6 @@ var beursfuif;
             for (var _i = 0; _i < (arguments.length - 1); _i++) {
                 msg[_i] = arguments[_i + 1];
             }
-            console.log("Changed?? " + msg[0][0]);
             if (msg[0][0]) {
                 //store address and ip
                 if (this.localStorageService.isSupported) {
@@ -102,16 +101,18 @@ var beursfuif;
             var current = moment(this.signalrService.currentTime);
             var end = moment(this.signalrService.clientInterval.End);
 
-            var intervalLength = (end.hours() * 60 + end.minutes()) - (start.hours() * 60 + start.minutes());
-            console.log(intervalLength);
+            var endHours = end.hours();
+            if (endHours == 0 && start.hours() !== 0) {
+                endHours = 24;
+            }
+
+            var intervalLength = (endHours * 60 + end.minutes()) - (start.hours() * 60 + start.minutes());
             var currentMinutes = (current.hours() * 60 + current.minutes()) - (start.hours() * 60 + start.minutes());
-            console.log(currentMinutes);
             this.$scope.progress = Math.round(currentMinutes / intervalLength * 100);
             this.$scope.$apply();
         };
 
         BeamerCtrl.prototype.submit = function () {
-            console.log("submit");
             var fullAddress = "http://" + this.$scope.ipAddress + ":" + this.$scope.port;
             this.signalrService.initialize(fullAddress, "Beamer");
             this.$scope.isLoading = true;

@@ -177,6 +177,9 @@
     <Content Include="Scripts\models\modalMessages.js.map">
       <DependentUpon>modalMessages.ts</DependentUpon>
     </Content>
+    <Content Include="Content\beursfuif.css.map">
+      <DependentUpon>beursfuif.css</DependentUpon>
+    </Content>
     <None Include="Scripts\vendor\jquery\jquery-2.1.1.intellisense.js" />
     <Content Include="Scripts\vendor\jquery\jquery-2.1.1.js" />
     <Content Include="Scripts\vendor\jquery\jquery-2.1.1.min.js">
