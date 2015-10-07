@@ -121,3 +121,10 @@ desktop.ini
 WebEssentials-Settings.json
 todo.md
 
+.vs/
+
+artifacts/
+Beursfuif.TypedClient/*.dll
+Beursfuif.TypedClient/*.exe
+Beursfuif.TypedClient/*.xml
+Beursfuif.TypedClient/*.vshost.*

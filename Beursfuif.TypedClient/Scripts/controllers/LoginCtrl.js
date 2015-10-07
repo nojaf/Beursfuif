@@ -1,4 +1,4 @@
-﻿var beursfuif;
+var beursfuif;
 (function (beursfuif) {
     //localStorageService
     var LoginCtrl = (function () {
@@ -12,13 +12,11 @@
             $scope.ipAddress = this.localStorageService.get("ipAddress") || "";
             $scope.port = this.localStorageService.get("port") || "";
             $scope.name = this.localStorageService.get("name") || "";
-
             $scope.vm = this;
-
             $scope.$on(beursfuif.EventNames.CONNECTION_CHANGED, function (event) {
                 var args = [];
-                for (var _i = 0; _i < (arguments.length - 1); _i++) {
-                    args[_i] = arguments[_i + 1];
+                for (var _i = 1; _i < arguments.length; _i++) {
+                    args[_i - 1] = arguments[_i];
                 }
                 if (args[0]) {
                     if (_this.localStorageService.isSupported) {
@@ -26,9 +24,7 @@
                         _this.localStorageService.add("ipAddress", _this.$scope.ipAddress);
                         _this.localStorageService.add("port", _this.$scope.port);
                     }
-
                     $scope.$emit(beursfuif.EventNames.CHANGE_OPACITY, 0.50);
-
                     //connection has been made so the view can be changed
                     $timeout(function () {
                         _this.$scope.isLoading = false;
@@ -36,7 +32,6 @@
                     }, 250);
                 }
             });
-
             this.$scope.$on(beursfuif.EventNames.OPEN_MODAL, function (e) {
                 //something went wrong (most likely wrong ip)
                 _this.$scope.isLoading = false;
@@ -50,11 +45,8 @@
         return LoginCtrl;
     })();
     beursfuif.LoginCtrl = LoginCtrl;
-
-    beursfuif.beursfuifModule.controller("LoginCtrl", [
-        "$scope", "localStorageService", "SignalrService", "$location", "$timeout",
-        function ($scope, localStorageService, signalrService, $location, $timeout) {
-            return new LoginCtrl($scope, localStorageService, signalrService, $location, $timeout);
-        }]);
+    beursfuif.beursfuifModule.controller("LoginCtrl", ["$scope", "localStorageService", "SignalrService", "$location", "$timeout", function ($scope, localStorageService, signalrService, $location, $timeout) {
+        return new LoginCtrl($scope, localStorageService, signalrService, $location, $timeout);
+    }]);
 })(beursfuif || (beursfuif = {}));
 //# sourceMappingURL=LoginCtrl.js.map
