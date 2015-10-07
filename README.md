@@ -44,11 +44,20 @@ The server uses Xaml, Mvvm light, Signalr (Owin Selfhost)
 
 The client is built with AngularJs and Typescript
 
-## Some remarks
+## Download the latest release
+
+Binaries have been attached to the latest release (2.5.1).
+You should be able to run the application with these files.
+
+- Extract the zip
+- Run the server.exe under in the Server folder as administrator
+- To run the client, execute install.bat as administrator (optional)
+- Run client.exe (or as admin if you didn't executed the install file)
+
+## Remarks
 - If you want to use the server in your local network, be sure to disable your Windows firewall.
 - Browser support: IE10+, Chrome, Opera and Firefox.
 - Start beamer.html to open the projection client.
-- When opening the solution, you might get an error that one project wasn't found. The setup project has been excluded in the repository.
 
 ## Permission to use for a real party
 I have no problem if anyone wants to use this application in real life. However, be a gentlemen and kindly ask for permission!
