@@ -205,7 +205,7 @@
     <Content Include="Content\beursfuif.css.map">
       <DependentUpon>beursfuif.css</DependentUpon>
     </Content>
-    <Content Include="install.cmd" />
+    <None Include="install.bat" />
     <None Include="Scripts\vendor\jquery\jquery-2.1.1.intellisense.js" />
     <Content Include="Scripts\vendor\jquery\jquery-2.1.1.js" />
     <Content Include="Scripts\vendor\jquery\jquery-2.1.1.min.js">
@@ -233,7 +233,7 @@
     <Content Include="Scripts\vendor\jquery\jquery-2.1.1.min.map">
       <DependentUpon>jquery-2.1.1.js</DependentUpon>
     </Content>
-    <Content Include="uninstall.cmd" />
+    <None Include="uninstall.bat" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
