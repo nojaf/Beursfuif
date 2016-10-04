@@ -1,11 +1,9 @@
 ﻿using Beursfuif.BL;
 using Beursfuif.Server.Services;
 using GalaSoft.MvvmLight.Command;
-using Microsoft.Practices.ServiceLocation;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using Beursfuif.Server.Entity;
 
 namespace Beursfuif.Server.ViewModel
 {

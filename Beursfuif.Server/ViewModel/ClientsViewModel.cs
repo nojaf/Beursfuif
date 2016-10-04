@@ -1,14 +1,12 @@
 ﻿using Beursfuif.BL;
 using Beursfuif.Server.Messages;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using Beursfuif.BL.Extensions;
+using Beursfuif.Server.Entity;
 using GalaSoft.MvvmLight.Command;
 using Beursfuif.Server.Services;
-using Beursfuif.Server.DataAccess;
 
 namespace Beursfuif.Server.ViewModel
 {
@@ -228,7 +226,7 @@ namespace Beursfuif.Server.ViewModel
             string authString = _beursfuifData.AuthenticationString();
             if (c != null && e.AuthenticationCode == authString)
             {
-                string msg = string.Format("{0}: {1} bons", c.Name ,e.Order.TotalPrice(_beursfuifData.CurrentInterval));
+                string msg = $"{c.Name}: {e.Order.TotalPrice(_beursfuifData.CurrentInterval)} bons";
                 SendToastMessage("Nieuwe bestelling ontvangen",msg);
                 SendLogMessage("New order: " + msg, LogType.FROM_CLIENT | LogType.CLIENT_VM);
                 c.OrderCount++;

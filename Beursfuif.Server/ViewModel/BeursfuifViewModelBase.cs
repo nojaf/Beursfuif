@@ -2,12 +2,8 @@
 using Beursfuif.Server.Messages;
 using Beursfuif.Server.Services;
 using GalaSoft.MvvmLight;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Windows;
+using Beursfuif.Server.Entity;
 
 namespace Beursfuif.Server.ViewModel
 {

@@ -1,9 +1,6 @@
 module beursfuif {
     export interface IBeamerCtrlScope extends ng.IScope {
         vm: BeamerCtrl;
-        ipAddress: string;
-        port: string;
-        showLogin: boolean;
         showTable: boolean
         drinks: Array<IClientDrink>;
         progress: number;
@@ -15,9 +12,6 @@ module beursfuif {
         constructor(private $scope: IBeamerCtrlScope, private localStorageService: ILocalStorageService,
             private signalrService: SignalrService) {
                 this.$scope.vm = this;
-                this.$scope.ipAddress = localStorageService.get("bIp") || "";
-                this.$scope.port = localStorageService.get("bPort") || "";
-                this.$scope.showLogin = true;
                 this.$scope.showTable = false;
 
                 $scope.$on(EventNames.CONNECTION_CHANGED, (e: ng.IAngularEvent, ...msg: any[]) => { this.connectionChanged(e, msg); });
@@ -28,6 +22,8 @@ module beursfuif {
                     this.updateTime();
                     this.$scope.$apply();
                 });
+
+            this.submit();
         }
 
         orderByPrice(a: IClientDrink, b: IClientDrink): number {
@@ -49,21 +45,13 @@ module beursfuif {
 
         connectionChanged(e: ng.IAngularEvent, ...msg: any[]): void {
             if (msg[0][0]) {
-                //store address and ip 
-                if (this.localStorageService.isSupported) {
-                    this.localStorageService.add("bIp", this.$scope.ipAddress);
-                    this.localStorageService.add("bPort", this.$scope.port);
-                }
-
                 this.$scope.isLoading = false;
 
                 this.bindDrinks();
 
                 this.calculateProgress();
-                this.$scope.showLogin = false;
                 this.$scope.showTable = true;
             } else {
-                this.$scope.showLogin = true;
                 this.$scope.showTable = false;
             }
 
@@ -72,8 +60,8 @@ module beursfuif {
 
         bindDrinks() {
             this.$scope.drinks = [];
-            var length: number = this.signalrService.clientInterval.ClientDrinks.length;
-            for (var i: number = 0; i < length; i++) {
+            const length = this.signalrService.clientInterval.ClientDrinks.length;
+            for (let i = 0; i < length; i++) {
                 this.$scope.drinks.push(this.signalrService.clientInterval.ClientDrinks[i]);
             }
             this.$scope.drinks.sort(this.orderByPrice);
@@ -84,33 +72,34 @@ module beursfuif {
         }
 
         calculateProgress() {
-            var start: Moment = moment(this.signalrService.clientInterval.Start);
-            var current: Moment = moment(this.signalrService.currentTime);
-            var end: Moment = moment(this.signalrService.clientInterval.End);
+            const start = moment(this.signalrService.clientInterval.Start);
+            const current = moment(this.signalrService.currentTime);
+            const end = moment(this.signalrService.clientInterval.End);
 
-            var endHours: number = end.hours();
-            if (endHours == 0 && start.hours() !== 0) {
+            let endHours = end.hours();
+            if (endHours === 0 && start.hours() !== 0) {
                 endHours = 24;
             }
 
-            var intervalLength = (endHours * 60 + end.minutes()) - (start.hours() * 60 + start.minutes());
-            var currentMinutes = (current.hours() * 60 + current.minutes()) - (start.hours() * 60 + start.minutes());
+            const intervalLength = (endHours * 60 + end.minutes()) - (start.hours() * 60 + start.minutes());
+            const currentMinutes = (current.hours() * 60 + current.minutes()) - (start.hours() * 60 + start.minutes());
             this.$scope.progress = Math.round(currentMinutes / intervalLength * 100);
             this.$scope.$apply();
         }
 
         submit(): void {
-            var fullAddress: string = "http://" + this.$scope.ipAddress + ":" + this.$scope.port;
+            const fullAddress = `http://${location.host}`;
             this.signalrService.initialize(fullAddress, "Beamer");
             this.$scope.isLoading = true;
         }
 
         errorHappened(msg: any[]) {
             console.log(msg);
-            this.$scope.showLogin = true;
+            this.signalrService.unregisterCallbacks();
             this.$scope.showTable = false;
             this.$scope.isLoading = false;
             this.$scope.$apply();
+            setTimeout(() => this.submit(), 5000);
         }
     }
 

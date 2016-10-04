@@ -1,10 +1,6 @@
 ﻿using Beursfuif.BL;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,7 +15,7 @@ namespace Beursfuif.Server.DataAccess
             Task.Factory.StartNew(() =>
             {
                 //Log file is now XML
-                _logFile = PathManager.LOG_FOLDER + "Log-" + DateTime.Now.ToString("dd-MM-yyyy-HH.mm") + ".log";
+                _logFile = BeursfuifPaths.LogFolder + "Log-" + DateTime.Now.ToString("dd-MM-yyyy-HH.mm") + ".log";
             });
         }
 

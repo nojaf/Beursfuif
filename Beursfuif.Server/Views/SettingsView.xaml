@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:t="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d"
              d:DesignHeight="735"
              MinHeight="735"
@@ -42,7 +43,7 @@
                     Width="300"
                     HorizontalAlignment="Left">
             <Button Content="Kies een back-up locatie" Command="{Binding ChangeBackupLocationCommand}"></Button>
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Style="{DynamicResource PartyDataContainer}">
                 <TextBlock Style="{StaticResource Label}" Text="Backup locatie:" />
                 <Viewbox Width="185">
                     <TextBlock FontFamily="Century Gothic" TextWrapping="WrapWithOverflow"
@@ -55,38 +56,34 @@
             <Button Content="{Binding MainActionButtonContent}"
                     Command="{Binding MainActionButtonCommand}"
                     Margin="0,0,0,10" />
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+            <StackPanel Style="{DynamicResource PartyDataContainer}">
                 <TextBlock Style="{DynamicResource Label}"><Run Text="Poort:"/></TextBlock>
                 <t:IntegerUpDown Value="{Binding Port}" 
                                  IsEnabled="{Binding NotBeursfuifBusy}"
                                  Minimum="1000" Maximum="10000"/>
             </StackPanel>
-            <StackPanel Orientation="Horizontal"
-                        Margin="0,0,0,10">
+            <StackPanel Style="{DynamicResource PartyDataContainer}">
                 <TextBlock Style="{DynamicResource Label}">Fuifdata resetten</TextBlock>
                 <Button Style="{DynamicResource IconButton}"
                         Height="30"
                         Command="{Binding ResetFuifCommand}"
                         Content=""></Button>
             </StackPanel>
-            <StackPanel Orientation="Horizontal"
-                        Margin="0,0,0,10">
+            <StackPanel Style="{DynamicResource PartyDataContainer}">
                 <TextBlock Style="{DynamicResource Label}">Alle data resetten</TextBlock>
                 <Button Style="{StaticResource IconButton}"
                         Command="{Binding ResetAllCommand}"
                         Height="30"
                         Content=""></Button>
             </StackPanel>
-            <StackPanel Orientation="Horizontal"
-                        Margin="0,0,0,10">
+            <StackPanel Style="{DynamicResource PartyDataContainer}">
                 <TextBlock Style="{DynamicResource Label}">Voeg één minuut toe</TextBlock>
                 <Button Style="{DynamicResource IconButton}"
                         Height="30"
                         Content=""
                         Command="{Binding AddOneMinute}"></Button>
             </StackPanel>
-            <StackPanel Orientation="Horizontal"
-                        Margin="0,0,0,10">
+            <StackPanel Style="{DynamicResource PartyDataContainer}">
                 <TextBlock Style="{DynamicResource Label}">Auto bestellingen</TextBlock>
                 <Button Style="{DynamicResource IconButton}"
                         Height="30"
@@ -97,7 +94,7 @@
         <StackPanel HorizontalAlignment="Right" Visibility="{Binding BeursfuifBusyVisibility}"
                     Width="400">
             <TextBlock Style="{DynamicResource LargeText}">Fuifdata:</TextBlock>
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Style="{DynamicResource PartyDataContainer}">
                 <TextBlock Style="{DynamicResource Label}">Huidig interval:</TextBlock>
                 <TextBlock Style="{DynamicResource StrongText}">
                     <TextBlock.Text>
@@ -109,7 +106,7 @@
                     </TextBlock.Text>
                 </TextBlock>
             </StackPanel>
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Style="{DynamicResource PartyDataContainer}">
                 <TextBlock Style="{DynamicResource Label}">Huidige dranken:</TextBlock>
                 <ListView ItemsSource="{Binding CurrentInterval.Drinks}" IsEnabled="False">
                     <ListView.ItemsPanel>
@@ -132,15 +129,43 @@
                     </ListView.ItemTemplate>
                 </ListView>
             </StackPanel>
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Style="{DynamicResource PartyDataContainer}">
                 <TextBlock Style="{DynamicResource Label}">Huidige tijd:</TextBlock>
                 <TextBlock Style="{DynamicResource StrongText}"
                            Text="{Binding BeursfuifCurrentTime,StringFormat=HH:mm:ss}" />
             </StackPanel>
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Style="{DynamicResource PartyDataContainer}">
                 <TextBlock  Style="{DynamicResource Label}">Server IP adress:</TextBlock>
                 <TextBox IsReadOnly="True" Style="{DynamicResource ReadOnlyTextBox}"
-                           Text="{Binding IPAdress, Mode=OneWay}"></TextBox>
+                           Text="{Binding IPAdresses, Mode=OneWay}"></TextBox>
+            </StackPanel>
+            <StackPanel Style="{DynamicResource PartyDataContainer}">
+                <TextBlock  Style="{DynamicResource Label}">Open client:</TextBlock>
+                <ItemsControl  ItemsSource="{Binding ClientUrls}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="system:String">
+                                <TextBlock Margin="5,0,0,5">
+                                    <Hyperlink NavigateUri="{Binding}" RequestNavigate="Hyperlink_OnRequestNavigate">
+                                        <TextBlock Text="{Binding}"></TextBlock>
+                                    </Hyperlink>
+                                </TextBlock>
+                        </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+            <StackPanel Style="{DynamicResource PartyDataContainer}">
+                <TextBlock  Style="{DynamicResource Label}">Open beamer:</TextBlock>
+                <ItemsControl  ItemsSource="{Binding BeamerUrls}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="system:String">
+                            <TextBlock Margin="5,0,0,5">
+                                    <Hyperlink NavigateUri="{Binding}" RequestNavigate="Hyperlink_OnRequestNavigate">
+                                        <TextBlock Text="{Binding}"></TextBlock>
+                                    </Hyperlink>
+                                </TextBlock>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </StackPanel>
         </StackPanel>
     </Grid>

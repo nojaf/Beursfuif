@@ -2,24 +2,20 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>Beursfuif Client</title>
-    <link href="Content/style.min.css" rel="stylesheet" />
-
+    <link href="Content/beursfuif.min.css" rel="stylesheet" />
 </head>
 <body ng-app="beursfuif">
-    <div ng-view="" ng-class="view"></div>
+<div ng-view="" ng-class="view"></div>
+    <script src="Scripts/vendor.js"></script>
     <script src="Scripts/beursfuif.js"></script>
     <!-- Angular Views -->
-    <!-- Would rather have separate files but it can't be done-->
+    <!-- Would rather have separate files but ...-->
     <script type="text/ng-template" id="loginView">
         <!-- #region loginView-->
         <div>
             <form id="loginContainer" ng-submit="vm.submit()" ng-class="{'hide':isLoading}">
                 <label>Naam</label>
                 <input type="text" class="form-control" ng-model="name" placeholder="bv. Jimmy Frey" autofocus="" />
-                <label>Server adres</label>
-                <input type="text" class="form-control" ng-model="ipAddress" placeholder="bv. 192.168.1.1" required="">
-                <label>Poort</label>
-                <input type="text" class="form-control" ng-model="port" placeholder="bv. 5678" required="">
                 <button class="btn btn-primary pull-right" type="submit">Aanmelden</button>
             </form>
             <div id="preloader" ng-class="{'hide':!isLoading}">

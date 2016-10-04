@@ -2,12 +2,9 @@
 using Beursfuif.Server.ViewModel;
 using Moq;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Moq.Protected;
 using Beursfuif.Server.DataAccess;
+using Beursfuif.Server.Entity;
 
 namespace Beursfuif.Tests.MockHelper
 {

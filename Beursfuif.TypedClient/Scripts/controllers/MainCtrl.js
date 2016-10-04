@@ -129,10 +129,11 @@ var beursfuif;
             this.$scope.currentOrder = [];
         };
         return MainCtrl;
-    })();
+    }());
     beursfuif.MainCtrl = MainCtrl;
-    beursfuif.beursfuifModule.controller("MainCtrl", ["$scope", "SignalrService", "$location", "$timeout", function ($scope, signalrService, $location, $timeout) {
-        return new MainCtrl($scope, signalrService, $location, $timeout);
-    }]);
+    beursfuif.beursfuifModule.controller("MainCtrl", ["$scope", "SignalrService", "$location", "$timeout",
+        function ($scope, signalrService, $location, $timeout) {
+            return new MainCtrl($scope, signalrService, $location, $timeout);
+        }]);
 })(beursfuif || (beursfuif = {}));
 //# sourceMappingURL=MainCtrl.js.map

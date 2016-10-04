@@ -10,7 +10,7 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Windows;
-using Beursfuif.BL.Extensions;
+using Beursfuif.Server.Entity;
 using Beursfuif.Server.Services;
 
 namespace Beursfuif.Server.ViewModel
@@ -284,7 +284,7 @@ namespace Beursfuif.Server.ViewModel
             PointInCode("DrinkViewModel: CleanUpImages");
             try
             {
-                string[] paths = Directory.GetFiles(PathManager.ASSETS_PATH).Select(x => x.Replace(PathManager.ASSETS_PATH, "")).ToArray();
+                string[] paths = Directory.GetFiles(BeursfuifPaths.AssetsPath).Select(x => x.Replace(BeursfuifPaths.AssetsPath, "")).ToArray();
                 string[] images = Drinks.Select(x => x.ImageString).ToArray();
                 var query = from path in paths
                             where !images.Contains(path)
@@ -296,8 +296,8 @@ namespace Beursfuif.Server.ViewModel
                     if (File.Exists(path))
                     {
                         File.Delete(path);
-                    }else if(File.Exists(PathManager.ASSETS_PATH + path)){
-                        File.Delete(PathManager.ASSETS_PATH + path);
+                    }else if(File.Exists(BeursfuifPaths.AssetsPath + path)){
+                        File.Delete(BeursfuifPaths.AssetsPath + path);
                     }
                 }
                 SendLogMessage("Unused images removed", LogType.DRINK_VM);
@@ -380,31 +380,20 @@ namespace Beursfuif.Server.ViewModel
             _dm.AnswerChanged -= ErrorMessage_AnswerChanged;
         }
 
-        private void SaveDrink()
+        internal void SaveDrink()
         {
             PointInCode("DrinkViewModel: SaveDrink");
 
             if (ValidateDrink())
             {
                 NewEditDrink.CurrentPrice = NewEditDrink.InitialPrice;
-                if (!Drinks.Any(x => x.Id == NewEditDrink.Id))
+                if (IsExistingDrink())
                 {
-                    Drinks.Add(NewEditDrink);
-                    MessengerInstance.Send<DrinkModifiedMessage>(new DrinkModifiedMessage()
-                    {
-                        Added = true,
-                        Drink = NewEditDrink
-                    });
-                    SendLogMessage("Drink added", LogType.DRINK_VM);
+                    AddNewDrink();
                 }
                 else
                 {
-                    MessengerInstance.Send<DrinkModifiedMessage>(new DrinkModifiedMessage()
-                    {
-                        Changed = true,
-                        Drink = NewEditDrink
-                    });
-                   SendLogMessage("Drink modified", LogType.DRINK_VM);
+                    UpdateDrink();
                 }
 
                 ThreadPool.QueueUserWorkItem(new WaitCallback((object target) =>
@@ -417,6 +406,32 @@ namespace Beursfuif.Server.ViewModel
                 DownloadUrl = string.Empty;
 
             }
+        }
+
+        private void UpdateDrink()
+        {
+            MessengerInstance.Send<DrinkModifiedMessage>(new DrinkModifiedMessage()
+            {
+                Changed = true,
+                Drink = NewEditDrink
+            });
+            SendLogMessage("Drink modified", LogType.DRINK_VM);
+        }
+
+        private void AddNewDrink()
+        {
+            Drinks.Add(NewEditDrink);
+            MessengerInstance.Send<DrinkModifiedMessage>(new DrinkModifiedMessage()
+            {
+                Added = true,
+                Drink = NewEditDrink
+            });
+            SendLogMessage("Drink added", LogType.DRINK_VM);
+        }
+
+        private bool IsExistingDrink()
+        {
+            return Drinks.All(x => x.Id != NewEditDrink.Id);
         }
 
         #region Images
@@ -442,11 +457,11 @@ namespace Beursfuif.Server.ViewModel
                     // Open document 
                     string filename = dlg.FileName;
                     string dateStamp = DateTime.Now.ToString("dd-MM-yyyy-hhmmss");
-                    string originalPath = PathManager.ASSETS_PATH + dateStamp + "-original" + Path.GetExtension(filename);
-                    string destinationPath = PathManager.ASSETS_PATH + dateStamp + ".png";
+                    string originalPath = BeursfuifPaths.AssetsPath + dateStamp + "-original" + Path.GetExtension(filename);
+                    string destinationPath = BeursfuifPaths.AssetsPath + dateStamp + ".png";
                     File.Copy(filename, originalPath, true);
                     ResizeImage(originalPath, destinationPath);
-                    NewEditDrink.ImageString = destinationPath.Replace(PathManager.ASSETS_PATH, string.Empty);
+                    NewEditDrink.ImageString = destinationPath.Replace(BeursfuifPaths.AssetsPath, string.Empty);
                     SendLogMessage("Image for drink from file added", LogType.DRINK_VM);
                 }));
             }
@@ -477,8 +492,8 @@ namespace Beursfuif.Server.ViewModel
                 {
 
                     string dateStamp = DateTime.Now.ToString("dd-MM-yyyy-hhmmss");
-                    string originalPath = PathManager.ASSETS_PATH + dateStamp + "-original" + Path.GetExtension(this.DownloadUrl);
-                    string destinationPath = PathManager.ASSETS_PATH + dateStamp + ".png";
+                    string originalPath = BeursfuifPaths.AssetsPath + dateStamp + "-original" + Path.GetExtension(this.DownloadUrl);
+                    string destinationPath = BeursfuifPaths.AssetsPath + dateStamp + ".png";
                     //Download image
                     DownloadRemoteImageFile(this.DownloadUrl, originalPath);
                     ResizeImage(originalPath, destinationPath);
@@ -506,7 +521,7 @@ namespace Beursfuif.Server.ViewModel
                "height=200;format=png;mode=max;"));
             i.CreateParentDirectory = true; //Auto-create the uploads directory.
             i.Build();
-            Uri assets = new Uri(PathManager.ASSETS_PATH);
+            Uri assets = new Uri(BeursfuifPaths.AssetsPath);
             Uri image = new Uri(destinationPath);
             NewEditDrink.ImageString = assets.MakeRelativeUri(image).ToString();
         }
@@ -579,8 +594,8 @@ namespace Beursfuif.Server.ViewModel
 
             UpdateDrink(changed);
 
-            SendToastMessage(string.Format("{0}  is {1} beschikbaar", changed.Name, (changed.Available ? "weer" : "niet meer")));
-            SendLogMessage(string.Format("Drink ({0}) available ({1}) changed",changed.Name ,changed.Available), LogType.DRINK_VM);
+            SendToastMessage($"{changed.Name}  is {(changed.Available ? "weer" : "niet meer")} beschikbaar");
+            SendLogMessage($"Drink ({changed.Name}) available ({changed.Available}) changed", LogType.DRINK_VM);
         }
 
         private void UpdateDrink(Drink changed)

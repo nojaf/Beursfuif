@@ -1,17 +1,12 @@
 ﻿using Beursfuif.BL;
-using Beursfuif.Server.DataAccess;
 using Beursfuif.Server.Messages;
 using Beursfuif.Server.Services;
-using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Beursfuif.Server.Entity;
 
 namespace Beursfuif.Server.ViewModel
 {
@@ -195,8 +190,6 @@ namespace Beursfuif.Server.ViewModel
             set;
         }
         #endregion
-
-
 
         public IntervalViewModel(IBeursfuifData beursfuifData): base(beursfuifData)
         {

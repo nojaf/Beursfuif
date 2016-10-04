@@ -3,8 +3,7 @@ using Beursfuif.Server.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Beursfuif.Server.Entity;
 
 namespace Beursfuif.Server.Services
 {
@@ -71,12 +70,12 @@ namespace Beursfuif.Server.Services
                     if (differenceProcentage > 0)
                     {
                         //the drink has been drunk more procentually
-                        drink.PriceFactor = PriceFactor.BIG_RISE;
+                        drink.PriceFactor = PriceFactor.BigRise;
                     }
                     else
                     {
                         //the drink has been drunk less procentually
-                        drink.PriceFactor = PriceFactor.BIG_DECREASE;
+                        drink.PriceFactor = PriceFactor.BigDecrease;
                     }
                     #endregion
                 }
@@ -87,12 +86,12 @@ namespace Beursfuif.Server.Services
                     if (differenceProcentage > 0)
                     {
                         //the drink has been drunk more procentually
-                        drink.PriceFactor = PriceFactor.SMALL_RISE;
+                        drink.PriceFactor = PriceFactor.SmallRise;
                     }
                     else
                     {
                         //the drink has been drunk less procentually
-                        drink.PriceFactor = PriceFactor.SMALL_DECREASE;
+                        drink.PriceFactor = PriceFactor.SmallDecrease;
                     }
                     #endregion
                 }
@@ -109,12 +108,12 @@ namespace Beursfuif.Server.Services
                     if (differenceProcentage > 0)
                     {
                         //the drink has been drunk more procentually
-                        drink.PriceFactor = PriceFactor.BIG_DECREASE;
+                        drink.PriceFactor = PriceFactor.BigDecrease;
                     }
                     else
                     {
                         //the drink has been drunk less procentually
-                        drink.PriceFactor = PriceFactor.BIG_RISE;
+                        drink.PriceFactor = PriceFactor.BigRise;
                     }
                     #endregion
                 }
@@ -125,12 +124,12 @@ namespace Beursfuif.Server.Services
                     if (differenceProcentage > 0)
                     {
                         //the drink has been drunk more procentually
-                        drink.PriceFactor = PriceFactor.SMALL_DECREASE;
+                        drink.PriceFactor = PriceFactor.SmallDecrease;
                     }
                     else
                     {
                         //the drink has been drunk less procentually
-                        drink.PriceFactor = PriceFactor.SMALL_RISE;
+                        drink.PriceFactor = PriceFactor.SmallRise;
                     }
                     #endregion
                 }
@@ -138,14 +137,14 @@ namespace Beursfuif.Server.Services
             }
 
             //check if we need to use the override factor
-            if (drink.OverrideFactor != 0 && !predict) drink.PriceFactor = PriceFactor.OVERRIDE;
+            if (drink.OverrideFactor != 0 && !predict) drink.PriceFactor = PriceFactor.Override;
 
 
 
             Drink nextDrink = nextInterval.Drinks.FirstOrDefault(x => x.Id == drink.Id);
             double priceFactor = drink.GetPriceFactorValue();
             double priceWithoutRouding = drink.CurrentPrice * priceFactor;
-            byte nextPrice = (byte)Math.Round(priceWithoutRouding);
+            int nextPrice = (int)Math.Round(priceWithoutRouding);
             if (nextPrice > nextDrink.MaximumPrice) nextPrice = nextDrink.MaximumPrice;
             if (nextPrice < nextDrink.MiniumPrice) nextPrice = nextDrink.MiniumPrice;
 

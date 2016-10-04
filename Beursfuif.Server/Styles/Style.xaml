@@ -716,4 +716,9 @@
         <Setter Property="FontStretch"
                 Value="UltraExpanded" />
     </Style>
+
+    <Style x:Key="PartyDataContainer" TargetType="StackPanel">
+        <Setter Property="Orientation" Value="Horizontal"></Setter>
+        <Setter Property="Margin" Value="0,10"></Setter>
+    </Style>
 </ResourceDictionary>

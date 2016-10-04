@@ -3,13 +3,13 @@
 
 Beursfuif program, written in C#/XAML.
 
-Created by [Nojaf](http://nojaf.com)
+Created by [nojaf](http://nojaf.com)
 
 All rights reserved.
 
 ## Running from Visual Studio
 
-Make sure you start Visual Studio (2012 or 2013) as Administrator. The server application needs to run with elevated permissions. This is because the server uses Owin Selfhost.
+Execute the netsh commands first. More info [below](#server)
 
 ## Screenshots
 
@@ -46,16 +46,38 @@ The client is built with AngularJs and Typescript
 
 ## Download the latest release
 
-Binaries have been attached to the latest release (2.5.1).
+Binaries have been attached to the latest release (2.6.0).
 You should be able to run the application with these files.
 
+### Server
 - Extract the zip
-- Run the server.exe under in the Server folder as administrator
-- To run the client, execute install.bat as administrator (optional)
-- Run client.exe (or as admin if you didn't executed the install file)
+- Open a command promt as administrator.
+```cmd
+C:\Windows\System32>rem "Find your username"
+C:\Windows\System32>whoami
+your-domain\your-users
+
+C:\Windows\System32>rem "Register urls with port"
+C:\Windows\System32>netsh http add urlacl url=http://+:5678/ user=your-domain\your-users
+
+C:\Windows\System32>rem "Add an outgoing firewall rule"
+C:\Windows\System32>netsh advfirewall firewall add rule name="Open Port 5678" dir=out action=allow protocol=TCP localport=5678
+```
+- Open Beursfuif.Server.exe
+- Configure drinks and interval
+- Start party
+
+### Client
+
+- Open a command promt as administrator.
+```cmd
+C:\Windows\System32>rem "Add an incoming firewall rule"
+C:\Windows\System32>netsh advfirewall firewall add rule name="Open Port 5678" dir=in action=allow protocol=TCP localport=5678
+```
+
+- Browse to the urls displayed in the Settings pane on the server.
 
 ## Remarks
-- If you want to use the server in your local network, be sure to disable your Windows firewall.
 - Browser support: IE10+, Chrome, Opera and Firefox.
 - Start beamer.html to open the projection client.
 

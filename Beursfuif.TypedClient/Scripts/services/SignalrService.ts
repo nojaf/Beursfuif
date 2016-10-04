@@ -37,19 +37,25 @@ module beursfuif {
 
             this.registerCallback();
 
-            this.connection.error(() => {
+            const errorCallback = (() => {
                 this.connection.stop(false, false);
                 this.unregisterCallbacks();
                 this.$rootScope.$broadcast(EventNames.OPEN_MODAL, ModalMessages.CONNECTION_LOST_TITLE, ModalMessages.CONNECTION_LOST);
-            });
+            }).bind(this);
 
-            this.connection.start(() => {
+            this.connection.error(errorCallback);
+
+            const startCallback = (() => {
                 this.$log.info("start");
                 this.hub.invoke(SignalRMethodNames.LOGIN, name);
-            }).fail((e) => {
-                    console.log("fail", e);
-                    this.$rootScope.$broadcast(EventNames.OPEN_MODAL, ModalMessages.CONNECTION_LOST_TITLE, ModalMessages.CONNECTION_LOST);
-                });
+            }).bind(this);
+
+            const failCallback = ((e) => {
+                console.log("fail", e);
+                this.$rootScope.$broadcast(EventNames.OPEN_MODAL, ModalMessages.CONNECTION_LOST_TITLE, ModalMessages.CONNECTION_LOST);
+            }).bind(this);
+
+            this.connection.start(startCallback).fail(failCallback);
             
         }
 
@@ -64,8 +70,7 @@ module beursfuif {
         }
 
         registerCallback(): void {
-            this.hub.on(SignalRMethodNames.SEND_INITIAL_DATA, (currentTime: Date, clientInterval: IClientInterval)
-                => this.sendInitialData(currentTime, clientInterval));
+            this.hub.on(SignalRMethodNames.SEND_INITIAL_DATA, (currentTime: Date, clientInterval: IClientInterval) => this.sendInitialData(currentTime, clientInterval));
             this.hub.on(SignalRMethodNames.UPDATE_TIME, (currentTime: Date, authenticationCode: string) => this.updateTime(currentTime, authenticationCode));
             this.hub.on(SignalRMethodNames.YOU_GOT_KICKED, () => this.kicked());
             this.hub.on(SignalRMethodNames.ACK_NEW_ORDER, () => this.showToast());

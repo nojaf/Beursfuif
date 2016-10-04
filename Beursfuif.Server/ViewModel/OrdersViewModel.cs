@@ -2,17 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Beursfuif.BL.Extensions;
 using System.Collections.ObjectModel;
 using Beursfuif.Server.Messages;
 using System.Threading;
-using Beursfuif.Server.DataAccess;
-using System.Threading.Tasks;
-using System.IO;
 using Beursfuif.Server.Services;
 using Beursfuif.BL.Event;
 using Beursfuif.BL.Entity;
+using Beursfuif.Server.Entity;
 
 namespace Beursfuif.Server.ViewModel
 {
@@ -407,7 +404,7 @@ namespace Beursfuif.Server.ViewModel
             //else
             //client doesn't have a valid code
 
-            SendLogMessage(string.Format("Invalid authcode from client {0}", _beursfuifData.GetClientName(e.ClientId)),
+            SendLogMessage($"Invalid authcode from client {_beursfuifData.GetClientName(e.ClientId)}",
                 LogType.ORDER_VM | LogType.CLIENT_SERVER_ERROR);
             MessengerInstance.Send<KickClientMessage>(new KickClientMessage()
             {

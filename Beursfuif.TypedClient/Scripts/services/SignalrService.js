@@ -17,7 +17,7 @@ var beursfuif;
         SignalRMethodNames.UPDATE_INTERVAL = "updateInterval"; //(clientInterval, currentBFTime);
         SignalRMethodNames.DRINK_AVAILABLE_CHANGED = "drinkAvailableChanged";
         return SignalRMethodNames;
-    })();
+    }());
     beursfuif.SignalRMethodNames = SignalRMethodNames;
     var SignalrService = (function () {
         //#endregion
@@ -32,40 +32,31 @@ var beursfuif;
             this.hub = this.connection.createHubProxy("beursfuif");
             $.connection.hub.logging = true;
             this.registerCallback();
-            this.connection.error(function () {
+            var errorCallback = (function () {
                 _this.connection.stop(false, false);
                 _this.unregisterCallbacks();
                 _this.$rootScope.$broadcast(beursfuif.EventNames.OPEN_MODAL, beursfuif.ModalMessages.CONNECTION_LOST_TITLE, beursfuif.ModalMessages.CONNECTION_LOST);
-            });
-            this.connection.start(function () {
+            }).bind(this);
+            this.connection.error(errorCallback);
+            var startCallback = (function () {
                 _this.$log.info("start");
                 _this.hub.invoke(SignalRMethodNames.LOGIN, name);
-            }).fail(function (e) {
+            }).bind(this);
+            var failCallback = (function (e) {
                 console.log("fail", e);
                 _this.$rootScope.$broadcast(beursfuif.EventNames.OPEN_MODAL, beursfuif.ModalMessages.CONNECTION_LOST_TITLE, beursfuif.ModalMessages.CONNECTION_LOST);
-            });
+            }).bind(this);
+            this.connection.start(startCallback).fail(failCallback);
         };
         //#region callbacks from the server
         SignalrService.prototype.unregisterCallbacks = function () {
             var _this = this;
-            this.hub.off(SignalRMethodNames.SEND_INITIAL_DATA, function (msg) {
-                _this.$log.info("Off initial data");
-            });
-            this.hub.off(SignalRMethodNames.UPDATE_TIME, function (msg) {
-                _this.$log.info("Off update time");
-            });
-            this.hub.off(SignalRMethodNames.YOU_GOT_KICKED, function (msg) {
-                _this.$log.info("Off you got kicked");
-            });
-            this.hub.off(SignalRMethodNames.ACK_NEW_ORDER, function (msg) {
-                _this.$log.info("Off ack new order");
-            });
-            this.hub.off(SignalRMethodNames.UPDATE_INTERVAL, function (msg) {
-                _this.$log.info("Off update interval");
-            });
-            this.hub.off(SignalRMethodNames.DRINK_AVAILABLE_CHANGED, function (msg) {
-                _this.$log.info("Off drink available");
-            });
+            this.hub.off(SignalRMethodNames.SEND_INITIAL_DATA, function (msg) { _this.$log.info("Off initial data"); });
+            this.hub.off(SignalRMethodNames.UPDATE_TIME, function (msg) { _this.$log.info("Off update time"); });
+            this.hub.off(SignalRMethodNames.YOU_GOT_KICKED, function (msg) { _this.$log.info("Off you got kicked"); });
+            this.hub.off(SignalRMethodNames.ACK_NEW_ORDER, function (msg) { _this.$log.info("Off ack new order"); });
+            this.hub.off(SignalRMethodNames.UPDATE_INTERVAL, function (msg) { _this.$log.info("Off update interval"); });
+            this.hub.off(SignalRMethodNames.DRINK_AVAILABLE_CHANGED, function (msg) { _this.$log.info("Off drink available"); });
         };
         SignalrService.prototype.registerCallback = function () {
             var _this = this;
@@ -156,17 +147,17 @@ var beursfuif;
             this.hub.invoke(SignalRMethodNames.NEW_ORDER, order, this.generateAuthString());
         };
         return SignalrService;
-    })();
+    }());
     beursfuif.SignalrService = SignalrService;
     if (beursfuif.beamerModule) {
         beursfuif.beamerModule.factory("SignalrService", ["$q", "$log", "$rootScope", function ($q, $log, $rootScope) {
-            return new SignalrService($q, $log, $rootScope);
-        }]);
+                return new SignalrService($q, $log, $rootScope);
+            }]);
     }
     if (beursfuif.beursfuifModule) {
         beursfuif.beursfuifModule.factory("SignalrService", ["$q", "$log", "$rootScope", function ($q, $log, $rootScope) {
-            return new SignalrService($q, $log, $rootScope);
-        }]);
+                return new SignalrService($q, $log, $rootScope);
+            }]);
     }
 })(beursfuif || (beursfuif = {}));
 //# sourceMappingURL=SignalrService.js.map

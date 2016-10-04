@@ -19,6 +19,7 @@ module beursfuif {
             " </div>" +
             "   <div class='modal-body'>" +
             "    </div>" +
+            "<div class=\"text-center\"><img src=\"/images/error.jpg\" id=\"error-image\"></div>" +
             "     <div class='modal-footer' >" +
             "         <button type='button' class='btn btn-primary' data-ng-click='submit()'> Aight </button >" +
             "    </div>" +

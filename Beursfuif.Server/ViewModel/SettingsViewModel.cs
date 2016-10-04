@@ -11,11 +11,12 @@ using System.Windows;
 using Beursfuif.BL.Extensions;
 using Beursfuif.Server.Messages;
 using System.IO;
-using System.Threading.Tasks;
 using System.Net.NetworkInformation;
 using System.Windows.Forms;
+using Beursfuif.Server.Entity;
 using Ionic.Zip;
 using Beursfuif.Server.Services;
+using Microsoft.Owin.Hosting;
 
 namespace Beursfuif.Server.ViewModel
 {
@@ -158,19 +159,10 @@ namespace Beursfuif.Server.ViewModel
             }
         }
 
-        public string IPAdress
-        {
-            get
-            {
-                var ip = LocalIPAddress();
-                return (ip != null ? ip.ToString() : "localhost");
-            }
-        }
+        public string IPAdresses => string.Join("|", LocalIpAddresses());
 
-        /// <summary>
-        /// The <see cref="Port" /> property's name.
-        /// </summary>
-        public const string PortPropertyName = "Port";
+        public IEnumerable<string> ClientUrls => LocalIpAddresses().Select(address => $"http://{address}:{Port}");
+        public IEnumerable<string> BeamerUrls => LocalIpAddresses().Select(address => $"http://{address}:{Port}/beamer.html");
 
         /// <summary>
         /// Sets and gets the Port property.
@@ -192,9 +184,9 @@ namespace Beursfuif.Server.ViewModel
                     return;
                 }
 
-                RaisePropertyChanging(PortPropertyName);
+                RaisePropertyChanging(nameof(Port));
                 _beursfuifData.Port = value;
-                RaisePropertyChanged(PortPropertyName);
+                RaisePropertyChanged(nameof(Port));
             }
         }
 
@@ -274,7 +266,7 @@ namespace Beursfuif.Server.ViewModel
             ResetFuifCommand = new RelayCommand(ResetFuifData);
             ResetAllCommand = new RelayCommand(ResetAll);
             ChangeBackupLocationCommand = new RelayCommand(ChangeBackupLocation);
-            RestoreBackupCommand = new RelayCommand(RestoreBackup, () => { return !BeursfuifBusy; });
+            RestoreBackupCommand = new RelayCommand(RestoreBackup, () => !BeursfuifBusy);
         }
 
         private void RestoreBackup()
@@ -292,7 +284,7 @@ namespace Beursfuif.Server.ViewModel
             {
                 if(dialog.CheckFileExists){
                     string zipLocation = dialog.FileName;
-                    IEnumerable<string> folders = Directory.EnumerateDirectories(PathManager.BEURSFUIF_FOLDER);
+                    IEnumerable<string> folders = Directory.EnumerateDirectories(BeursfuifPaths.BeursfuifFolder);
                     foreach (string folder in folders)
                     {
                         Directory.Delete(folder, true);
@@ -300,7 +292,7 @@ namespace Beursfuif.Server.ViewModel
 
                     using (ZipFile zip = ZipFile.Read(zipLocation))
                     {
-                        zip.ExtractAll(PathManager.BEURSFUIF_FOLDER);
+                        zip.ExtractAll(BeursfuifPaths.BeursfuifFolder);
                     }
 
 
@@ -390,7 +382,7 @@ namespace Beursfuif.Server.ViewModel
             RaisePropertyChanged(BeursfuifBusyVisibilityPropertyName);
             _server.Active = true;
 
-            bool succes = await _server.Start(IPAdress, Port);
+            bool succes = await _server.Start();
             
             if(!succes)
             {
@@ -453,7 +445,7 @@ namespace Beursfuif.Server.ViewModel
             //start timer
             _tmrMain = new System.Threading.Timer(MainTimer_Tick, null, 1000, 1000);
 
-            _server.Start(IPAdress, Port);
+            _server.Start();
             _server.Active = true;
             MainActionButtonContent = PAUSE_PARTY;
             SendToastMessage("Server started");
@@ -599,7 +591,7 @@ namespace Beursfuif.Server.ViewModel
                     {
                         CurrentInterval = next;
                         _beursfuifData.SaveIntervals();
-                        _server.UpdateInterval(next.ToClientInterval(BeursfuifCurrentTime, PathManager.ASSETS_PATH), BeursfuifCurrentTime);
+                        _server.UpdateInterval(next.ToClientInterval(BeursfuifCurrentTime, BeursfuifPaths.AssetsPath), BeursfuifCurrentTime);
                         _tmrMain.Change(1000, 1000);
                     }));
                     ThreadPool.QueueUserWorkItem(SaveSettings);
@@ -674,7 +666,7 @@ namespace Beursfuif.Server.ViewModel
                 using (ZipFile zip = new ZipFile())
                 {
                     // add this map file into the "images" directory in the zip archive
-                    zip.AddDirectory(PathManager.BEURSFUIF_FOLDER);
+                    zip.AddDirectory(BeursfuifPaths.BeursfuifFolder);
                     zip.Save(BackupLocation + "\\beursfuif_back_up.zip");
                 }
             }
@@ -682,7 +674,7 @@ namespace Beursfuif.Server.ViewModel
             {
                 LogManager.AppendToLog(new LogMessage()
                 {
-                    Message = string.Format("Failed to create zip, ex = {0}", ex.Message),
+                    Message = $"Failed to create zip, ex = {ex.Message}",
                     Type = LogType.ERROR
                 });
             }
@@ -720,7 +712,7 @@ namespace Beursfuif.Server.ViewModel
         {
             PointInCode("SettingsViewModel: DrinkAvailableMessageReceived");
             ThreadPool.QueueUserWorkItem(SaveSettings);
-            ClientInterval clientInterval = this.CurrentInterval.ToClientInterval(this.BeursfuifCurrentTime, PathManager.ASSETS_PATH);
+            ClientInterval clientInterval = this.CurrentInterval.ToClientInterval(this.BeursfuifCurrentTime, BeursfuifPaths.AssetsPath);
             _server.SendDrinkAvailableChanged(clientInterval);
         }
         #endregion
@@ -747,12 +739,17 @@ namespace Beursfuif.Server.ViewModel
 
         private void AddressChangedCallback(object sender, EventArgs e)
         {
-            RaisePropertyChanged("IPAdress");
+            RaisePropertyChanged(nameof(IPAdresses));
         }
 
-        private IPAddress LocalIPAddress()
+        private IEnumerable<string> LocalIpAddresses()
         {
-            if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+            if (IsInDesignMode)
+            {
+                return new[] {"http://localhost:5678", "http://192.168.1.1:5678"};
+            }
+
+            if (!NetworkInterface.GetIsNetworkAvailable())
             {
                 return null;
             }
@@ -762,7 +759,8 @@ namespace Beursfuif.Server.ViewModel
 
             return host
                 .AddressList
-                .FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork && IsIPLocal(ip));
+                .Where(ip => ip.AddressFamily == AddressFamily.InterNetwork && IsIPLocal(ip))
+                .Select(address => address.ToString());
         }
 
         private bool IsIPLocal(IPAddress ipaddress)

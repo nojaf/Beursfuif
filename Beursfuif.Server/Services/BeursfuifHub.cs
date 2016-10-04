@@ -1,12 +1,9 @@
 ﻿using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Hubs;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Beursfuif.BL.Event;
 using Beursfuif.BL;
+using Beursfuif.Server.Entity;
 
 namespace Beursfuif.Server.Services
 {

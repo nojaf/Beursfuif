@@ -11,7 +11,7 @@ var beursfuif;
         EventNames.INTERVAL_UPDATE = "INTERVAL_UPDATE";
         EventNames.DRINK_AVAILABLE_CHANGED = "DRINK_AVAILABLE_CHANGED";
         return EventNames;
-    })();
+    }());
     beursfuif.EventNames = EventNames;
 })(beursfuif || (beursfuif = {}));
 //# sourceMappingURL=Events.js.map

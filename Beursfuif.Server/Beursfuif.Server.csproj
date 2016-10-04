@@ -98,9 +98,9 @@
       <HintPath>..\packages\Microsoft.AspNet.SignalR.Core.2.1.2\lib\net45\Microsoft.AspNet.SignalR.Core.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Expression.Interactions" />
-    <Reference Include="Microsoft.Owin, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.Owin.3.0.0\lib\net45\Microsoft.Owin.dll</HintPath>
+    <Reference Include="Microsoft.Owin, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Owin.Cors, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -109,6 +109,10 @@
     <Reference Include="Microsoft.Owin.Diagnostics, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.Owin.Diagnostics.3.0.0\lib\net45\Microsoft.Owin.Diagnostics.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.FileSystems, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.FileSystems.3.0.1\lib\net45\Microsoft.Owin.FileSystems.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Owin.Host.HttpListener, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -121,6 +125,10 @@
     <Reference Include="Microsoft.Owin.Security, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.Owin.Security.3.0.0\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.StaticFiles, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.StaticFiles.3.0.1\lib\net45\Microsoft.Owin.StaticFiles.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -189,7 +197,31 @@
     <Compile Include="DataAccess\IIOManager.cs" />
     <Compile Include="DataAccess\IOManager.cs" />
     <Compile Include="DataAccess\LogManager.cs" />
-    <Compile Include="DataAccess\PathManager.cs" />
+    <Compile Include="DataAccess\BeursfuifPaths.cs" />
+    <Compile Include="Entity\BFObservableObject.cs" />
+    <Compile Include="Entity\Client.cs" />
+    <Compile Include="Entity\ClientDrink.cs" />
+    <Compile Include="Entity\ClientDrinkOrder.cs" />
+    <Compile Include="Entity\ClientInterval.cs" />
+    <Compile Include="Entity\Drink.cs" />
+    <Compile Include="Entity\DrinkStatistics.cs" />
+    <Compile Include="Entity\Interval.cs" />
+    <Compile Include="Entity\LogMessage.cs" />
+    <Compile Include="Entity\LogType.cs" />
+    <Compile Include="Entity\Package.cs" />
+    <Compile Include="Entity\PredictDrink.cs" />
+    <Compile Include="Entity\PriceFactor.cs" />
+    <Compile Include="Entity\ProtocolKind.cs" />
+    <Compile Include="Entity\ReducedDrink.cs" />
+    <Compile Include="Entity\ReducedInterval.cs" />
+    <Compile Include="Entity\SaveSettings.cs" />
+    <Compile Include="Entity\ShowOrder.cs" />
+    <Compile Include="Event\ClientLeftEventArgs.cs" />
+    <Compile Include="Event\CurrentTimeAckEventArgs.cs" />
+    <Compile Include="Event\NewClientEventArgs.cs" />
+    <Compile Include="Event\NewOrderEventArgs.cs" />
+    <Compile Include="Exceptions\BeursfuifException.cs" />
+    <Compile Include="Extensions\BeursfuifExtensions.cs" />
     <Compile Include="Messages\AutoSaveAllOrdersMessage.cs" />
     <Compile Include="Messages\BeursfuifBusyMessage.cs" />
     <Compile Include="Messages\BeursfuifStartedMessage.cs" />
@@ -355,12 +387,6 @@
       <Numbers>True</Numbers>
       <Punctuation>True</Punctuation>
     </BlendEmbeddedFont>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Beursfuif.BL\Beursfuif.BL.csproj">
-      <Project>{0bb30286-2a73-4955-95d2-cfa16b012fdc}</Project>
-      <Name>Beursfuif.BL</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">

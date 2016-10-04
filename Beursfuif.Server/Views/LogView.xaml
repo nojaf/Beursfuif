@@ -3,9 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:bl="clr-namespace:Beursfuif.BL;assembly=Beursfuif.BL"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:conv="clr-namespace:Beursfuif.Server.Converters"
+             xmlns:entity="clr-namespace:Beursfuif.Server.Entity"
              mc:Ignorable="d"
              d:DesignHeight="735"
              MinHeight="735"
@@ -18,7 +18,7 @@
                             ObjectType="{x:Type sys:Enum}"
                             x:Key="LogTypeDataProvider">
             <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="bl:LogType" />
+                <x:Type TypeName="entity:LogType" />
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
         <conv:EnumDescriptionConverter x:Key="EnumConverter"></conv:EnumDescriptionConverter>

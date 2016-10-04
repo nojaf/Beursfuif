@@ -1,14 +1,11 @@
 ﻿using Beursfuif.BL;
 using Beursfuif.Server.DataAccess;
 using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Windows;
+using Beursfuif.Server.Entity;
 
 namespace Beursfuif.Server
 {
@@ -44,27 +41,22 @@ namespace Beursfuif.Server
             LogManager.AppendToLog(new LogMessage(e.Exception.Message,LogType.ERROR));
         }
 
-        private void CheckIfBeursfuifFolderExists()
+        private static void CheckIfBeursfuifFolderExists()
         {
-            if(!System.IO.Directory.Exists(PathManager.BEURSFUIF_FOLDER))
+            var directories = new[]
             {
-                Directory.CreateDirectory(PathManager.BEURSFUIF_FOLDER);
-               
-            }
+                BeursfuifPaths.BeursfuifFolder,
+                BeursfuifPaths.AssetsPath,
+                BeursfuifPaths.DataFolder,
+                BeursfuifPaths.LogFolder
+            };
 
-            if (!Directory.Exists(PathManager.ASSETS_PATH))
+            foreach (string directory in directories)
             {
-                Directory.CreateDirectory(PathManager.ASSETS_PATH);
-            }
-
-            if(!Directory.Exists(PathManager.DATA_FOLDER))
-            {
-                Directory.CreateDirectory(PathManager.DATA_FOLDER);
-            }
-
-            if (!Directory.Exists(PathManager.LOG_FOLDER))
-            {
-                Directory.CreateDirectory(PathManager.LOG_FOLDER);
+                if (!Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
             }
 
             LogManager.CreateNewLogFile();

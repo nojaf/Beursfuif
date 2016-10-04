@@ -1,9 +1,6 @@
 ﻿using Beursfuif.Server.DataAccess;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
@@ -13,32 +10,10 @@ namespace Beursfuif.Server.Converters
     public sealed class BitmapFrameConverter : IValueConverter
     {
         //doubles purely to facilitate easy data binding
-        private double _decodePixelWidth;
-        private double _decodePixelHeight;
 
-        public double DecodePixelWidth
-        {
-            get
-            {
-                return _decodePixelWidth;
-            }
-            set
-            {
-                _decodePixelWidth = value;
-            }
-        }
+        public double DecodePixelWidth { get; set; }
 
-        public double DecodePixelHeight
-        {
-            get
-            {
-                return _decodePixelHeight;
-            }
-            set
-            {
-                _decodePixelHeight = value;
-            }
-        }
+        public double DecodePixelHeight { get; set; }
 
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
@@ -46,7 +21,7 @@ namespace Beursfuif.Server.Converters
 
             if(!File.Exists(path))
             {
-                path = PathManager.ASSETS_PATH + path;
+                path = BeursfuifPaths.AssetsPath + path;
             }
 
             if (!string.IsNullOrEmpty(path) && File.Exists(path))
@@ -55,8 +30,8 @@ namespace Beursfuif.Server.Converters
                 BitmapImage bitmapImage = new BitmapImage();
                 bitmapImage.BeginInit();
                 bitmapImage.StreamSource = new FileStream(path, FileMode.Open, FileAccess.Read);
-                bitmapImage.DecodePixelWidth = (int)_decodePixelWidth;
-                bitmapImage.DecodePixelHeight = (int)_decodePixelHeight;
+                bitmapImage.DecodePixelWidth = (int)DecodePixelWidth;
+                bitmapImage.DecodePixelHeight = (int)DecodePixelHeight;
                 //load the image now so we can immediately dispose of the stream
                 bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
                 bitmapImage.EndInit();

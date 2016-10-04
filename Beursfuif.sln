@@ -1,14 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.30723.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beursfuif.Server", "Beursfuif.Server\Beursfuif.Server.csproj", "{6A547268-E30A-40C1-8E3B-90C422F42E1D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beursfuif.BL", "Beursfuif.BL\Beursfuif.BL.csproj", "{0BB30286-2A73-4955-95D2-CFA16B012FDC}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{873E9196-7FB5-4740-A9E2-A45CA3170E46}"
 	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
 		WE2013-settings.xml = WE2013-settings.xml
 		WebEssentials-Settings.json = WebEssentials-Settings.json
 	EndProjectSection
@@ -36,16 +35,6 @@ Global
 		{6A547268-E30A-40C1-8E3B-90C422F42E1D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6A547268-E30A-40C1-8E3B-90C422F42E1D}.SingleImage|Any CPU.ActiveCfg = Release|Any CPU
 		{6A547268-E30A-40C1-8E3B-90C422F42E1D}.SingleImage|Any CPU.Build.0 = Release|Any CPU
-		{0BB30286-2A73-4955-95D2-CFA16B012FDC}.CD_ROM|Any CPU.ActiveCfg = Release|Any CPU
-		{0BB30286-2A73-4955-95D2-CFA16B012FDC}.CD_ROM|Any CPU.Build.0 = Release|Any CPU
-		{0BB30286-2A73-4955-95D2-CFA16B012FDC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0BB30286-2A73-4955-95D2-CFA16B012FDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0BB30286-2A73-4955-95D2-CFA16B012FDC}.DVD-5|Any CPU.ActiveCfg = Debug|Any CPU
-		{0BB30286-2A73-4955-95D2-CFA16B012FDC}.DVD-5|Any CPU.Build.0 = Debug|Any CPU
-		{0BB30286-2A73-4955-95D2-CFA16B012FDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0BB30286-2A73-4955-95D2-CFA16B012FDC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0BB30286-2A73-4955-95D2-CFA16B012FDC}.SingleImage|Any CPU.ActiveCfg = Release|Any CPU
-		{0BB30286-2A73-4955-95D2-CFA16B012FDC}.SingleImage|Any CPU.Build.0 = Release|Any CPU
 		{8895A17A-4295-4446-A307-90BF5BB73888}.CD_ROM|Any CPU.ActiveCfg = Release|Any CPU
 		{8895A17A-4295-4446-A307-90BF5BB73888}.CD_ROM|Any CPU.Build.0 = Release|Any CPU
 		{8895A17A-4295-4446-A307-90BF5BB73888}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

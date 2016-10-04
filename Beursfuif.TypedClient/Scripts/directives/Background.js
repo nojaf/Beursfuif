@@ -6,7 +6,19 @@ var beursfuif;
             link: link
         };
         function link(scope, element, attrs) {
-            var backgrounds = ["url('background/wallpaper-1248778.jpg')", "url('background/wallpaper-1346213.jpg')", "url('background/wallpaper-2143399.jpg')", "url('background/wallpaper-2155408.jpg')", "url('background/wallpaper-2770643.jpg')", "url('background/wallpaper-2837789.jpg')", "url('background/wallpaper-2886432.jpg')", "url('background/wallpaper-295035.jpg')", "url('background/wallpaper-399972.png')", "url('background/wallpaper-630648.jpg')", "url('background/wallpaper-69099.jpg')", "url('background/wallpaper-762606.jpg')"];
+            var backgrounds = [
+                "url('background/wallhaven-10120.jpg')",
+                "url('background/wallhaven-13575.jpg')",
+                "url('background/wallhaven-14011.jpg')",
+                "url('background/wallhaven-18867.jpg')",
+                "url('background/wallhaven-20876.jpg')",
+                "url('background/wallhaven-3226.jpg')",
+                "url('background/wallhaven-33029.jpg')",
+                "url('background/wallhaven-40696.jpg')",
+                "url('background/wallhaven-41288.jpg')",
+                "url('background/wallhaven-43425.jpg')",
+                "url('background/wallhaven-48885.jpg')"
+            ];
             var currentIndex = Math.floor(Math.random() * backgrounds.length);
             var $html = $("html");
             var $mask = $(element);

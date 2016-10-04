@@ -1,11 +1,9 @@
 ﻿using Beursfuif.BL;
 using Beursfuif.BL.Event;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using Beursfuif.Server.Entity;
 
 namespace Beursfuif.Server.Services
 {
@@ -19,13 +17,11 @@ namespace Beursfuif.Server.Services
 
         ObservableCollection<Client> Clients { get; set; }
 
-        int Port { get; set; }
-
-        string Ip { get; set; }
+        int Port { get; }
 
         bool Active { get; set; }
 
-        Task<bool> Start(string ip, int port);
+        Task<bool> Start();
 
         void SendAckInitialClientConnect(ClientInterval currentInterval, Guid clientId, DateTime currentBeursfuifTime);
 

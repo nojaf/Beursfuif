@@ -29,5 +29,6 @@ module beursfuif {
         DrinkId: number;
         Count: number;
         IntervalId: number;
+        Name:string;
     }
 } 

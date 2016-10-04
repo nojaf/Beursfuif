@@ -16,8 +16,6 @@ using Beursfuif.Server.DataAccess;
 using Beursfuif.Server.Services;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
-using Microsoft.AspNet.SignalR;
-using Microsoft.AspNet.SignalR.Hubs;
 using Microsoft.Practices.ServiceLocation;
 
 namespace Beursfuif.Server.ViewModel
@@ -35,31 +33,20 @@ namespace Beursfuif.Server.ViewModel
         {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
-            ////if (ViewModelBase.IsInDesignModeStatic)
-            ////{
-            ////    // Create design time view services and models
-            ////    SimpleIoc.Default.Register<IDataService, DesignDataService>();
-            ////}
-            ////else
-            ////{
-            ////    // Create run time view services and models
-            ////    SimpleIoc.Default.Register<IDataService, DataService>();
-            ////}
-
             //Blend might try to instantiate the ViewModels more then once
             if (ViewModelBase.IsInDesignModeStatic)
             {
                 if (!SimpleIoc.Default.IsRegistered<IIOManager>())
                 {
-                    SimpleIoc.Default.Register<IIOManager>(() => { return new IOManager(); });
+                    SimpleIoc.Default.Register<IIOManager>(() => new IOManager());
                 }
                 if (!SimpleIoc.Default.IsRegistered<IBeursfuifData>())
                 {
-                    SimpleIoc.Default.Register<IBeursfuifData>(() => { return new BeursfuifData(IOManager); });
+                    SimpleIoc.Default.Register<IBeursfuifData>(() => new BeursfuifData(IOManager));
                 }
                 if (!SimpleIoc.Default.IsRegistered<IBeursfuifServer>())
                 {
-                    SimpleIoc.Default.Register<IBeursfuifServer>(() => { return new Services.BeursfuifServer(BeursfuifData); });
+                    SimpleIoc.Default.Register<IBeursfuifServer>(() => new BeursfuifServer(BeursfuifData));
                 }
 
                 BasicDesignTimeRegistration<MainViewModel>();
@@ -73,9 +60,9 @@ namespace Beursfuif.Server.ViewModel
             }
             else
             {
-                SimpleIoc.Default.Register<IIOManager>(() => { return new IOManager(); });
-                SimpleIoc.Default.Register<IBeursfuifData>(() => { return new BeursfuifData(IOManager); },true);
-                SimpleIoc.Default.Register<IBeursfuifServer>(() => { return new Services.BeursfuifServer(BeursfuifData); });
+                SimpleIoc.Default.Register<IIOManager>(() => new IOManager());
+                SimpleIoc.Default.Register<IBeursfuifData>(() => new BeursfuifData(IOManager),true);
+                SimpleIoc.Default.Register<IBeursfuifServer>(() => new BeursfuifServer(BeursfuifData));
                 SimpleIoc.Default.Register<MainViewModel>();
                 SimpleIoc.Default.Register<DrinkViewModel>();
                 SimpleIoc.Default.Register<IntervalViewModel>();
@@ -95,85 +82,25 @@ namespace Beursfuif.Server.ViewModel
             }
         }
 
-        public IIOManager IOManager
-        {
-            get
-            {
-                return ServiceLocator.Current.GetInstance<IIOManager>();
-            }
-        }
+        public IIOManager IOManager => ServiceLocator.Current.GetInstance<IIOManager>();
 
-        public IBeursfuifData BeursfuifData
-        {
-            get
-            {
-                return ServiceLocator.Current.GetInstance<IBeursfuifData>();
-            }
-        }
+        public IBeursfuifData BeursfuifData => ServiceLocator.Current.GetInstance<IBeursfuifData>();
 
-        public MainViewModel Main
-        {
-            get
-            {
-                return ServiceLocator.Current.GetInstance<MainViewModel>();
-            }
-        }
+        public MainViewModel Main => ServiceLocator.Current.GetInstance<MainViewModel>();
 
-        public DrinkViewModel Drink
-        {
-            get
-            {
-                return ServiceLocator.Current.GetInstance<DrinkViewModel>();
-            }
-        }
+        public DrinkViewModel Drink => ServiceLocator.Current.GetInstance<DrinkViewModel>();
 
-        public IntervalViewModel Interval
-        {
-            get
-            {
-                return ServiceLocator.Current.GetInstance<IntervalViewModel>();
-            }
-        }
+        public IntervalViewModel Interval => ServiceLocator.Current.GetInstance<IntervalViewModel>();
 
-        public SettingsViewModel Settings
-        {
-            get
-            {
-                return ServiceLocator.Current.GetInstance<SettingsViewModel>();
-            }
-        }
+        public SettingsViewModel Settings => ServiceLocator.Current.GetInstance<SettingsViewModel>();
 
-        public ClientsViewModel Clients
-        {
-            get
-            {
-                return ServiceLocator.Current.GetInstance<ClientsViewModel>();
-            }
-        }
+        public ClientsViewModel Clients => ServiceLocator.Current.GetInstance<ClientsViewModel>();
 
-        public OrdersViewModel Orders
-        {
-            get
-            {
-                return ServiceLocator.Current.GetInstance<OrdersViewModel>();
-            }
-        }
+        public OrdersViewModel Orders => ServiceLocator.Current.GetInstance<OrdersViewModel>();
 
-        public LogViewModel Log
-        {
-            get
-            {
-                return ServiceLocator.Current.GetInstance<LogViewModel>();
-            }
-        }
+        public LogViewModel Log => ServiceLocator.Current.GetInstance<LogViewModel>();
 
-        public PredictionViewModel Prediction
-        {
-            get
-            {
-                return ServiceLocator.Current.GetInstance<PredictionViewModel>();
-            }
-        }
+        public PredictionViewModel Prediction => ServiceLocator.Current.GetInstance<PredictionViewModel>();
 
         public static void Cleanup()
         {

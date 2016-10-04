@@ -9,8 +9,6 @@ var beursfuif;
             this.signalrService = signalrService;
             this.$location = $location;
             this.$timeout = $timeout;
-            $scope.ipAddress = this.localStorageService.get("ipAddress") || "";
-            $scope.port = this.localStorageService.get("port") || "";
             $scope.name = this.localStorageService.get("name") || "";
             $scope.vm = this;
             $scope.$on(beursfuif.EventNames.CONNECTION_CHANGED, function (event) {
@@ -21,8 +19,6 @@ var beursfuif;
                 if (args[0]) {
                     if (_this.localStorageService.isSupported) {
                         _this.localStorageService.add("name", _this.$scope.name);
-                        _this.localStorageService.add("ipAddress", _this.$scope.ipAddress);
-                        _this.localStorageService.add("port", _this.$scope.port);
                     }
                     $scope.$emit(beursfuif.EventNames.CHANGE_OPACITY, 0.50);
                     //connection has been made so the view can be changed
@@ -38,15 +34,17 @@ var beursfuif;
             });
         }
         LoginCtrl.prototype.submit = function () {
-            console.log("address : " + "http://" + this.$scope.ipAddress + ":" + this.$scope.port);
-            this.signalrService.initialize("http://" + this.$scope.ipAddress + ":" + this.$scope.port, this.$scope.name);
+            var address = "http://" + location.host;
+            console.log("address : " + address);
+            this.signalrService.initialize(address, this.$scope.name);
             this.$scope.isLoading = true;
         };
         return LoginCtrl;
-    })();
+    }());
     beursfuif.LoginCtrl = LoginCtrl;
-    beursfuif.beursfuifModule.controller("LoginCtrl", ["$scope", "localStorageService", "SignalrService", "$location", "$timeout", function ($scope, localStorageService, signalrService, $location, $timeout) {
-        return new LoginCtrl($scope, localStorageService, signalrService, $location, $timeout);
-    }]);
+    beursfuif.beursfuifModule.controller("LoginCtrl", ["$scope", "localStorageService", "SignalrService", "$location", "$timeout",
+        function ($scope, localStorageService, signalrService, $location, $timeout) {
+            return new LoginCtrl($scope, localStorageService, signalrService, $location, $timeout);
+        }]);
 })(beursfuif || (beursfuif = {}));
 //# sourceMappingURL=LoginCtrl.js.map

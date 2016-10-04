@@ -4,14 +4,12 @@ using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Infrastructure;
 using Microsoft.Owin.Hosting;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using Beursfuif.Server.DataAccess;
 using Beursfuif.BL.Extensions;
+using Beursfuif.Server.Entity;
 
 namespace Beursfuif.Server.Services
 {
@@ -21,7 +19,7 @@ namespace Beursfuif.Server.Services
         #region Fields and properties
         private IDisposable _webApp;
         private IHubContext _hub;
-        private IBeursfuifData _beursfuifData;
+        private readonly IBeursfuifData _beursfuifData;
 
         public ObservableCollection<Client> Clients
         {
@@ -34,17 +32,8 @@ namespace Beursfuif.Server.Services
                 _beursfuifData.Clients = value;
             }
         }
-        public int Port
-        {
-            get;
-            set;
-        }
 
-        public string Ip
-        {
-            get;
-            set;
-        }
+        public int Port => _beursfuifData.Port;
 
         public bool Active
         {
@@ -58,12 +47,12 @@ namespace Beursfuif.Server.Services
             this._beursfuifData = beursfuifData;
         }
 
-        private bool InitServer(object state)
+        private bool InitServer()
         {
             try
             {
-                _webApp = WebApp.Start<Startup>("http://" + Ip + ":" + Port);
-                _hub = Beursfuif.Server.Services.Startup.DependencyResolver.Resolve<IConnectionManager>().GetHubContext<BeursfuifHub>();
+                _webApp = WebApp.Start<Startup>($"http://+:{Port}");
+                _hub = Startup.DependencyResolver.Resolve<IConnectionManager>().GetHubContext<BeursfuifHub>();
                 BeursfuifHub.NewPackageReceived += BeursfuifHub_NewPackageReceived;
                 return true;
             }
@@ -83,40 +72,31 @@ namespace Beursfuif.Server.Services
         public event EventHandler<NewClientEventArgs> NewClientEvent;
         protected void OnNewClient(object sender, NewClientEventArgs e)
         {
-            if (NewClientEvent != null)
-            {
-                NewClientEvent(sender, e);
-            }
+            NewClientEvent?.Invoke(sender, e);
         }
 
         public event EventHandler<BL.Event.NewOrderEventArgs> NewOrderEvent;
         protected void OnNewOrderEvent(object sender, NewOrderEventArgs e)
         {
-            if (NewOrderEvent != null) NewOrderEvent(this, e);
+            NewOrderEvent?.Invoke(this, e);
         }
 
         public event EventHandler<BL.Event.ClientLeftEventArgs> ClientLeftEvent;
         protected void OnClientLeftEvent(object sender, ClientLeftEventArgs e)
         {
-            if (ClientLeftEvent != null)
-            {
-                ClientLeftEvent(sender, e);
-            }
+            ClientLeftEvent?.Invoke(sender, e);
         }
 
         public event EventHandler<BL.Event.BasicAuthAckEventArgs> CurrentTimeAckEvent;
         protected void OnCurrentTimeAckEvent(object sender, BasicAuthAckEventArgs e)
         {
-            if (CurrentTimeAckEvent != null)
-            {
-                CurrentTimeAckEvent(sender, e);
-            }
+            CurrentTimeAckEvent?.Invoke(sender, e);
         }
 
         public event EventHandler<BL.Event.BasicAuthAckEventArgs> IntervalUpdateAckEvent;
         protected void OnIntervalUpdateAckEvent(object sender, BasicAuthAckEventArgs e)
         {
-            if (IntervalUpdateAckEvent != null) IntervalUpdateAckEvent(sender, e);
+            IntervalUpdateAckEvent?.Invoke(sender, e);
         }
         #endregion
 
@@ -220,7 +200,7 @@ namespace Beursfuif.Server.Services
         
  
             Interval currentInterval = _beursfuifData.CurrentInterval;
-            ClientInterval clientInterval = currentInterval.ToClientInterval(currentBFTime, PathManager.ASSETS_PATH);
+            ClientInterval clientInterval = currentInterval.ToClientInterval(currentBFTime, BeursfuifPaths.AssetsPath);
             SendAckInitialClientConnect(clientInterval, newClient.Id, currentBFTime);
             OnNewClient(this, new NewClientEventArgs(newClient.Name, newClient.Ip, newClient.Id));
         }
@@ -235,10 +215,19 @@ namespace Beursfuif.Server.Services
         #region Send to client
         public void SendAckInitialClientConnect(BL.ClientInterval currentInterval, Guid clientId, DateTime currentBeursfuifTime)
         {
-            string context = Clients.FirstOrDefault(x => x.Id == clientId).ConnectionContext;
-            //SignalR method
-            var client = _hub.Clients.Client(context);
-            _hub.Clients.Client(context).sendInitialData(currentBeursfuifTime, currentInterval);
+            var client = Clients.FirstOrDefault(x => x.Id == clientId);
+            if (client != null)
+            {
+                string context = client.ConnectionContext;
+                //SignalR method
+                var signalrClient = _hub.Clients.Client(context);
+                _hub.Clients.Client(context).sendInitialData(currentBeursfuifTime, currentInterval);
+            }
+            else
+            {
+                System.Threading.Thread.Sleep(200);
+                SendAckInitialClientConnect(currentInterval, clientId, currentBeursfuifTime);
+            }
         }
 
         public void KickClient(Guid id)
@@ -293,14 +282,9 @@ namespace Beursfuif.Server.Services
             BeursfuifHub.NewPackageReceived -= BeursfuifHub_NewPackageReceived;
         }
 
-        public async Task<bool> Start(string ip, int port)
+        public async Task<bool> Start()
         {
-            if (string.IsNullOrEmpty(Ip))
-            {
-                Ip = ip;
-                Port = port;
-            }
-            return await Task.Factory.StartNew<bool>(InitServer, null);
+            return await Task.Factory.StartNew<bool>(InitServer);
         }
 
 

@@ -7,9 +7,6 @@ var beursfuif;
             this.localStorageService = localStorageService;
             this.signalrService = signalrService;
             this.$scope.vm = this;
-            this.$scope.ipAddress = localStorageService.get("bIp") || "";
-            this.$scope.port = localStorageService.get("bPort") || "";
-            this.$scope.showLogin = true;
             this.$scope.showTable = false;
             $scope.$on(beursfuif.EventNames.CONNECTION_CHANGED, function (e) {
                 var msg = [];
@@ -37,6 +34,7 @@ var beursfuif;
                 _this.updateTime();
                 _this.$scope.$apply();
             });
+            this.submit();
         }
         BeamerCtrl.prototype.orderByPrice = function (a, b) {
             if (a.Price > b.Price) {
@@ -61,19 +59,12 @@ var beursfuif;
                 msg[_i - 1] = arguments[_i];
             }
             if (msg[0][0]) {
-                //store address and ip 
-                if (this.localStorageService.isSupported) {
-                    this.localStorageService.add("bIp", this.$scope.ipAddress);
-                    this.localStorageService.add("bPort", this.$scope.port);
-                }
                 this.$scope.isLoading = false;
                 this.bindDrinks();
                 this.calculateProgress();
-                this.$scope.showLogin = false;
                 this.$scope.showTable = true;
             }
             else {
-                this.$scope.showLogin = true;
                 this.$scope.showTable = false;
             }
             this.$scope.$apply();
@@ -94,7 +85,7 @@ var beursfuif;
             var current = moment(this.signalrService.currentTime);
             var end = moment(this.signalrService.clientInterval.End);
             var endHours = end.hours();
-            if (endHours == 0 && start.hours() !== 0) {
+            if (endHours === 0 && start.hours() !== 0) {
                 endHours = 24;
             }
             var intervalLength = (endHours * 60 + end.minutes()) - (start.hours() * 60 + start.minutes());
@@ -103,19 +94,21 @@ var beursfuif;
             this.$scope.$apply();
         };
         BeamerCtrl.prototype.submit = function () {
-            var fullAddress = "http://" + this.$scope.ipAddress + ":" + this.$scope.port;
+            var fullAddress = "http://" + location.host;
             this.signalrService.initialize(fullAddress, "Beamer");
             this.$scope.isLoading = true;
         };
         BeamerCtrl.prototype.errorHappened = function (msg) {
+            var _this = this;
             console.log(msg);
-            this.$scope.showLogin = true;
+            this.signalrService.unregisterCallbacks();
             this.$scope.showTable = false;
             this.$scope.isLoading = false;
             this.$scope.$apply();
+            setTimeout(function () { return _this.submit(); }, 5000);
         };
         return BeamerCtrl;
-    })();
+    }());
     beursfuif.BeamerCtrl = BeamerCtrl;
     beursfuif.beamerModule.controller("BeamerCtrl", ["$scope", "localStorageService", "SignalrService", BeamerCtrl]);
 })(beursfuif || (beursfuif = {}));

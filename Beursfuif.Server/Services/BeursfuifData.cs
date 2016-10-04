@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Collections.ObjectModel;
 using Beursfuif.BL.Exceptions;
+using Beursfuif.Server.Entity;
 
 namespace Beursfuif.Server.Services
 {
@@ -138,7 +139,7 @@ namespace Beursfuif.Server.Services
         public void LoadAllData()
         {
             //First load the setting.json, this determines if the party has already started
-            var settings = _ioManager.Load<SaveSettings>(PathManager.SETTINGS_PATH);
+            var settings = _ioManager.Load<SaveSettings>(BeursfuifPaths.SettingsPath);
             if (settings != null)
             {
                 BeursfuifBusy = settings.Busy;
@@ -167,12 +168,12 @@ namespace Beursfuif.Server.Services
 
         private void LoadCurrentInterval()
         {
-            CurrentInterval = _ioManager.Load<Interval>(PathManager.CURRENT_INTERVAL_PATH);
+            CurrentInterval = _ioManager.Load<Interval>(BeursfuifPaths.CurrentIntervalPath);
         }
 
         private void LoadOrders()
         {
-            AllOrders = _ioManager.Load<ObservableCollection<ShowOrder>>(PathManager.ALL_ORDERS);
+            AllOrders = _ioManager.Load<ObservableCollection<ShowOrder>>(BeursfuifPaths.AllOrders);
 
             if (AllOrders != null && AllOrders.Any())
             {
@@ -186,14 +187,14 @@ namespace Beursfuif.Server.Services
 
         private void LoadDrinksAndIntervals()
         {
-            Drinks = _ioManager.Load<ObservableCollection<Drink>>(PathManager.DRINK_PATH);
+            Drinks = _ioManager.Load<ObservableCollection<Drink>>(BeursfuifPaths.DrinkPath);
 
             if (Drinks == null)
             {
                 Drinks = new ObservableCollection<Drink>();
             }
 
-            Intervals = _ioManager.Load<Interval[]>(PathManager.INTERVAL_PATH);
+            Intervals = _ioManager.Load<Interval[]>(BeursfuifPaths.IntervalPath);
         }
 
         public void RestoreAllData()
@@ -222,22 +223,22 @@ namespace Beursfuif.Server.Services
 
         public void SaveDrinks()
         {
-            _ioManager.Save<ObservableCollection<Drink>>(PathManager.DRINK_PATH, Drinks);
+            _ioManager.Save<ObservableCollection<Drink>>(BeursfuifPaths.DrinkPath, Drinks);
         }
 
         public void SaveIntervals()
         {
-            _ioManager.Save<Interval[]>(PathManager.INTERVAL_PATH, Intervals);
+            _ioManager.Save<Interval[]>(BeursfuifPaths.IntervalPath, Intervals);
         }
 
         public void SaveCurrentInterval()
         {
-            _ioManager.Save<Interval>(PathManager.CURRENT_INTERVAL_PATH, CurrentInterval);
+            _ioManager.Save<Interval>(BeursfuifPaths.CurrentIntervalPath, CurrentInterval);
         }
 
         public void SaveSettings(SaveSettings settings)
         {
-            _ioManager.Save<SaveSettings>(PathManager.SETTINGS_PATH, settings);
+            _ioManager.Save<SaveSettings>(BeursfuifPaths.SettingsPath, settings);
         }
 
         public void SaveSettings()
@@ -256,7 +257,7 @@ namespace Beursfuif.Server.Services
 
         public void SaveAllOrders()
         {
-            _ioManager.Save<ObservableCollection<ShowOrder>>(PathManager.ALL_ORDERS, AllOrders);
+            _ioManager.Save<ObservableCollection<ShowOrder>>(BeursfuifPaths.AllOrders, AllOrders);
         }
 
         #endregion
@@ -297,8 +298,8 @@ namespace Beursfuif.Server.Services
         {
             ResetData();
             Drinks = new ObservableCollection<Drink>();
-            SafeDeleteFile(PathManager.DRINK_PATH);
-            SafeDeleteFolder(PathManager.ASSETS_PATH);
+            SafeDeleteFile(BeursfuifPaths.DrinkPath);
+            SafeDeleteFolder(BeursfuifPaths.AssetsPath);
             RaisDataReset(true);
         }
 
@@ -317,11 +318,11 @@ namespace Beursfuif.Server.Services
             IsBeursfuifCompleted = false;
 
             //Delete json files
-            SafeDeleteFile(PathManager.INTERVAL_PATH);
-            SafeDeleteFile(PathManager.SETTINGS_PATH);
-            SafeDeleteFile(PathManager.ALL_ORDERS);
-            SafeDeleteFile(PathManager.CURRENT_INTERVAL_PATH);
-            SafeDeleteFolder(PathManager.LOG_FOLDER);
+            SafeDeleteFile(BeursfuifPaths.IntervalPath);
+            SafeDeleteFile(BeursfuifPaths.SettingsPath);
+            SafeDeleteFile(BeursfuifPaths.AllOrders);
+            SafeDeleteFile(BeursfuifPaths.CurrentIntervalPath);
+            SafeDeleteFolder(BeursfuifPaths.LogFolder);
             RaisDataReset(false);
         }
 

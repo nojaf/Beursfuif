@@ -1,0 +1,41 @@
+[
+  {
+    "outputFileName": "Scripts/vendor.js",
+    "inputFiles": [
+      "Scripts/vendor/jquery/jquery-2.1.1.min.js",
+      "Scripts/vendor/moment/moment.min.js",
+      "Scripts/vendor/signalr/jquery.signalR-2.1.2.min.js",
+      "Scripts/vendor/jquery/jquery.color-2.1.2.min.js",
+      "Scripts/vendor/bootstrap/bootstrap.min.js",
+      "Scripts/vendor/toastr/toastr.min.js",
+      "Scripts/vendor/angularjs/angular.min.js",
+      "Scripts/vendor/angularjs-vendors-modules/localStorage.min.js",
+      "Scripts/vendor/angularjs/angular-route.min.js",
+      "Scripts/vendor/angularjs/angular-animate.min.js",
+      "Scripts/vendor/angularjs/angular-sanitize.min.js"
+    ]
+  },
+  {
+    "outputFileName": "Scripts/beamer.js",
+    "inputFiles": [
+      "Scripts/models/modalMessages.js",
+      "Scripts/controllers/Events.js",
+      "Scripts/app/beamer.js",
+      "Scripts/services/SignalrService.js",
+      "Scripts/controllers/beamerCtrl.js"
+    ]
+  },
+  {
+    "outputFileName": "Scripts/beursfuif.js",
+    "inputFiles": [
+      "Scripts/app/app.js",
+      "Scripts/models/modalMessages.js",
+      "Scripts/services/SignalrService.js",
+      "Scripts/controllers/Events.js",
+      "Scripts/controllers/LoginCtrl.js",
+      "Scripts/controllers/MainCtrl.js",
+      "Scripts/directives/Background.js",
+      "Scripts/directives/Modal.js"
+    ]
+  }
+]

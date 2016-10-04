@@ -1,9 +1,7 @@
 using Beursfuif.Server.Messages;
-using Beursfuif.Server.UserControls;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using System;
-using System.Windows;
 
 namespace Beursfuif.Server.ViewModel
 {

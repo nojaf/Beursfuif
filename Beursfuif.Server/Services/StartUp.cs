@@ -1,14 +1,10 @@
-﻿using Microsoft.Owin;
+﻿using System.Web.Cors;
 using Owin;
 using Microsoft.AspNet.SignalR;
+using Microsoft.Owin;
 using Microsoft.Owin.Cors;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNet.SignalR.Hubs;
-using Microsoft.AspNet.SignalR.Infrastructure;
+using Microsoft.Owin.FileSystems;
+using Microsoft.Owin.StaticFiles;
 
 namespace Beursfuif.Server.Services
 {
@@ -21,6 +17,23 @@ namespace Beursfuif.Server.Services
         }
         public void Configuration(IAppBuilder app)
         {
+            app.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll);
+
+            FileServerOptions fileServerOptions = new FileServerOptions()
+            {
+                RequestPath = PathString.Empty,
+                FileSystem = new PhysicalFileSystem(@".\\wwwroot")
+            };
+
+            //In order to serve json files
+            fileServerOptions.StaticFileOptions.ServeUnknownFileTypes = true;
+            fileServerOptions.StaticFileOptions.DefaultContentType = "text";
+
+
+            // Remap '/' to '.\public\'.
+            // Turns on static files and public files.
+            app.UseFileServer(fileServerOptions);
+
             // For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=316888
             app.Map("/signalr", map =>
             {
