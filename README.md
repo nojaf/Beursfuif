@@ -1,6 +1,5 @@
 # Beursfuif
 
-
 Beursfuif program, written in C#/XAML.
 
 Created by [nojaf](http://nojaf.com)
@@ -9,7 +8,7 @@ All rights reserved.
 
 ## Running from Visual Studio
 
-Execute the netsh commands first. More info [below](#server)
+Execute the netsh commands first. More info [below](#server-and-client)
 
 ## Screenshots
 
@@ -49,9 +48,10 @@ The client is built with AngularJs and Typescript
 Binaries have been attached to the latest release (2.6.0).
 You should be able to run the application with these files.
 
-### Server
+### 
 - Extract the zip
 - Open a command promt as administrator.
+
 ```cmd
 C:\Windows\System32>rem "Find your username"
 C:\Windows\System32>whoami
@@ -59,20 +59,22 @@ your-domain\your-users
 
 C:\Windows\System32>rem "Register urls with port"
 C:\Windows\System32>netsh http add urlacl url=http://+:5678/ user=your-domain\your-users
-
-C:\Windows\System32>rem "Add an outgoing firewall rule"
-C:\Windows\System32>netsh advfirewall firewall add rule name="Open Port 5678" dir=out action=allow protocol=TCP localport=5678
 ```
+
 - Open Beursfuif.Server.exe
 - Configure drinks and interval
 - Start party
 
-### Client
+### Server and Client
 
 - Open a command promt as administrator.
+
 ```cmd
 C:\Windows\System32>rem "Add an incoming firewall rule"
 C:\Windows\System32>netsh advfirewall firewall add rule name="Open Port 5678" dir=in action=allow protocol=TCP localport=5678
+
+C:\Windows\System32>rem "Add an outgoing firewall rule"
+C:\Windows\System32>netsh advfirewall firewall add rule name="Open Port 5678" dir=out action=allow protocol=TCP localport=5678
 ```
 
 - Browse to the urls displayed in the Settings pane on the server.
