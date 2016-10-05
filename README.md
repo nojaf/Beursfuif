@@ -8,7 +8,7 @@ All rights reserved.
 
 ## Running from Visual Studio
 
-Execute the netsh commands first. More info [below](#server-and-client)
+Execute the netsh commands first. More info [below](#server)
 
 ## Screenshots
 
@@ -48,7 +48,8 @@ The client is built with AngularJs and Typescript
 Binaries have been attached to the latest release (2.6.0).
 You should be able to run the application with these files.
 
-### 
+### Server
+
 - Extract the zip
 - Open a command promt as administrator.
 
