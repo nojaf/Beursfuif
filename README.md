@@ -84,5 +84,6 @@ C:\Windows\System32>netsh advfirewall firewall add rule name="Open Port 5678" di
 - Browser support: IE10+, Chrome, Opera and Firefox.
 - Start beamer.html to open the projection client.
 
-## Permission to use for a real party
-I have no problem if anyone wants to use this application in real life. However, be a gentlemen and kindly ask for permission!
+## Permission to Use for a Real Party
+I have no objections if anyone wishes to use this application in real life.  
+Please be aware that the project is old and unmaintained. It may work perfectly or not at all.
